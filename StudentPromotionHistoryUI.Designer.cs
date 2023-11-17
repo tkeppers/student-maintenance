@@ -29,6 +29,8 @@ namespace DojoStudentManagement
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StudentPromotionHistoryUI));
             this.dgvPromotionHistory = new System.Windows.Forms.DataGridView();
             this.Art = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Rank = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -45,7 +47,15 @@ namespace DojoStudentManagement
             this.Rank,
             this.PromoDate,
             this.PromoHours});
-            this.dgvPromotionHistory.Location = new System.Drawing.Point(30, 24);
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvPromotionHistory.DefaultCellStyle = dataGridViewCellStyle1;
+            this.dgvPromotionHistory.Location = new System.Drawing.Point(21, 40);
             this.dgvPromotionHistory.Name = "dgvPromotionHistory";
             this.dgvPromotionHistory.ReadOnly = true;
             this.dgvPromotionHistory.Size = new System.Drawing.Size(702, 388);
@@ -55,21 +65,25 @@ namespace DojoStudentManagement
             // 
             this.Art.HeaderText = "Art";
             this.Art.Name = "Art";
+            this.Art.ReadOnly = true;
             // 
             // Rank
             // 
             this.Rank.HeaderText = "Rank";
             this.Rank.Name = "Rank";
+            this.Rank.ReadOnly = true;
             // 
             // PromoDate
             // 
             this.PromoDate.HeaderText = "Promo. Date";
             this.PromoDate.Name = "PromoDate";
+            this.PromoDate.ReadOnly = true;
             // 
             // PromoHours
             // 
             this.PromoHours.HeaderText = "Promo. Hours";
             this.PromoHours.Name = "PromoHours";
+            this.PromoHours.ReadOnly = true;
             // 
             // StudentPromotionHistoryUI
             // 
@@ -77,8 +91,9 @@ namespace DojoStudentManagement
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(802, 481);
             this.Controls.Add(this.dgvPromotionHistory);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "StudentPromotionHistoryUI";
-            this.Text = "StudentPromotionHistoryUI";
+            this.Text = "Promotion History";
             this.Load += new System.EventHandler(this.StudentPromotionHistoryUI_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvPromotionHistory)).EndInit();
             this.ResumeLayout(false);

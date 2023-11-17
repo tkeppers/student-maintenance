@@ -14,6 +14,7 @@ namespace DojoStudentManagement
     {
         int currentStudentID;
         private IDataAccess dataAccess;
+        string currentStudentName;
 
         public StudentMaintenanceUI(IDataAccess dataAccess)
         {
@@ -26,6 +27,8 @@ namespace DojoStudentManagement
             StudentMaintenanceFunctions s = new StudentMaintenanceFunctions();
             Student currentStudent = s.PopulateStudentData(dataAccess, currentStudentID);
 
+            this.currentStudentName = currentStudent.FirstName + " " + currentStudent.LastName;
+
             txtFirstName.Text = currentStudent.FirstName;
             txtLastName.Text = currentStudent.LastName;
             txtAddress1.Text = currentStudent.Address1;
@@ -36,6 +39,17 @@ namespace DojoStudentManagement
             txtPrimaryPhone.Text = currentStudent.PrimaryPhoneNumber;
             txtSecondaryPhone.Text = currentStudent.SecondaryPhoneNumber;
             txtEmailAddress.Text = currentStudent.EmailAddress;
+            cbActiveStudent.Checked = currentStudent.ActiveMember;
+            txtHomeDojo.Text = currentStudent.HomeDojo;
+            dtBirthdate.Value = currentStudent.DateOfBirth;
+            dtBirthdate.CustomFormat = "MM/dd/yyyy";
+
+            if (currentStudent.StudentGender == Gender.MALE)
+                rbMale.Checked = true;
+            else if (currentStudent.StudentGender == Gender.FEMALE)
+                rbFemale.Checked = true;
+            else
+                rbUnknown.Checked = true;
 
             PopulateArtsAndRanks(currentStudent);
         }
@@ -59,6 +73,29 @@ namespace DojoStudentManagement
                 lvwArtsAndRanks.Items.Add(item);
             }
 
+        }
+
+        private void FilterStudentList()
+        {
+            string filterExpression = $"stud_id is not null ";  //Generic statement that will always be true
+
+            if (!cbNonWindsongStudents.Checked)
+                filterExpression += "and stud_club = 'Windsong' ";
+
+            if (!cbShowInactiveStudents.Checked)
+                filterExpression += "and stud_status = 'A' ";
+
+            if (!string.IsNullOrWhiteSpace(txtFirstNameFilter.Text))
+                filterExpression += " and stud_firstname LIKE '" + txtFirstNameFilter.Text + "%'";
+
+            if (!string.IsNullOrWhiteSpace(txtLastNameFilter.Text))
+                filterExpression += " and stud_lastname LIKE '" + txtLastNameFilter.Text + "%'";
+
+
+            DataView dv = (DataView)dgvStudentList.DataSource;
+            dv.RowFilter = filterExpression;
+
+            dgvStudentList.DataSource = dv;
         }
 
         private void StudentMaintenance_Load(object sender, EventArgs e)
@@ -85,9 +122,15 @@ namespace DojoStudentManagement
 
         private void btnPromotionHistory_Click(object sender, EventArgs e)
         {
-            StudentPromotionHistoryUI promotions = new StudentPromotionHistoryUI(dataAccess, currentStudentID);
+            StudentPromotionHistoryUI promotions = new StudentPromotionHistoryUI(dataAccess, currentStudentID, currentStudentName);
             promotions.ShowDialog();
 
+        }
+
+        private void btnSignInHistory_Click(object sender, EventArgs e)
+        {
+            StudentSignInHistoryUI signins = new StudentSignInHistoryUI(dataAccess, currentStudentID, currentStudentName);
+            signins.ShowDialog();
         }
 
         private void dgvStudentList_SelectionChanged(object sender, EventArgs e)
@@ -97,6 +140,26 @@ namespace DojoStudentManagement
 
             currentStudentID = Convert.ToInt32(dgvStudentList.SelectedRows[0].Cells[0].Value.ToString());
             PopulateStudentInformation();
+        }
+
+        private void cbShowInactiveStudents_CheckedChanged(object sender, EventArgs e)
+        {
+            FilterStudentList();
+        }
+
+        private void cbNonWindsongStudents_CheckedChanged(object sender, EventArgs e)
+        {
+            FilterStudentList();
+        }
+
+        private void txtFirstNameFilter_TextChanged(object sender, EventArgs e)
+        {
+            FilterStudentList();
+        }
+
+        private void txtLastNameFilter_TextChanged(object sender, EventArgs e)
+        {
+            FilterStudentList();
         }
     }
 }
