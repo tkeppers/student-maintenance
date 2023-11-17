@@ -30,10 +30,23 @@ namespace DojoStudentManagement
             currentStudent.EmailAddress = selectedStudent[0].Field<string>("stud_email");
             currentStudent.HomeDojo = selectedStudent[0].Field<string>("stud_club");
             currentStudent.ActiveMember = selectedStudent[0].Field<string>("stud_status").Equals("A");
+            currentStudent.HomeDojo = selectedStudent[0].Field<string>("stud_club");
+            currentStudent.DateOfBirth = selectedStudent[0].Field<DateTime>("stud_birthdate");
+            currentStudent.StudentGender = GetStudentGender(selectedStudent[0].Field<string>("stud_gender"));
 
             PopulateArtsAndRanks(dataAccess, currentStudent);
 
             return currentStudent;
+        }
+
+        private Gender GetStudentGender(string gender)
+        {
+            if (gender.ToUpper().Contains("M"))
+                return Gender.MALE;
+            else if (gender.ToUpper().Contains("F"))
+                return Gender.FEMALE;
+            else
+                return Gender.UNKNOWN;
         }
 
         private void PopulateArtsAndRanks(IDataAccess dataAccess, Student student)
