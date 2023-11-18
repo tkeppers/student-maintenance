@@ -78,21 +78,5 @@ namespace DojoStudentManagement
 
             return dataTable;
         }
-
-        public DataTable GetStudentSignInHistory(int studentID)
-        {
-            DataTable dataTable;
-
-            using (OleDbConnection connection = new OleDbConnection(connectionString))
-            {
-                string sql = "select * from Signin_History where sign_student=" + studentID;
-                OleDbDataAdapter dataAdapter = new OleDbDataAdapter(sql, connectionString);
-                DataSet dataset = new DataSet();
-                dataAdapter.Fill(dataset);
-                dataTable = dataset.Tables[0];
-            }
-
-            return dataTable;
-        }
     }
 }

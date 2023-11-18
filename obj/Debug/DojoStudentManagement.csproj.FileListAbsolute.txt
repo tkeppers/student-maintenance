@@ -9,4 +9,3 @@ C:\Projects\Windsong Dojo\Student Management Application\DojoStudentManagement\D
 C:\Projects\Windsong Dojo\Student Management Application\DojoStudentManagement\DojoStudentManagement\obj\Debug\DojoStudentManagement.pdb
 C:\Projects\Windsong Dojo\Student Management Application\DojoStudentManagement\DojoStudentManagement\obj\Debug\DojoStudentManagement.StudentMaintenanceUI.resources
 C:\Projects\Windsong Dojo\Student Management Application\DojoStudentManagement\DojoStudentManagement\obj\Debug\DojoStudentManagement.StudentPromotionHistoryUI.resources
-C:\Projects\Windsong Dojo\Student Management Application\DojoStudentManagement\DojoStudentManagement\obj\Debug\DojoStudentManagement.StudentSignInHistoryUI.resources

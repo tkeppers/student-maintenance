@@ -15,12 +15,10 @@ namespace DojoStudentManagement
         IDataAccess dataAccess;
         int studentID;
 
-        public StudentPromotionHistoryUI(IDataAccess dataAccess, int studentID, string studentName)
+        public StudentPromotionHistoryUI(IDataAccess dataAccess, int studentID)
         {
             this.studentID = studentID;
             this.dataAccess = dataAccess;
-
-            this.Text = "Promotion History for " + studentName;
 
             InitializeComponent();
         }

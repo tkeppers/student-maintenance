@@ -12,9 +12,6 @@ namespace DojoStudentManagement
         DataTable GetStudentTable();
 
         DataTable GetStudentArtsAndRanks(int studentID);
-
         DataTable GetStudentPromotionHistory(int studentID);
-
-        DataTable GetStudentSignInHistory(int studentID);
     }
 }

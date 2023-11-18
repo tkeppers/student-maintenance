@@ -18,22 +18,14 @@ namespace DojoStudentManagement
         public string AddressCity;
         public string AddressState;
         public string AddressZip;
-        public bool ActiveMember;
+        public bool ActiveMember; 
 
         public string PrimaryPhoneNumber;
         public string SecondaryPhoneNumber;
-        public Gender StudentGender;
+        public string Gender;   //Make this an identifier
         public string EmailAddress;
         private string StartMonth;
 
         public List<StudentArtsAndRank> StudentArtsAndRanks = new List<StudentArtsAndRank>();
     }
-
-    public enum Gender
-    {
-        FEMALE,
-        MALE,
-        UNKNOWN
-    }
-
 }
