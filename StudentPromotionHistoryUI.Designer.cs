@@ -41,6 +41,8 @@ namespace DojoStudentManagement
             // 
             // dgvPromotionHistory
             // 
+            this.dgvPromotionHistory.AllowUserToAddRows = false;
+            this.dgvPromotionHistory.AllowUserToDeleteRows = false;
             this.dgvPromotionHistory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvPromotionHistory.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Art,
@@ -56,6 +58,7 @@ namespace DojoStudentManagement
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvPromotionHistory.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgvPromotionHistory.Location = new System.Drawing.Point(21, 40);
+            this.dgvPromotionHistory.MultiSelect = false;
             this.dgvPromotionHistory.Name = "dgvPromotionHistory";
             this.dgvPromotionHistory.ReadOnly = true;
             this.dgvPromotionHistory.Size = new System.Drawing.Size(702, 388);

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DojoStudentManagement
 {
-    class Student
+    public class Student
     {
         public int StudentID;
         public string FirstName;
@@ -26,7 +26,7 @@ namespace DojoStudentManagement
         public string EmailAddress;
         private string StartMonth;
 
-        public List<StudentArtsAndRank> StudentArtsAndRanks = new List<StudentArtsAndRank>();
+        internal List<StudentArtsAndRank> StudentArtsAndRanks = new List<StudentArtsAndRank>();
     }
 
     public enum Gender

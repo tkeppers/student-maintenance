@@ -49,6 +49,12 @@
   <ItemGroup>
     <Compile Include="Student.cs" />
     <Compile Include="DatabaseAccess.cs" />
+    <Compile Include="StudentAddUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StudentAddUI.Designer.cs">
+      <DependentUpon>StudentAddUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="StudentArtsAndRank.cs" />
     <Compile Include="StudentMaintenanceUI.cs">
       <SubType>Form</SubType>
@@ -83,6 +89,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="StudentAddUI.resx">
+      <DependentUpon>StudentAddUI.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="StudentMaintenanceUI.resx">
       <DependentUpon>StudentMaintenanceUI.cs</DependentUpon>
     </EmbeddedResource>
@@ -92,6 +101,7 @@
     <EmbeddedResource Include="StudentSignInHistoryUI.resx">
       <DependentUpon>StudentSignInHistoryUI.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="App.config.sample" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

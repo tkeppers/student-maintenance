@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace DojoStudentManagement
 { 
+    //TODO: Refactor this into a series of Repository classes for each data object
     public interface IDataAccess
     {
         DataTable GetStudentTable();
@@ -16,5 +17,7 @@ namespace DojoStudentManagement
         DataTable GetStudentPromotionHistory(int studentID);
 
         DataTable GetStudentSignInHistory(int studentID);
+
+        bool AddNewStudent(Student student);
     }
 }

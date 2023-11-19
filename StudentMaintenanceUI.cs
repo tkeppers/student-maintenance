@@ -98,8 +98,10 @@ namespace DojoStudentManagement
             dgvStudentList.DataSource = dv;
         }
 
-        private void StudentMaintenance_Load(object sender, EventArgs e)
+        private void PopulateStudentList()
         {
+            //dgvStudentList.Rows.Clear();
+
             DataTable studentList = dataAccess.GetStudentTable();
 
             DataView studentDataView = new DataView(studentList);
@@ -118,6 +120,11 @@ namespace DojoStudentManagement
 
             //Display only the active students initially
             studentDataView.RowFilter = "stud_status = 'A'";
+        }
+
+        private void StudentMaintenance_Load(object sender, EventArgs e)
+        {
+            PopulateStudentList();
         }
 
         private void btnPromotionHistory_Click(object sender, EventArgs e)
@@ -160,6 +167,26 @@ namespace DojoStudentManagement
         private void txtLastNameFilter_TextChanged(object sender, EventArgs e)
         {
             FilterStudentList();
+        }
+
+        private void btnAddNewStudent_Click(object sender, EventArgs e)
+        {
+            StudentAddUI addStudent = new StudentAddUI(dataAccess);
+            addStudent.ShowDialog();
+
+            //TODO: Check and see if a student has been successfully added before performing the next tasks
+
+            PopulateStudentList();
+
+            //Automatically select the most recently added student
+            if (dgvStudentList.Rows.Count > 0)
+            {
+                int lastIndex = dgvStudentList.Rows.Count - 1;
+                dgvStudentList.Rows[lastIndex].Selected = true;
+
+                // Scroll to the selected row to make it visible
+                dgvStudentList.FirstDisplayedScrollingRowIndex = lastIndex;
+            }
         }
     }
 }

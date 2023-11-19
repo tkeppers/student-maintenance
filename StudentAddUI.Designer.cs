@@ -1,7 +1,7 @@
 ﻿
 namespace DojoStudentManagement
 {
-    partial class StudentMaintenanceUI
+    partial class StudentAddUI
     {
         /// <summary>
         /// Required designer variable.
@@ -29,14 +29,11 @@ namespace DojoStudentManagement
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StudentMaintenanceUI));
-            this.txtFirstName = new System.Windows.Forms.TextBox();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StudentAddUI));
             this.gbStudentInfo = new System.Windows.Forms.GroupBox();
             this.lblHomeDojo = new System.Windows.Forms.Label();
             this.txtHomeDojo = new System.Windows.Forms.TextBox();
             this.cbActiveStudent = new System.Windows.Forms.CheckBox();
-            this.btnSignInHistory = new System.Windows.Forms.Button();
-            this.btnPromotionHistory = new System.Windows.Forms.Button();
             this.lblBirthDate = new System.Windows.Forms.Label();
             this.dtBirthdate = new System.Windows.Forms.DateTimePicker();
             this.txtSecondaryPhone = new System.Windows.Forms.TextBox();
@@ -62,44 +59,18 @@ namespace DojoStudentManagement
             this.lblLastName = new System.Windows.Forms.Label();
             this.lblFirstName = new System.Windows.Forms.Label();
             this.txtLastName = new System.Windows.Forms.TextBox();
-            this.lblArtsAndRank = new System.Windows.Forms.Label();
-            this.lvwArtsAndRanks = new System.Windows.Forms.ListView();
-            this.columnArt = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnRank = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnStartDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnPromotionDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnPromotionHours = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.dgvStudentList = new System.Windows.Forms.DataGridView();
-            this.gbQuickFilters = new System.Windows.Forms.GroupBox();
-            this.lblLastNameFilter = new System.Windows.Forms.Label();
-            this.lblFirstNameFilter = new System.Windows.Forms.Label();
-            this.txtLastNameFilter = new System.Windows.Forms.TextBox();
-            this.txtFirstNameFilter = new System.Windows.Forms.TextBox();
-            this.cbNonWindsongStudents = new System.Windows.Forms.CheckBox();
-            this.cbShowInactiveStudents = new System.Windows.Forms.CheckBox();
-            this.btnAddNewStudent = new System.Windows.Forms.Button();
-            this.picWindsongLogo = new System.Windows.Forms.PictureBox();
+            this.txtFirstName = new System.Windows.Forms.TextBox();
+            this.btnSave = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.gbStudentInfo.SuspendLayout();
             this.gbGender.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvStudentList)).BeginInit();
-            this.gbQuickFilters.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picWindsongLogo)).BeginInit();
             this.SuspendLayout();
-            // 
-            // txtFirstName
-            // 
-            this.txtFirstName.Location = new System.Drawing.Point(24, 46);
-            this.txtFirstName.Name = "txtFirstName";
-            this.txtFirstName.Size = new System.Drawing.Size(155, 22);
-            this.txtFirstName.TabIndex = 1;
             // 
             // gbStudentInfo
             // 
             this.gbStudentInfo.Controls.Add(this.lblHomeDojo);
             this.gbStudentInfo.Controls.Add(this.txtHomeDojo);
             this.gbStudentInfo.Controls.Add(this.cbActiveStudent);
-            this.gbStudentInfo.Controls.Add(this.btnSignInHistory);
-            this.gbStudentInfo.Controls.Add(this.btnPromotionHistory);
             this.gbStudentInfo.Controls.Add(this.lblBirthDate);
             this.gbStudentInfo.Controls.Add(this.dtBirthdate);
             this.gbStudentInfo.Controls.Add(this.txtSecondaryPhone);
@@ -124,10 +95,10 @@ namespace DojoStudentManagement
             this.gbStudentInfo.Controls.Add(this.txtLastName);
             this.gbStudentInfo.Controls.Add(this.txtFirstName);
             this.gbStudentInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gbStudentInfo.Location = new System.Drawing.Point(432, 79);
+            this.gbStudentInfo.Location = new System.Drawing.Point(25, 23);
             this.gbStudentInfo.Name = "gbStudentInfo";
-            this.gbStudentInfo.Size = new System.Drawing.Size(577, 369);
-            this.gbStudentInfo.TabIndex = 2;
+            this.gbStudentInfo.Size = new System.Drawing.Size(511, 316);
+            this.gbStudentInfo.TabIndex = 3;
             this.gbStudentInfo.TabStop = false;
             this.gbStudentInfo.Text = "Student Information";
             // 
@@ -146,41 +117,20 @@ namespace DojoStudentManagement
             this.txtHomeDojo.Name = "txtHomeDojo";
             this.txtHomeDojo.Size = new System.Drawing.Size(124, 22);
             this.txtHomeDojo.TabIndex = 26;
+            this.txtHomeDojo.Text = "Windsong";
             // 
             // cbActiveStudent
             // 
             this.cbActiveStudent.AutoSize = true;
-            this.cbActiveStudent.Location = new System.Drawing.Point(363, 90);
+            this.cbActiveStudent.Checked = true;
+            this.cbActiveStudent.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbActiveStudent.Location = new System.Drawing.Point(349, 90);
             this.cbActiveStudent.Name = "cbActiveStudent";
             this.cbActiveStudent.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.cbActiveStudent.Size = new System.Drawing.Size(64, 20);
             this.cbActiveStudent.TabIndex = 25;
             this.cbActiveStudent.Text = "Active";
             this.cbActiveStudent.UseVisualStyleBackColor = true;
-            // 
-            // btnSignInHistory
-            // 
-            this.btnSignInHistory.Image = ((System.Drawing.Image)(resources.GetObject("btnSignInHistory.Image")));
-            this.btnSignInHistory.Location = new System.Drawing.Point(153, 312);
-            this.btnSignInHistory.Name = "btnSignInHistory";
-            this.btnSignInHistory.Size = new System.Drawing.Size(125, 51);
-            this.btnSignInHistory.TabIndex = 24;
-            this.btnSignInHistory.Text = "Sign-In History";
-            this.btnSignInHistory.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnSignInHistory.UseVisualStyleBackColor = true;
-            this.btnSignInHistory.Click += new System.EventHandler(this.btnSignInHistory_Click);
-            // 
-            // btnPromotionHistory
-            // 
-            this.btnPromotionHistory.Image = ((System.Drawing.Image)(resources.GetObject("btnPromotionHistory.Image")));
-            this.btnPromotionHistory.Location = new System.Drawing.Point(24, 312);
-            this.btnPromotionHistory.Name = "btnPromotionHistory";
-            this.btnPromotionHistory.Size = new System.Drawing.Size(123, 51);
-            this.btnPromotionHistory.TabIndex = 7;
-            this.btnPromotionHistory.Text = "Promotion History";
-            this.btnPromotionHistory.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnPromotionHistory.UseVisualStyleBackColor = true;
-            this.btnPromotionHistory.Click += new System.EventHandler(this.btnPromotionHistory_Click);
             // 
             // lblBirthDate
             // 
@@ -252,7 +202,7 @@ namespace DojoStudentManagement
             this.gbGender.Controls.Add(this.rbUnknown);
             this.gbGender.Controls.Add(this.rbFemale);
             this.gbGender.Controls.Add(this.rbMale);
-            this.gbGender.Location = new System.Drawing.Point(362, 113);
+            this.gbGender.Location = new System.Drawing.Point(349, 128);
             this.gbGender.Name = "gbGender";
             this.gbGender.Size = new System.Drawing.Size(111, 100);
             this.gbGender.TabIndex = 15;
@@ -262,6 +212,7 @@ namespace DojoStudentManagement
             // rbUnknown
             // 
             this.rbUnknown.AutoSize = true;
+            this.rbUnknown.Checked = true;
             this.rbUnknown.Location = new System.Drawing.Point(7, 69);
             this.rbUnknown.Name = "rbUnknown";
             this.rbUnknown.Size = new System.Drawing.Size(81, 20);
@@ -277,7 +228,6 @@ namespace DojoStudentManagement
             this.rbFemale.Name = "rbFemale";
             this.rbFemale.Size = new System.Drawing.Size(72, 20);
             this.rbFemale.TabIndex = 1;
-            this.rbFemale.TabStop = true;
             this.rbFemale.Text = "Female";
             this.rbFemale.UseVisualStyleBackColor = true;
             // 
@@ -288,7 +238,6 @@ namespace DojoStudentManagement
             this.rbMale.Name = "rbMale";
             this.rbMale.Size = new System.Drawing.Size(56, 20);
             this.rbMale.TabIndex = 0;
-            this.rbMale.TabStop = true;
             this.rbMale.Text = "Male";
             this.rbMale.UseVisualStyleBackColor = true;
             // 
@@ -397,199 +346,64 @@ namespace DojoStudentManagement
             this.txtLastName.Size = new System.Drawing.Size(155, 22);
             this.txtLastName.TabIndex = 2;
             // 
-            // lblArtsAndRank
+            // txtFirstName
             // 
-            this.lblArtsAndRank.AutoSize = true;
-            this.lblArtsAndRank.Location = new System.Drawing.Point(27, 387);
-            this.lblArtsAndRank.Name = "lblArtsAndRank";
-            this.lblArtsAndRank.Size = new System.Drawing.Size(75, 13);
-            this.lblArtsAndRank.TabIndex = 5;
-            this.lblArtsAndRank.Text = "Arts and Rank";
+            this.txtFirstName.Location = new System.Drawing.Point(24, 46);
+            this.txtFirstName.Name = "txtFirstName";
+            this.txtFirstName.Size = new System.Drawing.Size(155, 22);
+            this.txtFirstName.TabIndex = 1;
             // 
-            // lvwArtsAndRanks
+            // btnSave
             // 
-            this.lvwArtsAndRanks.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnArt,
-            this.columnRank,
-            this.columnStartDate,
-            this.columnPromotionDate,
-            this.columnPromotionHours});
-            this.lvwArtsAndRanks.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lvwArtsAndRanks.FullRowSelect = true;
-            this.lvwArtsAndRanks.GridLines = true;
-            this.lvwArtsAndRanks.HideSelection = false;
-            this.lvwArtsAndRanks.Location = new System.Drawing.Point(12, 435);
-            this.lvwArtsAndRanks.Name = "lvwArtsAndRanks";
-            this.lvwArtsAndRanks.Size = new System.Drawing.Size(401, 139);
-            this.lvwArtsAndRanks.TabIndex = 6;
-            this.lvwArtsAndRanks.UseCompatibleStateImageBehavior = false;
-            this.lvwArtsAndRanks.View = System.Windows.Forms.View.Details;
+            this.btnSave.Location = new System.Drawing.Point(25, 346);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(75, 23);
+            this.btnSave.TabIndex = 4;
+            this.btnSave.Text = "Save";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
-            // columnArt
+            // btnCancel
             // 
-            this.columnArt.Text = "Art";
-            this.columnArt.Width = 91;
+            this.btnCancel.Location = new System.Drawing.Point(106, 346);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.TabIndex = 5;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
             // 
-            // columnRank
-            // 
-            this.columnRank.Text = "Rank";
-            this.columnRank.Width = 111;
-            // 
-            // columnStartDate
-            // 
-            this.columnStartDate.Text = "Start Date";
-            this.columnStartDate.Width = 106;
-            // 
-            // columnPromotionDate
-            // 
-            this.columnPromotionDate.Text = "Promotion Date";
-            this.columnPromotionDate.Width = 109;
-            // 
-            // columnPromotionHours
-            // 
-            this.columnPromotionHours.Text = "Promotion Hours";
-            this.columnPromotionHours.Width = 96;
-            // 
-            // dgvStudentList
-            // 
-            this.dgvStudentList.AllowUserToAddRows = false;
-            this.dgvStudentList.AllowUserToDeleteRows = false;
-            this.dgvStudentList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvStudentList.Location = new System.Drawing.Point(18, 176);
-            this.dgvStudentList.MultiSelect = false;
-            this.dgvStudentList.Name = "dgvStudentList";
-            this.dgvStudentList.ReadOnly = true;
-            this.dgvStudentList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvStudentList.Size = new System.Drawing.Size(382, 237);
-            this.dgvStudentList.TabIndex = 7;
-            this.dgvStudentList.SelectionChanged += new System.EventHandler(this.dgvStudentList_SelectionChanged);
-            // 
-            // gbQuickFilters
-            // 
-            this.gbQuickFilters.Controls.Add(this.lblLastNameFilter);
-            this.gbQuickFilters.Controls.Add(this.lblFirstNameFilter);
-            this.gbQuickFilters.Controls.Add(this.txtLastNameFilter);
-            this.gbQuickFilters.Controls.Add(this.txtFirstNameFilter);
-            this.gbQuickFilters.Controls.Add(this.cbNonWindsongStudents);
-            this.gbQuickFilters.Controls.Add(this.cbShowInactiveStudents);
-            this.gbQuickFilters.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gbQuickFilters.Location = new System.Drawing.Point(12, 79);
-            this.gbQuickFilters.Name = "gbQuickFilters";
-            this.gbQuickFilters.Size = new System.Drawing.Size(371, 91);
-            this.gbQuickFilters.TabIndex = 8;
-            this.gbQuickFilters.TabStop = false;
-            this.gbQuickFilters.Text = "Filters";
-            // 
-            // lblLastNameFilter
-            // 
-            this.lblLastNameFilter.AutoSize = true;
-            this.lblLastNameFilter.Location = new System.Drawing.Point(167, 16);
-            this.lblLastNameFilter.Name = "lblLastNameFilter";
-            this.lblLastNameFilter.Size = new System.Drawing.Size(76, 17);
-            this.lblLastNameFilter.TabIndex = 5;
-            this.lblLastNameFilter.Text = "Last Name";
-            // 
-            // lblFirstNameFilter
-            // 
-            this.lblFirstNameFilter.AutoSize = true;
-            this.lblFirstNameFilter.Location = new System.Drawing.Point(6, 16);
-            this.lblFirstNameFilter.Name = "lblFirstNameFilter";
-            this.lblFirstNameFilter.Size = new System.Drawing.Size(76, 17);
-            this.lblFirstNameFilter.TabIndex = 4;
-            this.lblFirstNameFilter.Text = "First Name";
-            // 
-            // txtLastNameFilter
-            // 
-            this.txtLastNameFilter.Location = new System.Drawing.Point(170, 35);
-            this.txtLastNameFilter.Name = "txtLastNameFilter";
-            this.txtLastNameFilter.Size = new System.Drawing.Size(181, 23);
-            this.txtLastNameFilter.TabIndex = 3;
-            this.txtLastNameFilter.TextChanged += new System.EventHandler(this.txtLastNameFilter_TextChanged);
-            // 
-            // txtFirstNameFilter
-            // 
-            this.txtFirstNameFilter.Location = new System.Drawing.Point(6, 36);
-            this.txtFirstNameFilter.Name = "txtFirstNameFilter";
-            this.txtFirstNameFilter.Size = new System.Drawing.Size(150, 23);
-            this.txtFirstNameFilter.TabIndex = 2;
-            this.txtFirstNameFilter.TextChanged += new System.EventHandler(this.txtFirstNameFilter_TextChanged);
-            // 
-            // cbNonWindsongStudents
-            // 
-            this.cbNonWindsongStudents.AutoSize = true;
-            this.cbNonWindsongStudents.Location = new System.Drawing.Point(159, 64);
-            this.cbNonWindsongStudents.Name = "cbNonWindsongStudents";
-            this.cbNonWindsongStudents.Size = new System.Drawing.Size(181, 21);
-            this.cbNonWindsongStudents.TabIndex = 1;
-            this.cbNonWindsongStudents.Text = "Non-Windsong Students";
-            this.cbNonWindsongStudents.UseVisualStyleBackColor = true;
-            this.cbNonWindsongStudents.CheckedChanged += new System.EventHandler(this.cbNonWindsongStudents_CheckedChanged);
-            // 
-            // cbShowInactiveStudents
-            // 
-            this.cbShowInactiveStudents.AutoSize = true;
-            this.cbShowInactiveStudents.Location = new System.Drawing.Point(6, 64);
-            this.cbShowInactiveStudents.Name = "cbShowInactiveStudents";
-            this.cbShowInactiveStudents.Size = new System.Drawing.Size(135, 21);
-            this.cbShowInactiveStudents.TabIndex = 0;
-            this.cbShowInactiveStudents.Text = "Inactive Students";
-            this.cbShowInactiveStudents.UseVisualStyleBackColor = true;
-            this.cbShowInactiveStudents.CheckedChanged += new System.EventHandler(this.cbShowInactiveStudents_CheckedChanged);
-            // 
-            // btnAddNewStudent
-            // 
-            this.btnAddNewStudent.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAddNewStudent.Image = ((System.Drawing.Image)(resources.GetObject("btnAddNewStudent.Image")));
-            this.btnAddNewStudent.Location = new System.Drawing.Point(18, 12);
-            this.btnAddNewStudent.Name = "btnAddNewStudent";
-            this.btnAddNewStudent.Size = new System.Drawing.Size(147, 47);
-            this.btnAddNewStudent.TabIndex = 9;
-            this.btnAddNewStudent.Text = "Add New Student";
-            this.btnAddNewStudent.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnAddNewStudent.UseVisualStyleBackColor = true;
-            this.btnAddNewStudent.Click += new System.EventHandler(this.btnAddNewStudent_Click);
-            // 
-            // picWindsongLogo
-            // 
-            this.picWindsongLogo.Image = ((System.Drawing.Image)(resources.GetObject("picWindsongLogo.Image")));
-            this.picWindsongLogo.Location = new System.Drawing.Point(617, 2);
-            this.picWindsongLogo.Name = "picWindsongLogo";
-            this.picWindsongLogo.Size = new System.Drawing.Size(392, 80);
-            this.picWindsongLogo.TabIndex = 10;
-            this.picWindsongLogo.TabStop = false;
-            // 
-            // StudentMaintenanceUI
+            // StudentAddUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1015, 613);
-            this.Controls.Add(this.picWindsongLogo);
-            this.Controls.Add(this.btnAddNewStudent);
-            this.Controls.Add(this.gbQuickFilters);
-            this.Controls.Add(this.dgvStudentList);
-            this.Controls.Add(this.lvwArtsAndRanks);
-            this.Controls.Add(this.lblArtsAndRank);
+            this.ClientSize = new System.Drawing.Size(570, 392);
+            this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.btnSave);
             this.Controls.Add(this.gbStudentInfo);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "StudentMaintenanceUI";
-            this.Text = "Student Maintenance";
-            this.Load += new System.EventHandler(this.StudentMaintenance_Load);
+            this.Name = "StudentAddUI";
+            this.Text = "Add New Student";
+            this.Load += new System.EventHandler(this.StudentAddUI_Load);
             this.gbStudentInfo.ResumeLayout(false);
             this.gbStudentInfo.PerformLayout();
             this.gbGender.ResumeLayout(false);
             this.gbGender.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvStudentList)).EndInit();
-            this.gbQuickFilters.ResumeLayout(false);
-            this.gbQuickFilters.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picWindsongLogo)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.TextBox txtFirstName;
+
         private System.Windows.Forms.GroupBox gbStudentInfo;
+        private System.Windows.Forms.Label lblHomeDojo;
+        private System.Windows.Forms.TextBox txtHomeDojo;
+        private System.Windows.Forms.CheckBox cbActiveStudent;
+        private System.Windows.Forms.Label lblBirthDate;
+        private System.Windows.Forms.DateTimePicker dtBirthdate;
+        private System.Windows.Forms.TextBox txtSecondaryPhone;
+        private System.Windows.Forms.Label lblSecondaryPhone;
+        private System.Windows.Forms.Label lblPrimaryPhone;
+        private System.Windows.Forms.TextBox txtPrimaryPhone;
         private System.Windows.Forms.Label lblEmailAddress;
         private System.Windows.Forms.TextBox txtEmailAddress;
         private System.Windows.Forms.GroupBox gbGender;
@@ -609,34 +423,8 @@ namespace DojoStudentManagement
         private System.Windows.Forms.Label lblLastName;
         private System.Windows.Forms.Label lblFirstName;
         private System.Windows.Forms.TextBox txtLastName;
-        private System.Windows.Forms.TextBox txtSecondaryPhone;
-        private System.Windows.Forms.Label lblSecondaryPhone;
-        private System.Windows.Forms.Label lblPrimaryPhone;
-        private System.Windows.Forms.TextBox txtPrimaryPhone;
-        private System.Windows.Forms.Label lblBirthDate;
-        private System.Windows.Forms.DateTimePicker dtBirthdate;
-        private System.Windows.Forms.Label lblArtsAndRank;
-        private System.Windows.Forms.ListView lvwArtsAndRanks;
-        private System.Windows.Forms.ColumnHeader columnArt;
-        private System.Windows.Forms.ColumnHeader columnRank;
-        private System.Windows.Forms.ColumnHeader columnStartDate;
-        private System.Windows.Forms.ColumnHeader columnPromotionDate;
-        private System.Windows.Forms.ColumnHeader columnPromotionHours;
-        private System.Windows.Forms.Button btnSignInHistory;
-        private System.Windows.Forms.Button btnPromotionHistory;
-        private System.Windows.Forms.DataGridView dgvStudentList;
-        private System.Windows.Forms.GroupBox gbQuickFilters;
-        private System.Windows.Forms.Label lblLastNameFilter;
-        private System.Windows.Forms.Label lblFirstNameFilter;
-        private System.Windows.Forms.TextBox txtLastNameFilter;
-        private System.Windows.Forms.TextBox txtFirstNameFilter;
-        private System.Windows.Forms.CheckBox cbNonWindsongStudents;
-        private System.Windows.Forms.CheckBox cbShowInactiveStudents;
-        private System.Windows.Forms.CheckBox cbActiveStudent;
-        private System.Windows.Forms.Label lblHomeDojo;
-        private System.Windows.Forms.TextBox txtHomeDojo;
-        private System.Windows.Forms.Button btnAddNewStudent;
-        private System.Windows.Forms.PictureBox picWindsongLogo;
+        private System.Windows.Forms.TextBox txtFirstName;
+        private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.Button btnCancel;
     }
 }
-

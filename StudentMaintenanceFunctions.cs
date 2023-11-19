@@ -49,6 +49,25 @@ namespace DojoStudentManagement
                 return Gender.UNKNOWN;
         }
 
+        internal bool IsValidEmail(string email)
+        {
+            var trimmedEmail = email.Trim();
+
+            if (trimmedEmail.EndsWith("."))
+            {
+                return false;
+            }
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == trimmedEmail;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         private void PopulateArtsAndRanks(IDataAccess dataAccess, Student student)
         {
             DataTable artsAndRanks = dataAccess.GetStudentArtsAndRanks(student.StudentID);
