@@ -60,15 +60,16 @@ namespace DojoStudentManagement
 
             foreach (StudentArtsAndRank artRank in currentStudent.StudentArtsAndRanks)
             {
-                string[] subitems = { "Art", "Rank", "Start Date", "Promotion Date", "Promotion Hours" };
+                string[] subitems = { "Art", "Rank", "Start Date", "Hours", "Promotion Date", "Promotion Hours" };
                 ListViewItem item = new ListViewItem(subitems);
                 item.SubItems[0].Text = artRank.Art;
                 item.SubItems[1].Text = artRank.Rank;
                 item.SubItems[2].Text = artRank.DateStarted.HasValue ?
                     artRank.DateStarted.Value.ToString("MM/dd/yyyy") : string.Empty;
-                item.SubItems[3].Text = artRank.DatePromoted.HasValue ? 
+                item.SubItems[3].Text = artRank.HoursInArt.ToString();
+                item.SubItems[4].Text = artRank.DatePromoted.HasValue ? 
                     artRank.DatePromoted.Value.ToString("MM/dd/yyyy") : string.Empty;
-                item.SubItems[4].Text = artRank.PromotionHours.ToString();
+                item.SubItems[5].Text = artRank.PromotionHours.ToString();
 
                 lvwArtsAndRanks.Items.Add(item);
             }
@@ -104,6 +105,11 @@ namespace DojoStudentManagement
 
             DataTable studentList = dataAccess.GetStudentTable();
 
+            //If the database isn't accessible, an empty table will be returned. Handle this 
+            //gracefully to avoid exceptions being thrown.
+            if (studentList.Columns.Count == 0)
+                return;
+
             DataView studentDataView = new DataView(studentList);
 
             dgvStudentList.AutoGenerateColumns = false;
@@ -120,6 +126,21 @@ namespace DojoStudentManagement
 
             //Display only the active students initially
             studentDataView.RowFilter = "stud_status = 'A'";
+        }
+
+        private void AddStudent_StudentAdded(object sender, EventArgs e)
+        {
+            PopulateStudentList();
+
+            //Automatically select the most recently added student and scroll
+            //to the new student's row to make it visible
+            if (dgvStudentList.Rows.Count > 0)
+            {
+                int lastIndex = dgvStudentList.Rows.Count - 1;
+                dgvStudentList.Rows[lastIndex].Selected = true;
+
+                dgvStudentList.FirstDisplayedScrollingRowIndex = lastIndex;
+            }
         }
 
         private void StudentMaintenance_Load(object sender, EventArgs e)
@@ -172,21 +193,15 @@ namespace DojoStudentManagement
         private void btnAddNewStudent_Click(object sender, EventArgs e)
         {
             StudentAddUI addStudent = new StudentAddUI(dataAccess);
+            addStudent.StudentAdded += AddStudent_StudentAdded;
+
             addStudent.ShowDialog();
+        }
 
-            //TODO: Check and see if a student has been successfully added before performing the next tasks
-
-            PopulateStudentList();
-
-            //Automatically select the most recently added student
-            if (dgvStudentList.Rows.Count > 0)
-            {
-                int lastIndex = dgvStudentList.Rows.Count - 1;
-                dgvStudentList.Rows[lastIndex].Selected = true;
-
-                // Scroll to the selected row to make it visible
-                dgvStudentList.FirstDisplayedScrollingRowIndex = lastIndex;
-            }
+        private void databaseConfigToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DatabaseConfigUI updateDatabasePath = new DatabaseConfigUI();
+            updateDatabasePath.ShowDialog();
         }
     }
 }

@@ -80,6 +80,8 @@ namespace DojoStudentManagement
                 artsAndRank.DateStarted =
                     DateTime.TryParse(row["studArt_begin"].ToString(), out DateTime startDate)
                         ? startDate : (DateTime?)null; 
+                artsAndRank.HoursInArt = double.TryParse(row["studArt_cumm"].ToString(), out double cumulativeHours)
+                        ? cumulativeHours : 0.0;
                 artsAndRank.DatePromoted = 
                     DateTime.TryParse(row["studArt_prodate"].ToString(), out DateTime promotionDate)
                         ? promotionDate : (DateTime?)null;

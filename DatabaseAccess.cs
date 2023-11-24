@@ -30,10 +30,36 @@ namespace DojoStudentManagement
                 databasePath + ";Jet OLEDB:Database Password=" + databasePassword;
         }
 
+        internal bool DatabaseExistsAndIsValid()
+        {
+            if (!System.IO.File.Exists(databasePath))
+                return false;
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    return true; 
+                }
+                catch (OleDbException)
+                {
+                    return false;
+                }
+            }
+        }
+
         //TODO: Refactor this into something maintainable
         //TODO: Implement logging (use SeriLog)
         public DataTable GetStudentTable()
         {
+            if (DatabaseExistsAndIsValid() == false)
+            {
+                string errText = "Database " + databasePath + " is invalid or inaccessible. Please check the database path in application settings.";
+                MessageBox.Show(errText, "Database Access Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return new DataTable();
+            }
+
             DataTable dataTable;
 
             using (OleDbConnection connection = new OleDbConnection(connectionString))
@@ -161,7 +187,6 @@ namespace DojoStudentManagement
                     try
                     {
                         command.ExecuteNonQuery();
-                        MessageBox.Show(@"Data Added");
                         connection.Close();
                     }
                     catch (OleDbException ex)

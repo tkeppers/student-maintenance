@@ -79,11 +79,16 @@ namespace DojoStudentManagement
             this.cbShowInactiveStudents = new System.Windows.Forms.CheckBox();
             this.btnAddNewStudent = new System.Windows.Forms.Button();
             this.picWindsongLogo = new System.Windows.Forms.PictureBox();
+            this.menuTopMenu = new System.Windows.Forms.MenuStrip();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.databaseConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.columnCumulativeHours = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.gbStudentInfo.SuspendLayout();
             this.gbGender.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStudentList)).BeginInit();
             this.gbQuickFilters.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picWindsongLogo)).BeginInit();
+            this.menuTopMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtFirstName
@@ -124,7 +129,7 @@ namespace DojoStudentManagement
             this.gbStudentInfo.Controls.Add(this.txtLastName);
             this.gbStudentInfo.Controls.Add(this.txtFirstName);
             this.gbStudentInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gbStudentInfo.Location = new System.Drawing.Point(432, 79);
+            this.gbStudentInfo.Location = new System.Drawing.Point(426, 130);
             this.gbStudentInfo.Name = "gbStudentInfo";
             this.gbStudentInfo.Size = new System.Drawing.Size(577, 369);
             this.gbStudentInfo.TabIndex = 2;
@@ -412,13 +417,14 @@ namespace DojoStudentManagement
             this.columnArt,
             this.columnRank,
             this.columnStartDate,
+            this.columnCumulativeHours,
             this.columnPromotionDate,
             this.columnPromotionHours});
             this.lvwArtsAndRanks.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lvwArtsAndRanks.FullRowSelect = true;
             this.lvwArtsAndRanks.GridLines = true;
             this.lvwArtsAndRanks.HideSelection = false;
-            this.lvwArtsAndRanks.Location = new System.Drawing.Point(12, 435);
+            this.lvwArtsAndRanks.Location = new System.Drawing.Point(6, 486);
             this.lvwArtsAndRanks.Name = "lvwArtsAndRanks";
             this.lvwArtsAndRanks.Size = new System.Drawing.Size(401, 139);
             this.lvwArtsAndRanks.TabIndex = 6;
@@ -442,11 +448,13 @@ namespace DojoStudentManagement
             // 
             // columnPromotionDate
             // 
+            this.columnPromotionDate.DisplayIndex = 3;
             this.columnPromotionDate.Text = "Promotion Date";
             this.columnPromotionDate.Width = 109;
             // 
             // columnPromotionHours
             // 
+            this.columnPromotionHours.DisplayIndex = 4;
             this.columnPromotionHours.Text = "Promotion Hours";
             this.columnPromotionHours.Width = 96;
             // 
@@ -455,7 +463,7 @@ namespace DojoStudentManagement
             this.dgvStudentList.AllowUserToAddRows = false;
             this.dgvStudentList.AllowUserToDeleteRows = false;
             this.dgvStudentList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvStudentList.Location = new System.Drawing.Point(18, 176);
+            this.dgvStudentList.Location = new System.Drawing.Point(12, 227);
             this.dgvStudentList.MultiSelect = false;
             this.dgvStudentList.Name = "dgvStudentList";
             this.dgvStudentList.ReadOnly = true;
@@ -473,7 +481,7 @@ namespace DojoStudentManagement
             this.gbQuickFilters.Controls.Add(this.cbNonWindsongStudents);
             this.gbQuickFilters.Controls.Add(this.cbShowInactiveStudents);
             this.gbQuickFilters.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gbQuickFilters.Location = new System.Drawing.Point(12, 79);
+            this.gbQuickFilters.Location = new System.Drawing.Point(6, 130);
             this.gbQuickFilters.Name = "gbQuickFilters";
             this.gbQuickFilters.Size = new System.Drawing.Size(371, 91);
             this.gbQuickFilters.TabIndex = 8;
@@ -540,7 +548,7 @@ namespace DojoStudentManagement
             // 
             this.btnAddNewStudent.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAddNewStudent.Image = ((System.Drawing.Image)(resources.GetObject("btnAddNewStudent.Image")));
-            this.btnAddNewStudent.Location = new System.Drawing.Point(18, 12);
+            this.btnAddNewStudent.Location = new System.Drawing.Point(12, 63);
             this.btnAddNewStudent.Name = "btnAddNewStudent";
             this.btnAddNewStudent.Size = new System.Drawing.Size(147, 47);
             this.btnAddNewStudent.TabIndex = 9;
@@ -552,17 +560,48 @@ namespace DojoStudentManagement
             // picWindsongLogo
             // 
             this.picWindsongLogo.Image = ((System.Drawing.Image)(resources.GetObject("picWindsongLogo.Image")));
-            this.picWindsongLogo.Location = new System.Drawing.Point(617, 2);
+            this.picWindsongLogo.Location = new System.Drawing.Point(611, 53);
             this.picWindsongLogo.Name = "picWindsongLogo";
             this.picWindsongLogo.Size = new System.Drawing.Size(392, 80);
             this.picWindsongLogo.TabIndex = 10;
             this.picWindsongLogo.TabStop = false;
             // 
+            // menuTopMenu
+            // 
+            this.menuTopMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.settingsToolStripMenuItem});
+            this.menuTopMenu.Location = new System.Drawing.Point(0, 0);
+            this.menuTopMenu.Name = "menuTopMenu";
+            this.menuTopMenu.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.menuTopMenu.Size = new System.Drawing.Size(1015, 24);
+            this.menuTopMenu.TabIndex = 11;
+            this.menuTopMenu.Text = "Top Menu";
+            // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.databaseConfigToolStripMenuItem});
+            this.settingsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("settingsToolStripMenuItem.Image")));
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(77, 20);
+            this.settingsToolStripMenuItem.Text = "Settings";
+            // 
+            // databaseConfigToolStripMenuItem
+            // 
+            this.databaseConfigToolStripMenuItem.Name = "databaseConfigToolStripMenuItem";
+            this.databaseConfigToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.databaseConfigToolStripMenuItem.Text = "Database Configuration";
+            this.databaseConfigToolStripMenuItem.Click += new System.EventHandler(this.databaseConfigToolStripMenuItem_Click);
+            // 
+            // columnCumulativeHours
+            // 
+            this.columnCumulativeHours.Text = "Hours in Art";
+            // 
             // StudentMaintenanceUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1015, 613);
+            this.ClientSize = new System.Drawing.Size(1015, 676);
             this.Controls.Add(this.picWindsongLogo);
             this.Controls.Add(this.btnAddNewStudent);
             this.Controls.Add(this.gbQuickFilters);
@@ -570,7 +609,9 @@ namespace DojoStudentManagement
             this.Controls.Add(this.lvwArtsAndRanks);
             this.Controls.Add(this.lblArtsAndRank);
             this.Controls.Add(this.gbStudentInfo);
+            this.Controls.Add(this.menuTopMenu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MainMenuStrip = this.menuTopMenu;
             this.Name = "StudentMaintenanceUI";
             this.Text = "Student Maintenance";
             this.Load += new System.EventHandler(this.StudentMaintenance_Load);
@@ -582,6 +623,8 @@ namespace DojoStudentManagement
             this.gbQuickFilters.ResumeLayout(false);
             this.gbQuickFilters.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picWindsongLogo)).EndInit();
+            this.menuTopMenu.ResumeLayout(false);
+            this.menuTopMenu.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -637,6 +680,10 @@ namespace DojoStudentManagement
         private System.Windows.Forms.TextBox txtHomeDojo;
         private System.Windows.Forms.Button btnAddNewStudent;
         private System.Windows.Forms.PictureBox picWindsongLogo;
+        private System.Windows.Forms.MenuStrip menuTopMenu;
+        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem databaseConfigToolStripMenuItem;
+        private System.Windows.Forms.ColumnHeader columnCumulativeHours;
     }
 }
 

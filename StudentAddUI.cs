@@ -13,6 +13,7 @@ namespace DojoStudentManagement
     public partial class StudentAddUI : Form
     {
         IDataAccess dataAccess;
+        public event EventHandler StudentAdded;
 
         public StudentAddUI(IDataAccess dataAccess)
         {
@@ -48,7 +49,8 @@ namespace DojoStudentManagement
             newStudent.DateOfBirth = dtBirthdate.Value;
             newStudent.StudentGender = SetGender();
 
-            SaveNewStudentData(newStudent);
+            if (dataAccess.AddNewStudent(newStudent))
+                MessageBox.Show("Student " + newStudent.FirstName + " " + newStudent.LastName + " successfully added.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private Gender SetGender()
@@ -61,16 +63,16 @@ namespace DojoStudentManagement
                 return Gender.UNKNOWN;
         }
 
-        private void SaveNewStudentData(Student newStudent)
+        protected virtual void OnStudentAdded()
         {
-            if (dataAccess.AddNewStudent(newStudent))
-                MessageBox.Show("Student " + newStudent.FirstName + " " + newStudent.LastName + " successfully added.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            StudentAdded?.Invoke(this, EventArgs.Empty);
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
             ValidateStudentData();
             CreateNewStudent();
+            OnStudentAdded();
         }
 
         private void StudentAddUI_Load(object sender, EventArgs e)

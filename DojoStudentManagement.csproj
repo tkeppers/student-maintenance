@@ -47,6 +47,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DatabaseConfigUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DatabaseConfigUI.Designer.cs">
+      <DependentUpon>DatabaseConfigUI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StudentArtsAndRankUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StudentArtsAndRankUI.Designer.cs">
+      <DependentUpon>StudentArtsAndRankUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="Student.cs" />
     <Compile Include="DatabaseAccess.cs" />
     <Compile Include="StudentAddUI.cs">
@@ -80,6 +92,12 @@
     <Compile Include="StudentSignInHistoryUI.Designer.cs">
       <DependentUpon>StudentSignInHistoryUI.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="DatabaseConfigUI.resx">
+      <DependentUpon>DatabaseConfigUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StudentArtsAndRankUI.resx">
+      <DependentUpon>StudentArtsAndRankUI.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
