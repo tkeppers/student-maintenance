@@ -67,6 +67,7 @@ namespace DojoStudentManagement
             this.columnArt = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnRank = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnStartDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnCumulativeHours = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnPromotionDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnPromotionHours = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.dgvStudentList = new System.Windows.Forms.DataGridView();
@@ -82,7 +83,7 @@ namespace DojoStudentManagement
             this.menuTopMenu = new System.Windows.Forms.MenuStrip();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.columnCumulativeHours = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gbStudentInfo.SuspendLayout();
             this.gbGender.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStudentList)).BeginInit();
@@ -446,15 +447,17 @@ namespace DojoStudentManagement
             this.columnStartDate.Text = "Start Date";
             this.columnStartDate.Width = 106;
             // 
+            // columnCumulativeHours
+            // 
+            this.columnCumulativeHours.Text = "Hours in Art";
+            // 
             // columnPromotionDate
             // 
-            this.columnPromotionDate.DisplayIndex = 3;
             this.columnPromotionDate.Text = "Promotion Date";
             this.columnPromotionDate.Width = 109;
             // 
             // columnPromotionHours
             // 
-            this.columnPromotionHours.DisplayIndex = 4;
             this.columnPromotionHours.Text = "Promotion Hours";
             this.columnPromotionHours.Width = 96;
             // 
@@ -572,7 +575,6 @@ namespace DojoStudentManagement
             this.settingsToolStripMenuItem});
             this.menuTopMenu.Location = new System.Drawing.Point(0, 0);
             this.menuTopMenu.Name = "menuTopMenu";
-            this.menuTopMenu.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.menuTopMenu.Size = new System.Drawing.Size(1015, 24);
             this.menuTopMenu.TabIndex = 11;
             this.menuTopMenu.Text = "Top Menu";
@@ -580,7 +582,8 @@ namespace DojoStudentManagement
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.databaseConfigToolStripMenuItem});
+            this.databaseConfigToolStripMenuItem,
+            this.aboutToolStripMenuItem});
             this.settingsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("settingsToolStripMenuItem.Image")));
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(77, 20);
@@ -593,9 +596,12 @@ namespace DojoStudentManagement
             this.databaseConfigToolStripMenuItem.Text = "Database Configuration";
             this.databaseConfigToolStripMenuItem.Click += new System.EventHandler(this.databaseConfigToolStripMenuItem_Click);
             // 
-            // columnCumulativeHours
+            // aboutToolStripMenuItem
             // 
-            this.columnCumulativeHours.Text = "Hours in Art";
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // StudentMaintenanceUI
             // 
@@ -684,6 +690,7 @@ namespace DojoStudentManagement
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem databaseConfigToolStripMenuItem;
         private System.Windows.Forms.ColumnHeader columnCumulativeHours;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
     }
 }
 

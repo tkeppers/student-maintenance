@@ -203,5 +203,11 @@ namespace DojoStudentManagement
             DatabaseConfigUI updateDatabasePath = new DatabaseConfigUI();
             updateDatabasePath.ShowDialog();
         }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AboutProgramUI about = new AboutProgramUI();
+            about.ShowDialog();
+        }
     }
 }

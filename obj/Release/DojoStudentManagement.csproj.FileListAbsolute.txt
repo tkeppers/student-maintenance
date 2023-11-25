@@ -13,3 +13,8 @@ C:\Projects\Windsong Dojo\Student Management Application\DojoStudentManagement\D
 C:\Projects\Windsong Dojo\Student Management Application\DojoStudentManagement\DojoStudentManagement\obj\Release\DojoStudentManagement.exe
 C:\Projects\Windsong Dojo\Student Management Application\DojoStudentManagement\DojoStudentManagement\obj\Release\DojoStudentManagement.pdb
 C:\Projects\Windsong Dojo\Student Management Application\DojoStudentManagement\DojoStudentManagement\obj\Release\DojoStudentManagement.DatabaseConfigUI.resources
+C:\Projects\Windsong Dojo\Student Management Application\DojoStudentManagement\DojoStudentManagement\bin\Release\DojoStudentManagement.exe.manifest
+C:\Projects\Windsong Dojo\Student Management Application\DojoStudentManagement\DojoStudentManagement\bin\Release\DojoStudentManagement.application
+C:\Projects\Windsong Dojo\Student Management Application\DojoStudentManagement\DojoStudentManagement\obj\Release\DojoStudentManagement.exe.manifest
+C:\Projects\Windsong Dojo\Student Management Application\DojoStudentManagement\DojoStudentManagement\obj\Release\DojoStudentManagement.application
+C:\Projects\Windsong Dojo\Student Management Application\DojoStudentManagement\DojoStudentManagement\obj\Release\DojoStudentManagement.AboutProgramUI.resources
