@@ -205,5 +205,78 @@ namespace DojoStudentManagement
 
             return success;
         }
+
+        public bool UpdateStudent(Student student)
+        {
+            bool success = true;
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                connection.Open();
+                OleDbCommand command = new OleDbCommand(@"UPDATE Students SET 
+                    stud_status = @Status,
+                    stud_lastName = @LastName,
+                    stud_firstname = @FirstName,
+                    stud_club = @HomeDojo,
+                    stud_birthdate = @Birthdate,
+                    stud_addr1 = @Address1,
+                    stud_addr2 = @Address2,
+                    stud_city = @City,
+                    stud_state = @State,
+                    stud_zip = @Zip,
+                    stud_homephone = @PrimaryPhone,
+                    stud_workphone = @SecondaryPhone,
+                    stud_gender = @Gender,
+                    stud_email = @Email,
+                    stud_start_month = @StartMonth
+                    WHERE stud_id = @StudentID", connection);
+
+                if (connection.State == ConnectionState.Open)
+                {
+                    command.Parameters.Add("@Status", OleDbType.VarChar).Value = student.ActiveMember ? "A" : "I";
+                    command.Parameters.Add("@LastName", OleDbType.VarChar).Value = student.LastName;
+                    command.Parameters.Add("@FirstName", OleDbType.VarChar).Value = student.FirstName;
+                    command.Parameters.Add("@HomeDojo", OleDbType.VarChar).Value = student.HomeDojo;
+                    command.Parameters.Add("@Birthdate", OleDbType.DBDate).Value = student.DateOfBirth;
+                    command.Parameters.Add("@Address1", OleDbType.VarChar).Value = student.Address1;
+                    command.Parameters.Add("@Address2", OleDbType.VarChar).Value = student.Address2;
+                    command.Parameters.Add("@City", OleDbType.VarChar).Value = student.AddressCity;
+                    command.Parameters.Add("@State", OleDbType.VarChar).Value = student.AddressState;
+                    command.Parameters.Add("@Zip", OleDbType.VarChar).Value = student.AddressZip;
+                    command.Parameters.Add("@PrimaryPhone", OleDbType.VarChar).Value = student.PrimaryPhoneNumber;
+                    command.Parameters.Add("@SecondaryPhone", OleDbType.VarChar).Value = student.SecondaryPhoneNumber;
+
+                    if (student.StudentGender == Gender.MALE)
+                        command.Parameters.Add("@Gender", OleDbType.VarChar).Value = "M";
+                    else if (student.StudentGender == Gender.FEMALE)
+                        command.Parameters.Add("@Gender", OleDbType.VarChar).Value = "F";
+                    else
+                        command.Parameters.Add("@Gender", OleDbType.VarChar).Value = "X";
+
+                    command.Parameters.Add("@Email", OleDbType.VarChar).Value = student.EmailAddress;
+                    command.Parameters.Add("@StartMonth", OleDbType.Integer).Value = 1; //TODO: Fix later
+                    command.Parameters.Add("@StudentID", OleDbType.Integer).Value = student.StudentID; 
+
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                    }
+                    catch (OleDbException ex)
+                    {
+                        success = false;
+                        MessageBox.Show(ex.Source + "\n" + ex.Message);
+                        connection.Close();
+                    }
+                }
+                else
+                {
+                    success = false;
+                    MessageBox.Show(@"Connection Failed");
+                }
+            }
+
+            return success;
+        }
     }
 }

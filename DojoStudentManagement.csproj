@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>DojoStudentManagement</RootNamespace>
     <AssemblyName>DojoStudentManagement</AssemblyName>
-    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -28,6 +28,7 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -87,11 +88,11 @@
     <Compile Include="DatabaseConfigUI.Designer.cs">
       <DependentUpon>DatabaseConfigUI.cs</DependentUpon>
     </Compile>
-    <Compile Include="StudentArtsAndRankUI.cs">
+    <Compile Include="StudentAddModifyArtUI.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="StudentArtsAndRankUI.Designer.cs">
-      <DependentUpon>StudentArtsAndRankUI.cs</DependentUpon>
+    <Compile Include="StudentAddModifyArtUI.Designer.cs">
+      <DependentUpon>StudentAddModifyArtUI.cs</DependentUpon>
     </Compile>
     <Compile Include="Student.cs" />
     <Compile Include="DatabaseAccess.cs" />
@@ -132,8 +133,8 @@
     <EmbeddedResource Include="DatabaseConfigUI.resx">
       <DependentUpon>DatabaseConfigUI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StudentArtsAndRankUI.resx">
-      <DependentUpon>StudentArtsAndRankUI.cs</DependentUpon>
+    <EmbeddedResource Include="StudentAddModifyArtUI.resx">
+      <DependentUpon>StudentAddModifyArtUI.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -143,6 +144,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="StudentAddUI.resx">
       <DependentUpon>StudentAddUI.cs</DependentUpon>

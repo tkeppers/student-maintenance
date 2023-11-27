@@ -13,21 +13,23 @@ namespace DojoStudentManagement
     public partial class StudentMaintenanceUI : Form
     {
         int currentStudentID;
-        private IDataAccess dataAccess;
-        string currentStudentName;
+        private readonly IDataAccess dataAccess;
+        private readonly StudentMaintenanceFunctions studentMaintenanceFunctions;
+        private string currentStudentName;
+        private Student currentStudent;
 
         public StudentMaintenanceUI(IDataAccess dataAccess)
         {
             this.dataAccess = dataAccess;
+            studentMaintenanceFunctions = new StudentMaintenanceFunctions();
             InitializeComponent();
         }
 
         private void PopulateStudentInformation()
         {
-            StudentMaintenanceFunctions s = new StudentMaintenanceFunctions();
-            Student currentStudent = s.PopulateStudentData(dataAccess, currentStudentID);
+            this.currentStudent = studentMaintenanceFunctions.PopulateStudentData(dataAccess, currentStudentID);
 
-            this.currentStudentName = currentStudent.FirstName + " " + currentStudent.LastName;
+            this.currentStudentName = $"{currentStudent.FirstName} {currentStudent.LastName}";
 
             txtFirstName.Text = currentStudent.FirstName;
             txtLastName.Text = currentStudent.LastName;
@@ -128,6 +130,64 @@ namespace DojoStudentManagement
             studentDataView.RowFilter = "stud_status = 'A'";
         }
 
+        private void AddNewArtForStudent()
+        {
+            if (!studentMaintenanceFunctions.IsValidStudent(currentStudentID))
+            {
+                MessageBox.Show("Please select a student before adding art.", "Student Not Selected", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            StudentAddModifyArtUI addArt = new StudentAddModifyArtUI(currentStudentID, currentStudentName);
+            addArt.ShowDialog();
+        }
+
+        private void SaveChanges()
+        {
+            if (!studentMaintenanceFunctions.IsValidStudent(currentStudentID))
+            {
+                MessageBox.Show("Please select a valid student", "Student Not Selected", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            DialogResult result = MessageBox.Show("Update database for student " + currentStudentName + "?", "Save Student?", 
+                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Cancel || result == DialogResult.No)
+            {
+                MessageBox.Show("Operation cancelled.");
+                return;
+            }
+
+            currentStudent.FirstName = txtFirstName.Text.Trim();
+            currentStudent.LastName = txtLastName.Text.Trim();
+            currentStudent.Address1 = txtAddress1.Text.Trim();
+            currentStudent.Address2 = txtAddress2.Text.Trim();
+            currentStudent.AddressCity = txtCity.Text.Trim();
+            currentStudent.AddressState = txtState.Text.Trim();
+            currentStudent.AddressZip = txtZipCode.Text.Trim();
+            currentStudent.PrimaryPhoneNumber = txtPrimaryPhone.Text.Trim();
+            currentStudent.SecondaryPhoneNumber = txtSecondaryPhone.Text.Trim();
+            currentStudent.EmailAddress = txtEmailAddress.Text.Trim();
+            currentStudent.ActiveMember = cbActiveStudent.Checked;
+            currentStudent.HomeDojo = txtHomeDojo.Text.Trim();
+            currentStudent.DateOfBirth = dtBirthdate.Value;
+
+            if (rbMale.Checked)
+                currentStudent.StudentGender = Gender.MALE;
+            else if (rbFemale.Checked)
+                currentStudent.StudentGender = Gender.FEMALE;
+            else
+                currentStudent.StudentGender = Gender.UNKNOWN;
+            
+            dataAccess.UpdateStudent(currentStudent);
+            
+            //Messagebox: Save changes for student XXX?
+            //Update the database
+            //Save successful message
+            btnSaveChanges.Enabled = false;
+        }
+
         private void AddStudent_StudentAdded(object sender, EventArgs e)
         {
             PopulateStudentList();
@@ -190,14 +250,6 @@ namespace DojoStudentManagement
             FilterStudentList();
         }
 
-        private void btnAddNewStudent_Click(object sender, EventArgs e)
-        {
-            StudentAddUI addStudent = new StudentAddUI(dataAccess);
-            addStudent.StudentAdded += AddStudent_StudentAdded;
-
-            addStudent.ShowDialog();
-        }
-
         private void databaseConfigToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DatabaseConfigUI updateDatabasePath = new DatabaseConfigUI();
@@ -208,6 +260,35 @@ namespace DojoStudentManagement
         {
             AboutProgramUI about = new AboutProgramUI();
             about.ShowDialog();
+        }
+
+        private void tsbAddNewStudent_Click(object sender, EventArgs e)
+        {
+            StudentAddUI addStudent = new StudentAddUI(dataAccess);
+            addStudent.StudentAdded += AddStudent_StudentAdded;
+
+            addStudent.ShowDialog();
+        }
+
+        private void tsbSettings_Click(object sender, EventArgs e)
+        {
+            DatabaseConfigUI updateDatabasePath = new DatabaseConfigUI();
+            updateDatabasePath.ShowDialog();
+        }
+
+        private void btnAddArt_Click(object sender, EventArgs e)
+        {
+            AddNewArtForStudent();
+        }
+
+        private void btnSaveChanges_Click(object sender, EventArgs e)
+        {
+            SaveChanges();
+        }
+
+        private void txtEmailAddress_MouseLeave(object sender, EventArgs e)
+        {
+            btnSaveChanges.Enabled = true;
         }
     }
 }

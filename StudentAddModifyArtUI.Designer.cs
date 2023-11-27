@@ -1,7 +1,7 @@
 ﻿
 namespace DojoStudentManagement
 {
-    partial class StudentArtsAndRankUI
+    partial class StudentAddModifyArtUI
     {
         /// <summary>
         /// Required designer variable.
@@ -29,8 +29,6 @@ namespace DojoStudentManagement
         /// </summary>
         private void InitializeComponent()
         {
-            this.txtCumulativeHours = new System.Windows.Forms.TextBox();
-            this.lblCumulativeHours = new System.Windows.Forms.Label();
             this.gbModifyArt = new System.Windows.Forms.GroupBox();
             this.gbArt = new System.Windows.Forms.GroupBox();
             this.rdoIaido = new System.Windows.Forms.RadioButton();
@@ -39,25 +37,11 @@ namespace DojoStudentManagement
             this.rdoAikido = new System.Windows.Forms.RadioButton();
             this.lblBeginDate = new System.Windows.Forms.Label();
             this.dtBeginDate = new System.Windows.Forms.DateTimePicker();
+            this.txtCumulativeHours = new System.Windows.Forms.TextBox();
+            this.lblCumulativeHours = new System.Windows.Forms.Label();
             this.gbModifyArt.SuspendLayout();
             this.gbArt.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // txtCumulativeHours
-            // 
-            this.txtCumulativeHours.Location = new System.Drawing.Point(244, 45);
-            this.txtCumulativeHours.Name = "txtCumulativeHours";
-            this.txtCumulativeHours.Size = new System.Drawing.Size(100, 20);
-            this.txtCumulativeHours.TabIndex = 0;
-            // 
-            // lblCumulativeHours
-            // 
-            this.lblCumulativeHours.AutoSize = true;
-            this.lblCumulativeHours.Location = new System.Drawing.Point(241, 29);
-            this.lblCumulativeHours.Name = "lblCumulativeHours";
-            this.lblCumulativeHours.Size = new System.Drawing.Size(90, 13);
-            this.lblCumulativeHours.TabIndex = 1;
-            this.lblCumulativeHours.Text = "Cumulative Hours";
             // 
             // gbModifyArt
             // 
@@ -66,10 +50,10 @@ namespace DojoStudentManagement
             this.gbModifyArt.Controls.Add(this.dtBeginDate);
             this.gbModifyArt.Controls.Add(this.txtCumulativeHours);
             this.gbModifyArt.Controls.Add(this.lblCumulativeHours);
-            this.gbModifyArt.Location = new System.Drawing.Point(22, 26);
+            this.gbModifyArt.Location = new System.Drawing.Point(12, 21);
             this.gbModifyArt.Name = "gbModifyArt";
             this.gbModifyArt.Size = new System.Drawing.Size(554, 146);
-            this.gbModifyArt.TabIndex = 2;
+            this.gbModifyArt.TabIndex = 3;
             this.gbModifyArt.TabStop = false;
             this.gbModifyArt.Text = "Art Information";
             // 
@@ -147,14 +131,31 @@ namespace DojoStudentManagement
             this.dtBeginDate.Size = new System.Drawing.Size(100, 20);
             this.dtBeginDate.TabIndex = 2;
             // 
-            // StudentArtsAndRankUI
+            // txtCumulativeHours
+            // 
+            this.txtCumulativeHours.Location = new System.Drawing.Point(244, 45);
+            this.txtCumulativeHours.Name = "txtCumulativeHours";
+            this.txtCumulativeHours.Size = new System.Drawing.Size(100, 20);
+            this.txtCumulativeHours.TabIndex = 0;
+            // 
+            // lblCumulativeHours
+            // 
+            this.lblCumulativeHours.AutoSize = true;
+            this.lblCumulativeHours.Location = new System.Drawing.Point(241, 29);
+            this.lblCumulativeHours.Name = "lblCumulativeHours";
+            this.lblCumulativeHours.Size = new System.Drawing.Size(90, 13);
+            this.lblCumulativeHours.TabIndex = 1;
+            this.lblCumulativeHours.Text = "Cumulative Hours";
+            // 
+            // StudentAddModifyArtUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.gbModifyArt);
-            this.Name = "StudentArtsAndRankUI";
-            this.Text = "Modify Arts for <StudentName>";
+            this.Name = "StudentAddModifyArtUI";
+            this.Text = "StudentAddModifyArtUI";
+            this.Load += new System.EventHandler(this.StudentAddModifyArtUI_Load);
             this.gbModifyArt.ResumeLayout(false);
             this.gbModifyArt.PerformLayout();
             this.gbArt.ResumeLayout(false);
@@ -165,15 +166,15 @@ namespace DojoStudentManagement
 
         #endregion
 
-        private System.Windows.Forms.TextBox txtCumulativeHours;
-        private System.Windows.Forms.Label lblCumulativeHours;
         private System.Windows.Forms.GroupBox gbModifyArt;
-        private System.Windows.Forms.DateTimePicker dtBeginDate;
         private System.Windows.Forms.GroupBox gbArt;
         private System.Windows.Forms.RadioButton rdoIaido;
         private System.Windows.Forms.RadioButton rdoJodo;
         private System.Windows.Forms.RadioButton rdoJudo;
         private System.Windows.Forms.RadioButton rdoAikido;
         private System.Windows.Forms.Label lblBeginDate;
+        private System.Windows.Forms.DateTimePicker dtBeginDate;
+        private System.Windows.Forms.TextBox txtCumulativeHours;
+        private System.Windows.Forms.Label lblCumulativeHours;
     }
 }

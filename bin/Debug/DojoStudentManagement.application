@@ -4,7 +4,7 @@
   <description asmv2:publisher="DojoStudentManagement" asmv2:product="DojoStudentManagement" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <deployment install="true" mapFileExtensions="true" />
   <compatibleFrameworks xmlns="urn:schemas-microsoft-com:clickonce.v2">
-    <framework targetVersion="4.8.1" profile="Full" supportedRuntime="4.0.30319" />
+    <framework targetVersion="4.8" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
     <dependentAssembly dependencyType="install" codebase="DojoStudentManagement.exe.manifest" size="3535">
@@ -14,7 +14,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>b+PvPrSYUgllVQjQrLTuv6vCttrwxOJbmMvENF9qt34=</dsig:DigestValue>
+        <dsig:DigestValue>rZs804jpbD8/Z256iZWOuwDVEcH2xTYxL3Xq4hHTLto=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

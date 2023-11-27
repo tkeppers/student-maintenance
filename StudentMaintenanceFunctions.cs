@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DojoStudentManagement
 {
-    class StudentMaintenanceFunctions
+    public class StudentMaintenanceFunctions
     {
         internal Student PopulateStudentData(IDataAccess dataAccess, int studentID)
         {
@@ -47,6 +47,11 @@ namespace DojoStudentManagement
                 return Gender.FEMALE;
             else
                 return Gender.UNKNOWN;
+        }
+
+        public bool IsValidStudent(int studentID)
+        {
+            return studentID > 0 ? true : false;
         }
 
         internal bool IsValidEmail(string email)

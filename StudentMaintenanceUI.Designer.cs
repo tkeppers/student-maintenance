@@ -32,6 +32,7 @@ namespace DojoStudentManagement
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StudentMaintenanceUI));
             this.txtFirstName = new System.Windows.Forms.TextBox();
             this.gbStudentInfo = new System.Windows.Forms.GroupBox();
+            this.btnSaveChanges = new System.Windows.Forms.Button();
             this.lblHomeDojo = new System.Windows.Forms.Label();
             this.txtHomeDojo = new System.Windows.Forms.TextBox();
             this.cbActiveStudent = new System.Windows.Forms.CheckBox();
@@ -78,18 +79,22 @@ namespace DojoStudentManagement
             this.txtFirstNameFilter = new System.Windows.Forms.TextBox();
             this.cbNonWindsongStudents = new System.Windows.Forms.CheckBox();
             this.cbShowInactiveStudents = new System.Windows.Forms.CheckBox();
-            this.btnAddNewStudent = new System.Windows.Forms.Button();
-            this.picWindsongLogo = new System.Windows.Forms.PictureBox();
-            this.menuTopMenu = new System.Windows.Forms.MenuStrip();
-            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.databaseConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.tsbSettings = new System.Windows.Forms.ToolStripButton();
+            this.tsbAddNewStudent = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
+            this.gbArtsAndRank = new System.Windows.Forms.GroupBox();
+            this.btnRemoveArt = new System.Windows.Forms.Button();
+            this.btnModifyArt = new System.Windows.Forms.Button();
+            this.btnAddArt = new System.Windows.Forms.Button();
             this.gbStudentInfo.SuspendLayout();
             this.gbGender.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStudentList)).BeginInit();
             this.gbQuickFilters.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picWindsongLogo)).BeginInit();
-            this.menuTopMenu.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
+            this.gbArtsAndRank.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtFirstName
@@ -101,6 +106,7 @@ namespace DojoStudentManagement
             // 
             // gbStudentInfo
             // 
+            this.gbStudentInfo.Controls.Add(this.btnSaveChanges);
             this.gbStudentInfo.Controls.Add(this.lblHomeDojo);
             this.gbStudentInfo.Controls.Add(this.txtHomeDojo);
             this.gbStudentInfo.Controls.Add(this.cbActiveStudent);
@@ -130,12 +136,25 @@ namespace DojoStudentManagement
             this.gbStudentInfo.Controls.Add(this.txtLastName);
             this.gbStudentInfo.Controls.Add(this.txtFirstName);
             this.gbStudentInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gbStudentInfo.Location = new System.Drawing.Point(426, 130);
+            this.gbStudentInfo.Location = new System.Drawing.Point(412, 76);
             this.gbStudentInfo.Name = "gbStudentInfo";
-            this.gbStudentInfo.Size = new System.Drawing.Size(577, 369);
+            this.gbStudentInfo.Size = new System.Drawing.Size(499, 369);
             this.gbStudentInfo.TabIndex = 2;
             this.gbStudentInfo.TabStop = false;
             this.gbStudentInfo.Text = "Student Information";
+            // 
+            // btnSaveChanges
+            // 
+            this.btnSaveChanges.Enabled = false;
+            this.btnSaveChanges.Image = ((System.Drawing.Image)(resources.GetObject("btnSaveChanges.Image")));
+            this.btnSaveChanges.Location = new System.Drawing.Point(243, 312);
+            this.btnSaveChanges.Name = "btnSaveChanges";
+            this.btnSaveChanges.Size = new System.Drawing.Size(109, 51);
+            this.btnSaveChanges.TabIndex = 28;
+            this.btnSaveChanges.Text = "Save Changes";
+            this.btnSaveChanges.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnSaveChanges.UseVisualStyleBackColor = true;
+            this.btnSaveChanges.Click += new System.EventHandler(this.btnSaveChanges_Click);
             // 
             // lblHomeDojo
             // 
@@ -167,9 +186,9 @@ namespace DojoStudentManagement
             // btnSignInHistory
             // 
             this.btnSignInHistory.Image = ((System.Drawing.Image)(resources.GetObject("btnSignInHistory.Image")));
-            this.btnSignInHistory.Location = new System.Drawing.Point(153, 312);
+            this.btnSignInHistory.Location = new System.Drawing.Point(144, 312);
             this.btnSignInHistory.Name = "btnSignInHistory";
-            this.btnSignInHistory.Size = new System.Drawing.Size(125, 51);
+            this.btnSignInHistory.Size = new System.Drawing.Size(92, 51);
             this.btnSignInHistory.TabIndex = 24;
             this.btnSignInHistory.Text = "Sign-In History";
             this.btnSignInHistory.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -181,7 +200,7 @@ namespace DojoStudentManagement
             this.btnPromotionHistory.Image = ((System.Drawing.Image)(resources.GetObject("btnPromotionHistory.Image")));
             this.btnPromotionHistory.Location = new System.Drawing.Point(24, 312);
             this.btnPromotionHistory.Name = "btnPromotionHistory";
-            this.btnPromotionHistory.Size = new System.Drawing.Size(123, 51);
+            this.btnPromotionHistory.Size = new System.Drawing.Size(114, 51);
             this.btnPromotionHistory.TabIndex = 7;
             this.btnPromotionHistory.Text = "Promotion History";
             this.btnPromotionHistory.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -252,6 +271,7 @@ namespace DojoStudentManagement
             this.txtEmailAddress.Name = "txtEmailAddress";
             this.txtEmailAddress.Size = new System.Drawing.Size(316, 22);
             this.txtEmailAddress.TabIndex = 16;
+            this.txtEmailAddress.MouseLeave += new System.EventHandler(this.txtEmailAddress_MouseLeave);
             // 
             // gbGender
             // 
@@ -425,9 +445,9 @@ namespace DojoStudentManagement
             this.lvwArtsAndRanks.FullRowSelect = true;
             this.lvwArtsAndRanks.GridLines = true;
             this.lvwArtsAndRanks.HideSelection = false;
-            this.lvwArtsAndRanks.Location = new System.Drawing.Point(6, 486);
+            this.lvwArtsAndRanks.Location = new System.Drawing.Point(10, 19);
             this.lvwArtsAndRanks.Name = "lvwArtsAndRanks";
-            this.lvwArtsAndRanks.Size = new System.Drawing.Size(401, 139);
+            this.lvwArtsAndRanks.Size = new System.Drawing.Size(567, 125);
             this.lvwArtsAndRanks.TabIndex = 6;
             this.lvwArtsAndRanks.UseCompatibleStateImageBehavior = false;
             this.lvwArtsAndRanks.View = System.Windows.Forms.View.Details;
@@ -466,12 +486,12 @@ namespace DojoStudentManagement
             this.dgvStudentList.AllowUserToAddRows = false;
             this.dgvStudentList.AllowUserToDeleteRows = false;
             this.dgvStudentList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvStudentList.Location = new System.Drawing.Point(12, 227);
+            this.dgvStudentList.Location = new System.Drawing.Point(12, 166);
             this.dgvStudentList.MultiSelect = false;
             this.dgvStudentList.Name = "dgvStudentList";
             this.dgvStudentList.ReadOnly = true;
             this.dgvStudentList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvStudentList.Size = new System.Drawing.Size(382, 237);
+            this.dgvStudentList.Size = new System.Drawing.Size(382, 279);
             this.dgvStudentList.TabIndex = 7;
             this.dgvStudentList.SelectionChanged += new System.EventHandler(this.dgvStudentList_SelectionChanged);
             // 
@@ -484,7 +504,7 @@ namespace DojoStudentManagement
             this.gbQuickFilters.Controls.Add(this.cbNonWindsongStudents);
             this.gbQuickFilters.Controls.Add(this.cbShowInactiveStudents);
             this.gbQuickFilters.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gbQuickFilters.Location = new System.Drawing.Point(6, 130);
+            this.gbQuickFilters.Location = new System.Drawing.Point(13, 69);
             this.gbQuickFilters.Name = "gbQuickFilters";
             this.gbQuickFilters.Size = new System.Drawing.Size(371, 91);
             this.gbQuickFilters.TabIndex = 8;
@@ -547,77 +567,129 @@ namespace DojoStudentManagement
             this.cbShowInactiveStudents.UseVisualStyleBackColor = true;
             this.cbShowInactiveStudents.CheckedChanged += new System.EventHandler(this.cbShowInactiveStudents_CheckedChanged);
             // 
-            // btnAddNewStudent
+            // toolStrip1
             // 
-            this.btnAddNewStudent.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAddNewStudent.Image = ((System.Drawing.Image)(resources.GetObject("btnAddNewStudent.Image")));
-            this.btnAddNewStudent.Location = new System.Drawing.Point(12, 63);
-            this.btnAddNewStudent.Name = "btnAddNewStudent";
-            this.btnAddNewStudent.Size = new System.Drawing.Size(147, 47);
-            this.btnAddNewStudent.TabIndex = 9;
-            this.btnAddNewStudent.Text = "Add New Student";
-            this.btnAddNewStudent.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnAddNewStudent.UseVisualStyleBackColor = true;
-            this.btnAddNewStudent.Click += new System.EventHandler(this.btnAddNewStudent_Click);
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsbSettings,
+            this.tsbAddNewStudent,
+            this.toolStripButton1,
+            this.toolStripButton2,
+            this.toolStripButton3});
+            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(933, 59);
+            this.toolStrip1.TabIndex = 12;
+            this.toolStrip1.Text = "toolStrip1";
             // 
-            // picWindsongLogo
+            // tsbSettings
             // 
-            this.picWindsongLogo.Image = ((System.Drawing.Image)(resources.GetObject("picWindsongLogo.Image")));
-            this.picWindsongLogo.Location = new System.Drawing.Point(611, 53);
-            this.picWindsongLogo.Name = "picWindsongLogo";
-            this.picWindsongLogo.Size = new System.Drawing.Size(392, 80);
-            this.picWindsongLogo.TabIndex = 10;
-            this.picWindsongLogo.TabStop = false;
+            this.tsbSettings.Image = ((System.Drawing.Image)(resources.GetObject("tsbSettings.Image")));
+            this.tsbSettings.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.tsbSettings.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbSettings.Name = "tsbSettings";
+            this.tsbSettings.Size = new System.Drawing.Size(53, 56);
+            this.tsbSettings.Text = "Settings";
+            this.tsbSettings.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.tsbSettings.Click += new System.EventHandler(this.tsbSettings_Click);
             // 
-            // menuTopMenu
+            // tsbAddNewStudent
             // 
-            this.menuTopMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.settingsToolStripMenuItem});
-            this.menuTopMenu.Location = new System.Drawing.Point(0, 0);
-            this.menuTopMenu.Name = "menuTopMenu";
-            this.menuTopMenu.Size = new System.Drawing.Size(1015, 24);
-            this.menuTopMenu.TabIndex = 11;
-            this.menuTopMenu.Text = "Top Menu";
+            this.tsbAddNewStudent.Image = ((System.Drawing.Image)(resources.GetObject("tsbAddNewStudent.Image")));
+            this.tsbAddNewStudent.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.tsbAddNewStudent.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbAddNewStudent.Name = "tsbAddNewStudent";
+            this.tsbAddNewStudent.Size = new System.Drawing.Size(104, 56);
+            this.tsbAddNewStudent.Text = "Add New Student";
+            this.tsbAddNewStudent.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.tsbAddNewStudent.ToolTipText = "Add a new student to the database";
+            this.tsbAddNewStudent.Click += new System.EventHandler(this.tsbAddNewStudent_Click);
             // 
-            // settingsToolStripMenuItem
+            // toolStripButton1
             // 
-            this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.databaseConfigToolStripMenuItem,
-            this.aboutToolStripMenuItem});
-            this.settingsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("settingsToolStripMenuItem.Image")));
-            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(77, 20);
-            this.settingsToolStripMenuItem.Text = "Settings";
+            this.toolStripButton1.Enabled = false;
+            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
+            this.toolStripButton1.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(113, 56);
+            this.toolStripButton1.Text = "Promotion Settings";
+            this.toolStripButton1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
-            // databaseConfigToolStripMenuItem
+            // toolStripButton2
             // 
-            this.databaseConfigToolStripMenuItem.Name = "databaseConfigToolStripMenuItem";
-            this.databaseConfigToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.databaseConfigToolStripMenuItem.Text = "Database Configuration";
-            this.databaseConfigToolStripMenuItem.Click += new System.EventHandler(this.databaseConfigToolStripMenuItem_Click);
+            this.toolStripButton2.Enabled = false;
+            this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
+            this.toolStripButton2.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton2.Name = "toolStripButton2";
+            this.toolStripButton2.Size = new System.Drawing.Size(99, 56);
+            this.toolStripButton2.Text = "Art Maintenance";
+            this.toolStripButton2.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
-            // aboutToolStripMenuItem
+            // toolStripButton3
             // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.aboutToolStripMenuItem.Text = "About";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            this.toolStripButton3.Enabled = false;
+            this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
+            this.toolStripButton3.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton3.Name = "toolStripButton3";
+            this.toolStripButton3.Size = new System.Drawing.Size(51, 56);
+            this.toolStripButton3.Text = "Reports";
+            this.toolStripButton3.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            // 
+            // gbArtsAndRank
+            // 
+            this.gbArtsAndRank.Controls.Add(this.btnRemoveArt);
+            this.gbArtsAndRank.Controls.Add(this.btnModifyArt);
+            this.gbArtsAndRank.Controls.Add(this.btnAddArt);
+            this.gbArtsAndRank.Controls.Add(this.lvwArtsAndRanks);
+            this.gbArtsAndRank.Location = new System.Drawing.Point(12, 451);
+            this.gbArtsAndRank.Name = "gbArtsAndRank";
+            this.gbArtsAndRank.Size = new System.Drawing.Size(588, 183);
+            this.gbArtsAndRank.TabIndex = 13;
+            this.gbArtsAndRank.TabStop = false;
+            this.gbArtsAndRank.Text = "Arts and Rank";
+            // 
+            // btnRemoveArt
+            // 
+            this.btnRemoveArt.Location = new System.Drawing.Point(174, 150);
+            this.btnRemoveArt.Name = "btnRemoveArt";
+            this.btnRemoveArt.Size = new System.Drawing.Size(75, 23);
+            this.btnRemoveArt.TabIndex = 9;
+            this.btnRemoveArt.Text = "Remove Art";
+            this.btnRemoveArt.UseVisualStyleBackColor = true;
+            // 
+            // btnModifyArt
+            // 
+            this.btnModifyArt.Location = new System.Drawing.Point(91, 150);
+            this.btnModifyArt.Name = "btnModifyArt";
+            this.btnModifyArt.Size = new System.Drawing.Size(75, 23);
+            this.btnModifyArt.TabIndex = 8;
+            this.btnModifyArt.Text = "Modify Art";
+            this.btnModifyArt.UseVisualStyleBackColor = true;
+            // 
+            // btnAddArt
+            // 
+            this.btnAddArt.Location = new System.Drawing.Point(10, 150);
+            this.btnAddArt.Name = "btnAddArt";
+            this.btnAddArt.Size = new System.Drawing.Size(75, 23);
+            this.btnAddArt.TabIndex = 7;
+            this.btnAddArt.Text = "Add Art";
+            this.btnAddArt.UseVisualStyleBackColor = true;
+            this.btnAddArt.Click += new System.EventHandler(this.btnAddArt_Click);
             // 
             // StudentMaintenanceUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1015, 676);
-            this.Controls.Add(this.picWindsongLogo);
-            this.Controls.Add(this.btnAddNewStudent);
+            this.ClientSize = new System.Drawing.Size(933, 676);
+            this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.gbQuickFilters);
             this.Controls.Add(this.dgvStudentList);
-            this.Controls.Add(this.lvwArtsAndRanks);
             this.Controls.Add(this.lblArtsAndRank);
             this.Controls.Add(this.gbStudentInfo);
-            this.Controls.Add(this.menuTopMenu);
+            this.Controls.Add(this.gbArtsAndRank);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MainMenuStrip = this.menuTopMenu;
             this.Name = "StudentMaintenanceUI";
             this.Text = "Student Maintenance";
             this.Load += new System.EventHandler(this.StudentMaintenance_Load);
@@ -628,9 +700,9 @@ namespace DojoStudentManagement
             ((System.ComponentModel.ISupportInitialize)(this.dgvStudentList)).EndInit();
             this.gbQuickFilters.ResumeLayout(false);
             this.gbQuickFilters.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picWindsongLogo)).EndInit();
-            this.menuTopMenu.ResumeLayout(false);
-            this.menuTopMenu.PerformLayout();
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
+            this.gbArtsAndRank.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -684,13 +756,18 @@ namespace DojoStudentManagement
         private System.Windows.Forms.CheckBox cbActiveStudent;
         private System.Windows.Forms.Label lblHomeDojo;
         private System.Windows.Forms.TextBox txtHomeDojo;
-        private System.Windows.Forms.Button btnAddNewStudent;
-        private System.Windows.Forms.PictureBox picWindsongLogo;
-        private System.Windows.Forms.MenuStrip menuTopMenu;
-        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem databaseConfigToolStripMenuItem;
         private System.Windows.Forms.ColumnHeader columnCumulativeHours;
-        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStripButton tsbSettings;
+        private System.Windows.Forms.ToolStripButton tsbAddNewStudent;
+        private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.GroupBox gbArtsAndRank;
+        private System.Windows.Forms.Button btnRemoveArt;
+        private System.Windows.Forms.Button btnModifyArt;
+        private System.Windows.Forms.Button btnAddArt;
+        private System.Windows.Forms.ToolStripButton toolStripButton2;
+        private System.Windows.Forms.ToolStripButton toolStripButton3;
+        private System.Windows.Forms.Button btnSaveChanges;
     }
 }
 

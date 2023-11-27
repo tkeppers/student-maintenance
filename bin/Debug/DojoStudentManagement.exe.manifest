@@ -42,24 +42,24 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DojoStudentManagement.exe" size="107480">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DojoStudentManagement.exe" size="117720">
       <assemblyIdentity name="DojoStudentManagement" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>gmr7seSO5swDxTqODQSMnNu9fJTZgMZOnVNE/jgjAbI=</dsig:DigestValue>
+        <dsig:DigestValue>Sf3exYqJH3nbg/sl5WZpHHQZAgHV759iBJW9u2JVwpk=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="DojoStudentManagement.exe.config" size="331">
+  <file name="DojoStudentManagement.exe.config" size="324">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>ME07PuJmuEnOHa7nRjPomtt5YnD34RchqLv0Tj796Bo=</dsig:DigestValue>
+      <dsig:DigestValue>b9smS83FGNUtzmQDhRCGiiEgoB21Am014mjVyISwCUY=</dsig:DigestValue>
     </hash>
   </file>
 </asmv1:assembly>

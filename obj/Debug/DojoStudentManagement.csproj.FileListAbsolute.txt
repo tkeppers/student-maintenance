@@ -12,9 +12,9 @@ C:\Projects\Windsong Dojo\Student Management Application\DojoStudentManagement\D
 C:\Projects\Windsong Dojo\Student Management Application\DojoStudentManagement\DojoStudentManagement\obj\Debug\DojoStudentManagement.StudentSignInHistoryUI.resources
 C:\Projects\Windsong Dojo\Student Management Application\DojoStudentManagement\DojoStudentManagement\obj\Debug\DojoStudentManagement.StudentAddUI.resources
 C:\Projects\Windsong Dojo\Student Management Application\DojoStudentManagement\DojoStudentManagement\obj\Debug\DojoStudentManagement.DatabaseConfigUI.resources
-C:\Projects\Windsong Dojo\Student Management Application\DojoStudentManagement\DojoStudentManagement\obj\Debug\DojoStudentManagement.StudentArtsAndRankUI.resources
 C:\Projects\Windsong Dojo\Student Management Application\DojoStudentManagement\DojoStudentManagement\bin\Debug\DojoStudentManagement.exe.manifest
 C:\Projects\Windsong Dojo\Student Management Application\DojoStudentManagement\DojoStudentManagement\bin\Debug\DojoStudentManagement.application
 C:\Projects\Windsong Dojo\Student Management Application\DojoStudentManagement\DojoStudentManagement\obj\Debug\DojoStudentManagement.AboutProgramUI.resources
 C:\Projects\Windsong Dojo\Student Management Application\DojoStudentManagement\DojoStudentManagement\obj\Debug\DojoStudentManagement.exe.manifest
 C:\Projects\Windsong Dojo\Student Management Application\DojoStudentManagement\DojoStudentManagement\obj\Debug\DojoStudentManagement.application
+C:\Projects\Windsong Dojo\Student Management Application\DojoStudentManagement\DojoStudentManagement\obj\Debug\DojoStudentManagement.StudentAddModifyArtUI.resources

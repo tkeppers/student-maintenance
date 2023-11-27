@@ -74,10 +74,5 @@ namespace DojoStudentManagement
             CreateNewStudent();
             OnStudentAdded();
         }
-
-        private void StudentAddUI_Load(object sender, EventArgs e)
-        {
-
-        }
     }
 }
