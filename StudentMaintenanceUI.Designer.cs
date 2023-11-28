@@ -80,7 +80,9 @@ namespace DojoStudentManagement
             this.cbNonWindsongStudents = new System.Windows.Forms.CheckBox();
             this.cbShowInactiveStudents = new System.Windows.Forms.CheckBox();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.tsbSettings = new System.Windows.Forms.ToolStripButton();
+            this.tsbSettings = new System.Windows.Forms.ToolStripDropDownButton();
+            this.databasePathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tsbAddNewStudent = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
@@ -89,6 +91,8 @@ namespace DojoStudentManagement
             this.btnRemoveArt = new System.Windows.Forms.Button();
             this.btnModifyArt = new System.Windows.Forms.Button();
             this.btnAddArt = new System.Windows.Forms.Button();
+            this.columnStudentArtID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnLastSignInDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.gbStudentInfo.SuspendLayout();
             this.gbGender.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStudentList)).BeginInit();
@@ -440,7 +444,9 @@ namespace DojoStudentManagement
             this.columnStartDate,
             this.columnCumulativeHours,
             this.columnPromotionDate,
-            this.columnPromotionHours});
+            this.columnPromotionHours,
+            this.columnStudentArtID,
+            this.columnLastSignInDate});
             this.lvwArtsAndRanks.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lvwArtsAndRanks.FullRowSelect = true;
             this.lvwArtsAndRanks.GridLines = true;
@@ -451,6 +457,7 @@ namespace DojoStudentManagement
             this.lvwArtsAndRanks.TabIndex = 6;
             this.lvwArtsAndRanks.UseCompatibleStateImageBehavior = false;
             this.lvwArtsAndRanks.View = System.Windows.Forms.View.Details;
+            this.lvwArtsAndRanks.SelectedIndexChanged += new System.EventHandler(this.lvwArtsAndRanks_SelectedIndexChanged);
             // 
             // columnArt
             // 
@@ -583,14 +590,29 @@ namespace DojoStudentManagement
             // 
             // tsbSettings
             // 
+            this.tsbSettings.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.databasePathToolStripMenuItem,
+            this.aboutToolStripMenuItem});
             this.tsbSettings.Image = ((System.Drawing.Image)(resources.GetObject("tsbSettings.Image")));
             this.tsbSettings.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbSettings.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbSettings.Name = "tsbSettings";
-            this.tsbSettings.Size = new System.Drawing.Size(53, 56);
+            this.tsbSettings.Size = new System.Drawing.Size(62, 56);
             this.tsbSettings.Text = "Settings";
             this.tsbSettings.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.tsbSettings.Click += new System.EventHandler(this.tsbSettings_Click);
+            // 
+            // databasePathToolStripMenuItem
+            // 
+            this.databasePathToolStripMenuItem.Name = "databasePathToolStripMenuItem";
+            this.databasePathToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.databasePathToolStripMenuItem.Text = "Database Path";
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.aboutToolStripMenuItem.Text = "About";
             // 
             // tsbAddNewStudent
             // 
@@ -667,6 +689,7 @@ namespace DojoStudentManagement
             this.btnModifyArt.TabIndex = 8;
             this.btnModifyArt.Text = "Modify Art";
             this.btnModifyArt.UseVisualStyleBackColor = true;
+            this.btnModifyArt.Click += new System.EventHandler(this.btnModifyArt_Click);
             // 
             // btnAddArt
             // 
@@ -677,6 +700,14 @@ namespace DojoStudentManagement
             this.btnAddArt.Text = "Add Art";
             this.btnAddArt.UseVisualStyleBackColor = true;
             this.btnAddArt.Click += new System.EventHandler(this.btnAddArt_Click);
+            // 
+            // columnStudentArtID
+            // 
+            this.columnStudentArtID.Width = 0;
+            // 
+            // columnLastSignInDate
+            // 
+            this.columnLastSignInDate.Width = 0;
             // 
             // StudentMaintenanceUI
             // 
@@ -758,7 +789,6 @@ namespace DojoStudentManagement
         private System.Windows.Forms.TextBox txtHomeDojo;
         private System.Windows.Forms.ColumnHeader columnCumulativeHours;
         private System.Windows.Forms.ToolStrip toolStrip1;
-        private System.Windows.Forms.ToolStripButton tsbSettings;
         private System.Windows.Forms.ToolStripButton tsbAddNewStudent;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.GroupBox gbArtsAndRank;
@@ -768,6 +798,11 @@ namespace DojoStudentManagement
         private System.Windows.Forms.ToolStripButton toolStripButton2;
         private System.Windows.Forms.ToolStripButton toolStripButton3;
         private System.Windows.Forms.Button btnSaveChanges;
+        private System.Windows.Forms.ToolStripDropDownButton tsbSettings;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem databasePathToolStripMenuItem;
+        private System.Windows.Forms.ColumnHeader columnStudentArtID;
+        private System.Windows.Forms.ColumnHeader columnLastSignInDate;
     }
 }
 

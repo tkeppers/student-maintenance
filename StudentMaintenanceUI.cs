@@ -17,12 +17,16 @@ namespace DojoStudentManagement
         private readonly StudentMaintenanceFunctions studentMaintenanceFunctions;
         private string currentStudentName;
         private Student currentStudent;
+        private StudentArtsAndRank selectedArt;
 
         public StudentMaintenanceUI(IDataAccess dataAccess)
         {
             this.dataAccess = dataAccess;
             studentMaintenanceFunctions = new StudentMaintenanceFunctions();
             InitializeComponent();
+
+            var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            this.Text = $"Windsong Dojo Student Maintenance Application - Version {version}";
         }
 
         private void PopulateStudentInformation()
@@ -54,6 +58,7 @@ namespace DojoStudentManagement
                 rbUnknown.Checked = true;
 
             PopulateArtsAndRanks(currentStudent);
+            selectedArt = new StudentArtsAndRank();
         }
 
         private void PopulateArtsAndRanks(Student currentStudent)
@@ -62,9 +67,9 @@ namespace DojoStudentManagement
 
             foreach (StudentArtsAndRank artRank in currentStudent.StudentArtsAndRanks)
             {
-                string[] subitems = { "Art", "Rank", "Start Date", "Hours", "Promotion Date", "Promotion Hours" };
+                string[] subitems = { "Art", "Rank", "Start Date", "Hours", "Promotion Date", "Promotion Hours", "ID", "Last Sign-In Date" };
                 ListViewItem item = new ListViewItem(subitems);
-                item.SubItems[0].Text = artRank.Art;
+                item.SubItems[0].Text = artRank.StudentArt;
                 item.SubItems[1].Text = artRank.Rank;
                 item.SubItems[2].Text = artRank.DateStarted.HasValue ?
                     artRank.DateStarted.Value.ToString("MM/dd/yyyy") : string.Empty;
@@ -72,6 +77,8 @@ namespace DojoStudentManagement
                 item.SubItems[4].Text = artRank.DatePromoted.HasValue ? 
                     artRank.DatePromoted.Value.ToString("MM/dd/yyyy") : string.Empty;
                 item.SubItems[5].Text = artRank.PromotionHours.ToString();
+                item.SubItems[6].Text = artRank.StudentArtID.ToString();
+                item.SubItems[7].Text = artRank.DateOfLatestSignIn.ToString();
 
                 lvwArtsAndRanks.Items.Add(item);
             }
@@ -130,20 +137,29 @@ namespace DojoStudentManagement
             studentDataView.RowFilter = "stud_status = 'A'";
         }
 
-        private void AddNewArtForStudent()
+        private bool ValidStudentIsSelected()
         {
             if (!studentMaintenanceFunctions.IsValidStudent(currentStudentID))
             {
-                MessageBox.Show("Please select a student before adding art.", "Student Not Selected", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                MessageBox.Show("Please select a student before performing this action.", "Student Not Selected", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
 
-            StudentAddModifyArtUI addArt = new StudentAddModifyArtUI(currentStudentID, currentStudentName);
-            addArt.ShowDialog();
+            return true;
+        }
+
+        private void AddNewArtForStudent()
+        {
+            if (ValidStudentIsSelected())
+            {
+                StudentAddModifyArtUI addArt = new StudentAddModifyArtUI(currentStudentID, currentStudentName);
+                addArt.ShowDialog();
+            }
         }
 
         private void SaveChanges()
         {
+            //TODO: Refactor this method
             if (!studentMaintenanceFunctions.IsValidStudent(currentStudentID))
             {
                 MessageBox.Show("Please select a valid student", "Student Not Selected", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -180,12 +196,13 @@ namespace DojoStudentManagement
             else
                 currentStudent.StudentGender = Gender.UNKNOWN;
             
-            dataAccess.UpdateStudent(currentStudent);
-            
-            //Messagebox: Save changes for student XXX?
-            //Update the database
-            //Save successful message
-            btnSaveChanges.Enabled = false;
+            if (dataAccess.UpdateStudent(currentStudent))
+            {
+                MessageBox.Show("Student " + currentStudentName + " saved successfully.");
+                btnSaveChanges.Enabled = false;
+            }
+            else
+               MessageBox.Show("Error updating student " + currentStudentName + ". Changes may not have been saved to the database.");
         }
 
         private void AddStudent_StudentAdded(object sender, EventArgs e)
@@ -201,6 +218,18 @@ namespace DojoStudentManagement
 
                 dgvStudentList.FirstDisplayedScrollingRowIndex = lastIndex;
             }
+        }
+
+        private void ModifyStudentArt()
+        {
+            if (lvwArtsAndRanks.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Please select an art to modify.", "No Art Selected", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            StudentAddModifyArtUI modifyArt = new StudentAddModifyArtUI(currentStudentID, currentStudentName, selectedArt);
+            modifyArt.ShowDialog();
         }
 
         private void StudentMaintenance_Load(object sender, EventArgs e)
@@ -289,6 +318,27 @@ namespace DojoStudentManagement
         private void txtEmailAddress_MouseLeave(object sender, EventArgs e)
         {
             btnSaveChanges.Enabled = true;
+        }
+
+        private void lvwArtsAndRanks_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lvwArtsAndRanks.SelectedItems.Count > 0)
+            {
+                ListViewItem selecteditem = lvwArtsAndRanks.SelectedItems[0];
+                selectedArt.StudentArt = selecteditem.SubItems[0].Text;
+                selectedArt.Rank = selecteditem.SubItems[1].Text;
+                selectedArt.DateStarted = DateTime.TryParse(selecteditem.SubItems[2].Text, out DateTime dateStarted) ? dateStarted : (DateTime?)null;
+                selectedArt.HoursInArt = double.TryParse(selecteditem.SubItems[3].Text, out double hoursInArt) ? hoursInArt : 0;
+                selectedArt.DatePromoted = DateTime.TryParse(selecteditem.SubItems[4].Text, out DateTime datePromoted) ? datePromoted : (DateTime?)null;
+                selectedArt.PromotionHours = double.TryParse(selecteditem.SubItems[5].Text, out double promotionHours) ? hoursInArt : 0;
+                selectedArt.StudentArtID = int.TryParse(selecteditem.SubItems[6].Text, out int studentArtID) ? studentArtID : 0;
+                selectedArt.DateOfLatestSignIn = DateTime.TryParse(selecteditem.SubItems[7].Text, out DateTime dateOfLatestSignin) ? dateOfLatestSignin : (DateTime?)null;
+            }
+        }
+
+        private void btnModifyArt_Click(object sender, EventArgs e)
+        {
+            ModifyStudentArt();
         }
     }
 }

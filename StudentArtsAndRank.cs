@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace DojoStudentManagement
 {
-    class StudentArtsAndRank
+    public class StudentArtsAndRank
     {
-        public string Art;
+        public int StudentArtID;
+        public string StudentArt;
         public string Rank;
         public double HoursInArt;
         public DateTime? DateStarted;

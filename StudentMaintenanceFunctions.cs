@@ -39,18 +39,21 @@ namespace DojoStudentManagement
             return currentStudent;
         }
 
-        private Gender GetStudentGender(string gender)
+        public Gender GetStudentGender(string gender)
         {
-            if (gender.ToUpper().Contains("M"))
-                return Gender.MALE;
-            else if (gender.ToUpper().Contains("F"))
+            if (gender == null)
+                return Gender.UNKNOWN;
+
+            if (gender.ToUpper().Contains("F"))
                 return Gender.FEMALE;
+            else if (gender.ToUpper().Contains("M"))
+                return Gender.MALE;
             else
                 return Gender.UNKNOWN;
         }
 
         public bool IsValidStudent(int studentID)
-        {
+        {   
             return studentID > 0 ? true : false;
         }
 
@@ -59,9 +62,8 @@ namespace DojoStudentManagement
             var trimmedEmail = email.Trim();
 
             if (trimmedEmail.EndsWith("."))
-            {
                 return false;
-            }
+            
             try
             {
                 var addr = new System.Net.Mail.MailAddress(email);
@@ -79,19 +81,24 @@ namespace DojoStudentManagement
 
             foreach (DataRow row in artsAndRanks.Rows)
             {
-                StudentArtsAndRank artsAndRank = new StudentArtsAndRank();
-                artsAndRank.Art = row["studArt_art"].ToString();
-                artsAndRank.Rank = row["studArt_rank"].ToString();
-                artsAndRank.DateStarted =
+                StudentArtsAndRank artsAndRank = new StudentArtsAndRank
+                {
+                    StudentArtID = int.TryParse(row["StudArt_ID"].ToString(), out int studentArtID) ? studentArtID : 0,
+                    StudentArt = row["studArt_art"].ToString(),
+                    Rank = row["studArt_rank"].ToString(),
+                    DateStarted =
                     DateTime.TryParse(row["studArt_begin"].ToString(), out DateTime startDate)
-                        ? startDate : (DateTime?)null; 
-                artsAndRank.HoursInArt = double.TryParse(row["studArt_cumm"].ToString(), out double cumulativeHours)
-                        ? cumulativeHours : 0.0;
-                artsAndRank.DatePromoted = 
+                        ? startDate : (DateTime?)null,
+                    HoursInArt = double.TryParse(row["studArt_cumm"].ToString(), out double cumulativeHours)
+                        ? cumulativeHours : 0.0,
+                    DateOfLatestSignIn = DateTime.TryParse(row["studArt_signin"].ToString(), out DateTime lastSignInDate)
+                        ? lastSignInDate : (DateTime?)null,
+                    DatePromoted =
                     DateTime.TryParse(row["studArt_prodate"].ToString(), out DateTime promotionDate)
-                        ? promotionDate : (DateTime?)null;
-                artsAndRank.PromotionHours = double.TryParse(row["studArt_prohrs"].ToString(), out double promotionHours)
-                        ? promotionHours : 0.0;
+                        ? promotionDate : (DateTime?)null,
+                    PromotionHours = double.TryParse(row["studArt_prohrs"].ToString(), out double promotionHours)
+                        ? promotionHours : 0.0
+                };
 
                 student.StudentArtsAndRanks.Add(artsAndRank);
             }
