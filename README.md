@@ -1,4 +1,4 @@
-# Windsong Dojo Student Management Tool
+# Martial Arts Student Management System
 
 ## Overview
 
