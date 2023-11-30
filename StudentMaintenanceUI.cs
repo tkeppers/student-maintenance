@@ -18,6 +18,7 @@ namespace DojoStudentManagement
         private string currentStudentName;
         private Student currentStudent;
         private StudentArtsAndRank selectedArt;
+        private DataTable promotionRequirements;
 
         public StudentMaintenanceUI(IDataAccess dataAccess)
         {
@@ -27,6 +28,10 @@ namespace DojoStudentManagement
 
             var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             this.Text = $"Windsong Dojo Student Maintenance Application - Version {version}";
+
+            //Read this lookup table into memory up front because it will be accessed for 
+            //most operations involving students and martial arts
+            promotionRequirements = dataAccess.GetStudentPromotionRequirements();
         }
 
         private void PopulateStudentInformation()

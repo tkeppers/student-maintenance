@@ -122,6 +122,35 @@ namespace DojoStudentManagement
             return dataTable;
         }
 
+        /// <summary>
+        /// Gets the list of requirements for promotion to each level for each art available
+        /// </summary>
+        /// <remarks>We will read in the entire table (it's not very big) to minimize databate hits</remarks>
+        public DataTable GetStudentPromotionRequirements()
+        {
+            DataTable dataTable;
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                string sql = "select * from Promo_Requirements";
+                OleDbDataAdapter dataAdapter = new OleDbDataAdapter(sql, connectionString);
+                DataSet dataset = new DataSet();
+                dataAdapter.Fill(dataset);
+                dataTable = dataset.Tables[0];
+            }
+
+            //Rename columns from database schema to something more generic and readable
+            dataTable.Columns["rank_art"].ColumnName = "Art";
+            dataTable.Columns["rank_id"].ColumnName = "CurrentRank";
+            dataTable.Columns["rank_next"].ColumnName = "NextRank";
+            dataTable.Columns["rank_min_hours"].ColumnName = "MinimumTrainingHours";
+            dataTable.Columns["rank_min_age"].ColumnName = "MinimumAge";
+            dataTable.Columns["rank_total_years"].ColumnName = "YearsInArt";
+            dataTable.Columns["rank_time_in_rank"].ColumnName = "YearsAtCurrentRank";
+
+            return dataTable;
+        }
+
         public bool AddNewStudent(Student student)
         {
             bool success = true;

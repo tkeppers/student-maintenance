@@ -89,6 +89,7 @@
     <Compile Include="DatabaseConfigUI.Designer.cs">
       <DependentUpon>DatabaseConfigUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="PromotionRequirements.cs" />
     <Compile Include="StudentAddModifyArtUI.cs">
       <SubType>Form</SubType>
     </Compile>

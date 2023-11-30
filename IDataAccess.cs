@@ -18,6 +18,8 @@ namespace DojoStudentManagement
 
         DataTable GetStudentSignInHistory(int studentID);
 
+        DataTable GetStudentPromotionRequirements();
+
         bool AddNewStudent(Student student);
 
         bool UpdateStudent(Student student);
