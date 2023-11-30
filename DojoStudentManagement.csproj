@@ -90,6 +90,12 @@
       <DependentUpon>DatabaseConfigUI.cs</DependentUpon>
     </Compile>
     <Compile Include="PromotionRequirements.cs" />
+    <Compile Include="PromotionSettingsUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PromotionSettingsUI.Designer.cs">
+      <DependentUpon>PromotionSettingsUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="StudentAddModifyArtUI.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -135,6 +141,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DatabaseConfigUI.resx">
       <DependentUpon>DatabaseConfigUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PromotionSettingsUI.resx">
+      <DependentUpon>PromotionSettingsUI.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StudentAddModifyArtUI.resx">
       <DependentUpon>StudentAddModifyArtUI.cs</DependentUpon>

@@ -71,6 +71,8 @@ namespace DojoStudentManagement
             this.columnCumulativeHours = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnPromotionDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnPromotionHours = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnStudentArtID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnLastSignInDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.dgvStudentList = new System.Windows.Forms.DataGridView();
             this.gbQuickFilters = new System.Windows.Forms.GroupBox();
             this.lblLastNameFilter = new System.Windows.Forms.Label();
@@ -84,15 +86,14 @@ namespace DojoStudentManagement
             this.databasePathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tsbAddNewStudent = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.tsbPromotionSettings = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
             this.gbArtsAndRank = new System.Windows.Forms.GroupBox();
             this.btnRemoveArt = new System.Windows.Forms.Button();
             this.btnModifyArt = new System.Windows.Forms.Button();
             this.btnAddArt = new System.Windows.Forms.Button();
-            this.columnStudentArtID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnLastSignInDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.txtMessages = new System.Windows.Forms.TextBox();
             this.gbStudentInfo.SuspendLayout();
             this.gbGender.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStudentList)).BeginInit();
@@ -488,6 +489,14 @@ namespace DojoStudentManagement
             this.columnPromotionHours.Text = "Promotion Hours";
             this.columnPromotionHours.Width = 96;
             // 
+            // columnStudentArtID
+            // 
+            this.columnStudentArtID.Width = 0;
+            // 
+            // columnLastSignInDate
+            // 
+            this.columnLastSignInDate.Width = 0;
+            // 
             // dgvStudentList
             // 
             this.dgvStudentList.AllowUserToAddRows = false;
@@ -579,7 +588,7 @@ namespace DojoStudentManagement
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsbSettings,
             this.tsbAddNewStudent,
-            this.toolStripButton1,
+            this.tsbPromotionSettings,
             this.toolStripButton2,
             this.toolStripButton3});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
@@ -626,16 +635,16 @@ namespace DojoStudentManagement
             this.tsbAddNewStudent.ToolTipText = "Add a new student to the database";
             this.tsbAddNewStudent.Click += new System.EventHandler(this.tsbAddNewStudent_Click);
             // 
-            // toolStripButton1
+            // tsbPromotionSettings
             // 
-            this.toolStripButton1.Enabled = false;
-            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-            this.toolStripButton1.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(113, 56);
-            this.toolStripButton1.Text = "Promotion Settings";
-            this.toolStripButton1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.tsbPromotionSettings.Image = ((System.Drawing.Image)(resources.GetObject("tsbPromotionSettings.Image")));
+            this.tsbPromotionSettings.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.tsbPromotionSettings.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbPromotionSettings.Name = "tsbPromotionSettings";
+            this.tsbPromotionSettings.Size = new System.Drawing.Size(113, 56);
+            this.tsbPromotionSettings.Text = "Promotion Settings";
+            this.tsbPromotionSettings.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.tsbPromotionSettings.Click += new System.EventHandler(this.tsbPromotionSettings_Click);
             // 
             // toolStripButton2
             // 
@@ -701,19 +710,20 @@ namespace DojoStudentManagement
             this.btnAddArt.UseVisualStyleBackColor = true;
             this.btnAddArt.Click += new System.EventHandler(this.btnAddArt_Click);
             // 
-            // columnStudentArtID
+            // txtMessages
             // 
-            this.columnStudentArtID.Width = 0;
-            // 
-            // columnLastSignInDate
-            // 
-            this.columnLastSignInDate.Width = 0;
+            this.txtMessages.Location = new System.Drawing.Point(625, 470);
+            this.txtMessages.Multiline = true;
+            this.txtMessages.Name = "txtMessages";
+            this.txtMessages.Size = new System.Drawing.Size(260, 154);
+            this.txtMessages.TabIndex = 14;
             // 
             // StudentMaintenanceUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(933, 676);
+            this.Controls.Add(this.txtMessages);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.gbQuickFilters);
             this.Controls.Add(this.dgvStudentList);
@@ -790,7 +800,7 @@ namespace DojoStudentManagement
         private System.Windows.Forms.ColumnHeader columnCumulativeHours;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton tsbAddNewStudent;
-        private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ToolStripButton tsbPromotionSettings;
         private System.Windows.Forms.GroupBox gbArtsAndRank;
         private System.Windows.Forms.Button btnRemoveArt;
         private System.Windows.Forms.Button btnModifyArt;
@@ -803,6 +813,7 @@ namespace DojoStudentManagement
         private System.Windows.Forms.ToolStripMenuItem databasePathToolStripMenuItem;
         private System.Windows.Forms.ColumnHeader columnStudentArtID;
         private System.Windows.Forms.ColumnHeader columnLastSignInDate;
+        private System.Windows.Forms.TextBox txtMessages;
     }
 }
 

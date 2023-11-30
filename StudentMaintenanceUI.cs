@@ -36,6 +36,8 @@ namespace DojoStudentManagement
 
         private void PopulateStudentInformation()
         {
+            txtMessages.Clear();
+
             this.currentStudent = studentMaintenanceFunctions.PopulateStudentData(dataAccess, currentStudentID);
 
             this.currentStudentName = $"{currentStudent.FirstName} {currentStudent.LastName}";
@@ -86,9 +88,23 @@ namespace DojoStudentManagement
                 item.SubItems[7].Text = artRank.DateOfLatestSignIn.ToString();
 
                 lvwArtsAndRanks.Items.Add(item);
-            }
 
+                NotifyIfEligibleForPromotion(artRank);
+            }
         }
+
+        private void NotifyIfEligibleForPromotion(StudentArtsAndRank currentArtRank)
+        {
+            //TODO: This function returns blanks if it's not a valid art (a couple of the students are 
+            //set up for Iaido but we don't have any promotion criteria for that). Not a major issue, 
+            //but still need to fix.
+            PromotionRequirements eligibility = new PromotionRequirements(promotionRequirements);
+            eligibility.GetNextPromotionCriteria(currentArtRank);
+
+            if (currentStudent.IsEligibleForPromotion(currentArtRank, eligibility))
+                txtMessages.Text += "Eligible for promotion to " + eligibility.NextRank + " in " + eligibility.CurrentArt + "\n";
+        }
+
 
         private void FilterStudentList()
         {
@@ -344,6 +360,12 @@ namespace DojoStudentManagement
         private void btnModifyArt_Click(object sender, EventArgs e)
         {
             ModifyStudentArt();
+        }
+
+        private void tsbPromotionSettings_Click(object sender, EventArgs e)
+        {
+            PromotionSettingsUI promotionSettings = new PromotionSettingsUI(promotionRequirements);
+            promotionSettings.ShowDialog();
         }
     }
 }

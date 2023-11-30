@@ -19,11 +19,16 @@ namespace DojoStudentManagement
 
         DataTable promotionRequirementsTable;
 
-        public PromotionRequirements(DataTable promotionRequirementsTable, StudentArtsAndRank art)
+        public PromotionRequirements()
+        {
+
+        }
+
+        public PromotionRequirements(DataTable promotionRequirementsTable /*, StudentArtsAndRank art*/)
         {
             this.promotionRequirementsTable = promotionRequirementsTable;
 
-            GetNextPromotionCriteria(art);
+            //GetNextPromotionCriteria(art);
         }
 
         public PromotionRequirements GetNextPromotionCriteria(StudentArtsAndRank art)
@@ -44,6 +49,11 @@ namespace DojoStudentManagement
             }
 
             return this;
+        }
+
+        public DataTable GetPromotionRequirementsData()
+        {
+            return this.promotionRequirementsTable;
         }
 
     }
