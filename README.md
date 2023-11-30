@@ -19,24 +19,15 @@ The Windsong Dojo Student Management Tool is a Windows Forms application develop
 ## Prerequisites
 
 - .NET Framework 4.8
-- Visual Studio (or any C# IDE of your choice)
+- Visual Studio 2019 (or any C# IDE of your choice)
 
 ## Getting Started
 
 1. Clone the repository to your local machine.
    ```bash
-   git clone https://github.com/tkeppers/StudentMaintenance.git
+   git clone https://github.com/tkeppers/student-maintenance.git
 2. Open the project in Visual Studio.
 3. Build and run the application.
-
-## Contributing
-Contributions are welcome! If you have suggestions, improvements, or bug fixes, feel free to submit a pull request.
-
-## License
-This project is licensed under the MIT License.
-
-## Contact
-For inquiries or support, please contact the Windsong Dojo team at info@windsongdojo.com.
 
 ## Acknowledgments
 Special thanks to the Windsong Dojo community for their valuable feedback and support during the development of this application.
