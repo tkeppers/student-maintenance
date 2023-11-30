@@ -9,13 +9,13 @@ namespace DojoStudentManagement
 {
     public class PromotionRequirements
     {
-        public string CurrentRank { get; private set; }
-        public string NextRank { get; private set; }
-        public string CurrentArt { get; private set; }
-        public double MinimumTrainingHours { get; private set; }
-        public double MinimumAge { get; private set; }
-        public double YearsInArt { get; private set; }
-        public double YearsAtCurrentRank { get; private set; }
+        public string CurrentRank { get; set; }
+        public string NextRank { get; set; }
+        public string CurrentArt { get; set; }
+        public double MinimumTrainingHours { get; set; }
+        public double MinimumAge { get; set; }
+        public double YearsInArt { get; set; }
+        public double YearsAtCurrentRank { get; set; }
 
         DataTable promotionRequirementsTable;
 
@@ -27,8 +27,6 @@ namespace DojoStudentManagement
         public PromotionRequirements(DataTable promotionRequirementsTable /*, StudentArtsAndRank art*/)
         {
             this.promotionRequirementsTable = promotionRequirementsTable;
-
-            //GetNextPromotionCriteria(art);
         }
 
         public PromotionRequirements GetNextPromotionCriteria(StudentArtsAndRank art)

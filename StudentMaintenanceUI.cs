@@ -95,9 +95,6 @@ namespace DojoStudentManagement
 
         private void NotifyIfEligibleForPromotion(StudentArtsAndRank currentArtRank)
         {
-            //TODO: This function returns blanks if it's not a valid art (a couple of the students are 
-            //set up for Iaido but we don't have any promotion criteria for that). Not a major issue, 
-            //but still need to fix.
             PromotionRequirements eligibility = new PromotionRequirements(promotionRequirements);
             eligibility.GetNextPromotionCriteria(currentArtRank);
 

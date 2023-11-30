@@ -9,14 +9,14 @@ namespace DojoStudentManagement
     public class StudentArtsAndRank
     {
         //TODO: Change the setters to private during refactoring
-        public int StudentArtID { get; internal set; }
-        public string StudentArt { get; internal set; }
-        public string Rank { get; internal set; }
-        public double HoursInArt { get; internal set; }
-        public DateTime? DateStarted { get; internal set; }
-        public DateTime? DateOfLatestSignIn { get; internal set; }
-        public DateTime? DatePromoted { get; internal set; }
-        public double PromotionHours { get; internal set; }
+        public int StudentArtID { get; set; }
+        public string StudentArt { get; set; }
+        public string Rank { get; set; }
+        public double HoursInArt { get; set; }
+        public DateTime? DateStarted { get; set; }
+        public DateTime? DateOfLatestSignIn { get; set; }
+        public DateTime? DatePromoted { get; set; }
+        public double PromotionHours { get; set; }
 
         /// <summary>
         /// Returns the amount of time in years since the student first began taking the martial art.
