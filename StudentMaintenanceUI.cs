@@ -95,7 +95,7 @@ namespace DojoStudentManagement
 
         private void NotifyIfEligibleForPromotion(StudentArtsAndRank currentArtRank)
         {
-            PromotionRequirements eligibility = new PromotionRequirements(promotionRequirements);
+            PromotionCriteria eligibility = new PromotionCriteria(promotionRequirements);
             eligibility.GetNextPromotionCriteria(currentArtRank);
 
             if (currentStudent.IsEligibleForPromotion(currentArtRank, eligibility))
@@ -361,7 +361,7 @@ namespace DojoStudentManagement
 
         private void tsbPromotionSettings_Click(object sender, EventArgs e)
         {
-            PromotionSettingsUI promotionSettings = new PromotionSettingsUI(promotionRequirements);
+            PromotionCriteriaUI promotionSettings = new PromotionCriteriaUI(promotionRequirements);
             promotionSettings.ShowDialog();
         }
     }

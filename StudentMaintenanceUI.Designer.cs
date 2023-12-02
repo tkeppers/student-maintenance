@@ -94,6 +94,8 @@ namespace DojoStudentManagement
             this.btnModifyArt = new System.Windows.Forms.Button();
             this.btnAddArt = new System.Windows.Forms.Button();
             this.txtMessages = new System.Windows.Forms.TextBox();
+            this.lblPromotionEligibility = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.gbStudentInfo.SuspendLayout();
             this.gbGender.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStudentList)).BeginInit();
@@ -712,17 +714,39 @@ namespace DojoStudentManagement
             // 
             // txtMessages
             // 
-            this.txtMessages.Location = new System.Drawing.Point(625, 470);
+            this.txtMessages.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMessages.Location = new System.Drawing.Point(606, 483);
             this.txtMessages.Multiline = true;
             this.txtMessages.Name = "txtMessages";
-            this.txtMessages.Size = new System.Drawing.Size(260, 154);
+            this.txtMessages.Size = new System.Drawing.Size(305, 75);
             this.txtMessages.TabIndex = 14;
+            // 
+            // lblPromotionEligibility
+            // 
+            this.lblPromotionEligibility.AutoSize = true;
+            this.lblPromotionEligibility.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblPromotionEligibility.Location = new System.Drawing.Point(603, 464);
+            this.lblPromotionEligibility.Name = "lblPromotionEligibility";
+            this.lblPromotionEligibility.Size = new System.Drawing.Size(125, 16);
+            this.lblPromotionEligibility.TabIndex = 15;
+            this.lblPromotionEligibility.Text = "Promotion Eligibility";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(606, 565);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(108, 36);
+            this.button1.TabIndex = 16;
+            this.button1.Text = "Promote Student";
+            this.button1.UseVisualStyleBackColor = true;
             // 
             // StudentMaintenanceUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(933, 676);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.lblPromotionEligibility);
             this.Controls.Add(this.txtMessages);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.gbQuickFilters);
@@ -814,6 +838,8 @@ namespace DojoStudentManagement
         private System.Windows.Forms.ColumnHeader columnStudentArtID;
         private System.Windows.Forms.ColumnHeader columnLastSignInDate;
         private System.Windows.Forms.TextBox txtMessages;
+        private System.Windows.Forms.Label lblPromotionEligibility;
+        private System.Windows.Forms.Button button1;
     }
 }
 

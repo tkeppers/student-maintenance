@@ -34,7 +34,7 @@ namespace DojoStudentManagementTests
             };
 
             // Create a PromotionRequirements object with eligibility criteria
-            var eligibilityCriteria = new PromotionRequirements
+            var eligibilityCriteria = new PromotionCriteria
             {
                 MinimumAge = 18,
                 MinimumTrainingHours = eligibilityHours,
@@ -64,7 +64,7 @@ namespace DojoStudentManagementTests
             };
 
             // Create a PromotionRequirements object with eligibility criteria
-            var eligibilityCriteria = new PromotionRequirements
+            var eligibilityCriteria = new PromotionCriteria
             {
                 MinimumAge = 18,
                 MinimumTrainingHours = 250,

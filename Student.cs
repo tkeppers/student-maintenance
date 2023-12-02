@@ -38,7 +38,7 @@ namespace DojoStudentManagement
         }
 
         //TODO: Add Tests
-        public bool IsEligibleForPromotion(StudentArtsAndRank art, PromotionRequirements eligibility)
+        public bool IsEligibleForPromotion(StudentArtsAndRank art, PromotionCriteria eligibility)
         {
             if (StudentAgeInYears() < eligibility.MinimumAge)
                 return false;

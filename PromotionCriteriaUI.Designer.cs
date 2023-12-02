@@ -1,7 +1,7 @@
 ﻿
 namespace DojoStudentManagement
 {
-    partial class PromotionSettingsUI
+    partial class PromotionCriteriaUI
     {
         /// <summary>
         /// Required designer variable.
@@ -36,19 +36,20 @@ namespace DojoStudentManagement
             // dgvPromotionSettings
             // 
             this.dgvPromotionSettings.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvPromotionSettings.Location = new System.Drawing.Point(41, 32);
+            this.dgvPromotionSettings.Location = new System.Drawing.Point(12, 41);
             this.dgvPromotionSettings.Name = "dgvPromotionSettings";
             this.dgvPromotionSettings.Size = new System.Drawing.Size(588, 350);
             this.dgvPromotionSettings.TabIndex = 0;
             // 
-            // PromotionSettingsUI
+            // PromotionCriteriaUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(633, 476);
             this.Controls.Add(this.dgvPromotionSettings);
-            this.Name = "PromotionSettingsUI";
-            this.Text = "PromotionSettingsUI";
+            this.Name = "PromotionCriteriaUI";
+            this.ShowIcon = false;
+            this.Text = "Promotion Settings";
             this.Load += new System.EventHandler(this.PromotionSettingsUI_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvPromotionSettings)).EndInit();
             this.ResumeLayout(false);

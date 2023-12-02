@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace DojoStudentManagement
 {
-    public partial class PromotionSettingsUI : Form
+    public partial class PromotionCriteriaUI : Form
     {
-        public PromotionSettingsUI(DataTable promotionRequirementsTable)
+        public PromotionCriteriaUI(DataTable promotionRequirementsTable)
         {
             InitializeComponent();
 

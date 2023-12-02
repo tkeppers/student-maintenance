@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DojoStudentManagement
 {
-    public class PromotionRequirements
+    public class PromotionCriteria
     {
         public string CurrentRank { get; set; }
         public string NextRank { get; set; }
@@ -19,17 +19,17 @@ namespace DojoStudentManagement
 
         DataTable promotionRequirementsTable;
 
-        public PromotionRequirements()
+        public PromotionCriteria()
         {
 
         }
 
-        public PromotionRequirements(DataTable promotionRequirementsTable /*, StudentArtsAndRank art*/)
+        public PromotionCriteria(DataTable promotionRequirementsTable /*, StudentArtsAndRank art*/)
         {
             this.promotionRequirementsTable = promotionRequirementsTable;
         }
 
-        public PromotionRequirements GetNextPromotionCriteria(StudentArtsAndRank art)
+        public PromotionCriteria GetNextPromotionCriteria(StudentArtsAndRank art)
         {
             string filter = $"Art = '{art.StudentArt}' AND CurrentRank = '{art.Rank}'";
             DataRow[] nextPromotionInfo = promotionRequirementsTable.Select(filter);
