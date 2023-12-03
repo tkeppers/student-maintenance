@@ -364,5 +364,11 @@ namespace DojoStudentManagement
             PromotionCriteriaUI promotionSettings = new PromotionCriteriaUI(promotionRequirements);
             promotionSettings.ShowDialog();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            PromoteStudentUI promote = new PromoteStudentUI(currentStudent, selectedArt);
+            promote.ShowDialog();
+        }
     }
 }

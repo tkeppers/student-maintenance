@@ -28,6 +28,11 @@ namespace DojoStudentManagement
 
         internal List<StudentArtsAndRank> StudentArtsAndRanks = new List<StudentArtsAndRank>();
 
+        public Student()
+        {
+
+        }
+
         //TODO: Add Tests
         public double StudentAgeInYears()
         {
