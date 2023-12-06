@@ -19,64 +19,87 @@ namespace DojoStudentManagementTests
         [TestCase("Aikido", "SANKYU", 120, 120)]
         [TestCase("Aikido", "NIKYU", 160, 160)]
         [TestCase("Aikido", "IKKYU", 250, 250)]
-        public void IsEligibleForPromotion_WhenEligible_ShouldReturnTrue(string art, string rank, int hours, int eligibilityHours)
+        [TestCase("Aikido", "SHODAN", 500, 500)]
+        public void IsEligibleForPromotion_WithSufficientTrainingHours_ReturnsTrue(string art, string rank, int hours, int eligibilityHours)
         {
-            // Set up a student that is eligible based on age and total time in art. Only variable 
-            // is training hours
-            var eligibleStudentArts = new StudentArtsAndRank
-            {
-                StudentArt = art,
-                Rank = rank,
-                DateStarted = new System.DateTime(1900, 01, 01),
-                HoursInArt = hours,
-                DatePromoted = new System.DateTime(1900, 01, 01),
-                PromotionHours = 10000
-            };
+            StudentArtsAndRank eligibleStudentArts = CreateEligibleStudentArts(art, rank, hours);
+            PromotionCriteria eligibilityCriteria = CreatePromotionCriteria(eligibilityHours);
 
-            // Create a PromotionRequirements object with eligibility criteria
-            var eligibilityCriteria = new PromotionCriteria
-            {
-                MinimumAge = 18,
-                MinimumTrainingHours = eligibilityHours,
-                YearsInArt = 1,
-                YearsAtCurrentRank = 0.25
-            };
+            bool result = student1.IsEligibleForPromotion(eligibleStudentArts, eligibilityCriteria);
 
-            // Act
-            var result = student1.IsEligibleForPromotion(eligibleStudentArts, eligibilityCriteria);
-
-            // Assert
             Assert.IsTrue(result);
         }
 
         [Test]
-        public void IsEligibleForPromotion_WhenNotEligible_ShouldReturnFalse()
+        [TestCase("Aikido", "WHITE", 39, 40)]
+        [TestCase("Aikido", "YONKYU", 79, 80)]
+        [TestCase("Aikido", "SANKYU", 119, 120)]
+        [TestCase("Aikido", "NIKYU", 159, 160)]
+        [TestCase("Aikido", "IKKYU", 249, 250)]
+        [TestCase("Aikido", "SHODAN", 499, 500)]
+        public void IsEligibleForPromotion_WhenNotEligibleBasedOnHours_ShouldReturnFalse(string art, string rank, int hours, int eligibilityHours)
         {
-            // Create a StudentArtsAndRank object with insufficient data for eligibility
-            var notEligibleStudentArts = new StudentArtsAndRank
+            StudentArtsAndRank eligibleStudentArts = CreateEligibleStudentArts(art, rank, hours);
+            PromotionCriteria eligibilityCriteria = CreatePromotionCriteria(eligibilityHours);
+
+            bool result = student1.IsEligibleForPromotion(eligibleStudentArts, eligibilityCriteria);
+
+            Assert.IsFalse(result);
+        }
+
+
+         //Helper methods for test data creation
+        private StudentArtsAndRank CreateEligibleStudentArts(string art, string rank, int hours)
+        {
+            // Set up a student that is eligible based on age and total time in art. Only variable 
+            // is training hours
+            StudentArtsAndRank eligibleStudentArts = new StudentArtsAndRank
             {
-                StudentArt = "Aikido",
-                Rank = "IKKYU",
+                StudentArt = art,
+                Rank = rank,
+                HoursInArt = hours,
+
+                //Choose start/promotion/hours critera to ensure test case will 
+                //pass successfully no matter what rank
+                DateStarted = new System.DateTime(1900, 01, 01),
+                DatePromoted = new System.DateTime(1900, 01, 01),
+                PromotionHours = 10000
+            };
+
+            return eligibleStudentArts;
+        }
+
+       /* private StudentArtsAndRank CreateIneligibleStudentArts(string art, string rank, int hours)
+        {
+            // Set up a student that is ineligible based on age and total time in art. Only variable 
+            // is training hours
+            StudentArtsAndRank ineligibleStudentArts = new StudentArtsAndRank
+            {
+                StudentArt = art,
+                Rank = rank,
                 DateStarted = new System.DateTime(2021, 01, 01),
                 HoursInArt = 100,
                 DatePromoted = new System.DateTime(2021, 01, 15),
-                PromotionHours = 251
+                PromotionHours = 5
             };
 
-            // Create a PromotionRequirements object with eligibility criteria
-            var eligibilityCriteria = new PromotionCriteria
+            return ineligibleStudentArts;
+        }
+       */
+
+        private PromotionCriteria CreatePromotionCriteria(int eligibilityHours)
+        {
+            PromotionCriteria eligibilityCriteria = new PromotionCriteria
             {
-                MinimumAge = 18,
-                MinimumTrainingHours = 250,
+                MinimumTrainingHours = eligibilityHours,
+
+                //These values ignore the age / time in art promotion criteria.\
+                MinimumAge = 1,
                 YearsInArt = 1,
                 YearsAtCurrentRank = 0.25
             };
 
-            // Act
-            var result = student1.IsEligibleForPromotion(notEligibleStudentArts, eligibilityCriteria);
-
-            // Assert
-            Assert.IsFalse(result);
+            return eligibilityCriteria;
         }
     }
 }
