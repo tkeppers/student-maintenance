@@ -46,6 +46,7 @@ namespace DojoStudentManagement
                 YearsAtCurrentRank = double.TryParse(nextPromotionInfo[0]["YearsAtCurrentRank"].ToString(), out double yearsAtCurrentRank) ? yearsAtCurrentRank : 0;
             }
 
+            art.NextRank = NextRank;
             return this;
         }
 

@@ -96,9 +96,11 @@ namespace DojoStudentManagement
         private void NotifyIfEligibleForPromotion(StudentArtsAndRank currentArtRank)
         {
             PromotionCriteria eligibility = new PromotionCriteria(promotionRequirements);
+            
             eligibility.GetNextPromotionCriteria(currentArtRank);
-
-            if (currentStudent.IsEligibleForPromotion(currentArtRank, eligibility))
+            currentArtRank.EligibleForPromotion = currentStudent.IsEligibleForPromotion(currentArtRank, eligibility);
+            
+            if (currentArtRank.EligibleForPromotion)
                 txtMessages.Text += "Eligible for promotion to " + eligibility.NextRank + " in " + eligibility.CurrentArt + "\n";
         }
 
@@ -367,7 +369,12 @@ namespace DojoStudentManagement
 
         private void button1_Click(object sender, EventArgs e)
         {
-            PromoteStudentUI promote = new PromoteStudentUI(currentStudent, selectedArt);
+            //TODO: If there isn't a student art selected AND the student is only in one art, automatically select that one 
+            //so that the user doesn't have to. 
+            //TODO: If there isn't a student art selected AND the student is in multiple arts, but is only eligible for 
+            //promotion in one of them, automatically select that one.
+            //Otherwise, display a message to the user advising them to choose an art to promote the student in
+            PromoteStudentUI promote = new PromoteStudentUI(currentStudent, selectedArt, promotionRequirements);
             promote.ShowDialog();
         }
     }

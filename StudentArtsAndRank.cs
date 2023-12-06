@@ -17,6 +17,8 @@ namespace DojoStudentManagement
         public DateTime? DateOfLatestSignIn { get; set; }
         public DateTime? DatePromoted { get; set; }
         public double PromotionHours { get; set; }
+        public string NextRank { get; internal set; }
+        public bool EligibleForPromotion { get; internal set; }
 
         /// <summary>
         /// Returns the amount of time in years since the student first began taking the martial art.
