@@ -95,7 +95,7 @@ namespace DojoStudentManagement
             this.btnAddArt = new System.Windows.Forms.Button();
             this.txtMessages = new System.Windows.Forms.TextBox();
             this.lblPromotionEligibility = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnPromoteStudent = new System.Windows.Forms.Button();
             this.gbStudentInfo.SuspendLayout();
             this.gbGender.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStudentList)).BeginInit();
@@ -731,22 +731,22 @@ namespace DojoStudentManagement
             this.lblPromotionEligibility.TabIndex = 15;
             this.lblPromotionEligibility.Text = "Promotion Eligibility";
             // 
-            // button1
+            // btnPromoteStudent
             // 
-            this.button1.Location = new System.Drawing.Point(606, 565);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(108, 36);
-            this.button1.TabIndex = 16;
-            this.button1.Text = "Promote Student";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btnPromoteStudent.Location = new System.Drawing.Point(606, 565);
+            this.btnPromoteStudent.Name = "btnPromoteStudent";
+            this.btnPromoteStudent.Size = new System.Drawing.Size(108, 36);
+            this.btnPromoteStudent.TabIndex = 16;
+            this.btnPromoteStudent.Text = "Promote Student";
+            this.btnPromoteStudent.UseVisualStyleBackColor = true;
+            this.btnPromoteStudent.Click += new System.EventHandler(this.btnPromoteStudent_Click);
             // 
             // StudentMaintenanceUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(933, 676);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnPromoteStudent);
             this.Controls.Add(this.lblPromotionEligibility);
             this.Controls.Add(this.txtMessages);
             this.Controls.Add(this.toolStrip1);
@@ -840,7 +840,7 @@ namespace DojoStudentManagement
         private System.Windows.Forms.ColumnHeader columnLastSignInDate;
         private System.Windows.Forms.TextBox txtMessages;
         private System.Windows.Forms.Label lblPromotionEligibility;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnPromoteStudent;
     }
 }
 

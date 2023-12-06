@@ -367,13 +367,19 @@ namespace DojoStudentManagement
             promotionSettings.ShowDialog();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btnPromoteStudent_Click(object sender, EventArgs e)
         {
             //TODO: If there isn't a student art selected AND the student is only in one art, automatically select that one 
             //so that the user doesn't have to. 
             //TODO: If there isn't a student art selected AND the student is in multiple arts, but is only eligible for 
             //promotion in one of them, automatically select that one.
             //Otherwise, display a message to the user advising them to choose an art to promote the student in
+            if (string.IsNullOrEmpty(selectedArt.StudentArt))
+            {
+                MessageBox.Show("Please select a valid art before proceeding with promotion.", "Art Not Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             PromoteStudentUI promote = new PromoteStudentUI(currentStudent, selectedArt, promotionRequirements);
             promote.ShowDialog();
         }
