@@ -42,12 +42,7 @@ namespace DojoStudentManagement
         }
 
         public bool IsEligibleForPromotion(StudentArtsAndRank art, PromotionCriteria eligibility)
-        {
-            //BUG: This function is returning true if the user has a rank that isn't recognized by the system. For example, 
-            //the dojo used to have a rank in Judo called GOKYU. With current business rules, we consider any rank below 
-            //YONKYU to just be "WHITE" (white belt). However, there are still a few students in the system with such ranks. 
-            //The real solution is to change their rank in the database. However, need to put in a patch to NOT return 
-            //true in these instances. 
+        { 
             if (StudentAgeInYears() < eligibility.MinimumAge)
                 return false;
 
@@ -58,6 +53,12 @@ namespace DojoStudentManagement
                 return false;
 
             if (art.YearsAtCurrentLevel() < eligibility.YearsAtCurrentRank)
+                return false;
+
+            //Fixes bug where the function was erroneously returning true if a match for the student's current rank 
+            //could not be found in the eligibility table. This should also fix the edge case where a student has
+            //achieved the maximum rank and there are no further promotions available.
+            if (string.IsNullOrWhiteSpace(eligibility.NextRank))
                 return false;
 
             return true;

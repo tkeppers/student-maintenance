@@ -17,7 +17,7 @@ namespace DojoStudentManagement
         public DateTime? DateOfLatestSignIn { get; set; }
         public DateTime? DatePromoted { get; set; }
         public double PromotionHours { get; set; }
-        public string NextRank { get; internal set; }
+        public string NextRank { get; set; }
         public bool EligibleForPromotion { get; internal set; }
 
         /// <summary>

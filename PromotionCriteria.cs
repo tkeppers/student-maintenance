@@ -21,10 +21,11 @@ namespace DojoStudentManagement
 
         public PromotionCriteria()
         {
-
+            CurrentRank = string.Empty;
+            NextRank = string.Empty;
         }
 
-        public PromotionCriteria(DataTable promotionRequirementsTable /*, StudentArtsAndRank art*/)
+        public PromotionCriteria(DataTable promotionRequirementsTable)
         {
             this.promotionRequirementsTable = promotionRequirementsTable;
         }

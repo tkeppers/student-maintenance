@@ -88,13 +88,13 @@ namespace DojoStudentManagementTests
             {
                 StudentArt = art,
                 Rank = rank,
+                NextRank = "NEXT_RANK", //Make sure this is not null or test will fail
                 HoursInArt = hours,
 
                 //Choose start/promotion/hours critera to ensure test case will 
                 //pass successfully no matter what rank
                 DateStarted = new System.DateTime(1900, 01, 01),
                 DatePromoted = new System.DateTime(1900, 01, 01),
-                PromotionHours = 10000
             };
 
             return eligibleStudentArts;
@@ -123,6 +123,7 @@ namespace DojoStudentManagementTests
             PromotionCriteria eligibilityCriteria = new PromotionCriteria
             {
                 MinimumTrainingHours = eligibilityHours,
+                NextRank = "NEXT_RANK",
 
                 //These values ignore the age / time in art promotion criteria.
                 MinimumAge = 1,
