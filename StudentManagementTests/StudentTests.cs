@@ -68,10 +68,10 @@ namespace DojoStudentManagementTests
             StudentArtsAndRank invalidStudentArt = new StudentArtsAndRank
             {
                 StudentArt = "Judo",
-                Rank = "NINJA",
-                HoursInArt = 40
+                Rank = "GOKYU",
+                HoursInArt = 1.5
             };
-            PromotionCriteria eligibilityCriteria = CreatePromotionCriteria(5); //5 = hours in art
+            PromotionCriteria eligibilityCriteria = new PromotionCriteria();
 
             bool result = student1.IsEligibleForPromotion(invalidStudentArt, eligibilityCriteria);
 
@@ -124,7 +124,7 @@ namespace DojoStudentManagementTests
             {
                 MinimumTrainingHours = eligibilityHours,
 
-                //These values ignore the age / time in art promotion criteria.\
+                //These values ignore the age / time in art promotion criteria.
                 MinimumAge = 1,
                 YearsInArt = 1,
                 YearsAtCurrentRank = 0.25
