@@ -29,6 +29,13 @@ namespace DojoStudentManagement
             var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             this.Text = $"Windsong Dojo Student Maintenance Application - Version {version}";
 
+            if (!dataAccess.DatabaseExistsAndIsValid())
+            {
+                string errText = "Database is invalid or inaccessible. Please check the database path in application settings.";
+                MessageBox.Show(errText, "Database Access Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             //Read this lookup table into memory up front because it will be accessed for 
             //most operations involving students and martial arts
             promotionRequirements = dataAccess.GetStudentPromotionRequirements();

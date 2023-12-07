@@ -117,7 +117,6 @@
       <DependentUpon>StudentAddUI.cs</DependentUpon>
     </Compile>
     <Compile Include="StudentArtsAndRank.cs" />
-    <Compile Include="StudentArtsAndRankFunctions.cs" />
     <Compile Include="StudentMaintenanceUI.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -47,8 +47,39 @@ namespace DojoStudentManagementTests
             Assert.IsFalse(result);
         }
 
+        [Test]
+        public void IsEligibleForPromotion_MartialArtDoesNotHavePromotionCriteria_ShouldReturnFalse()
+        {
+            StudentArtsAndRank invalidStudentArt = new StudentArtsAndRank
+            {
+                StudentArt = "Underwater Basketweaving",
+                HoursInArt = 0
+            };
+            PromotionCriteria eligibilityCriteria = CreatePromotionCriteria(5); //5 = hours in art
 
-         //Helper methods for test data creation
+            bool result = student1.IsEligibleForPromotion(invalidStudentArt, eligibilityCriteria);
+
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public void IsEligibleForPromotion_CurrentRankIsInvalid_ShouldReturnFalse()
+        {
+            StudentArtsAndRank invalidStudentArt = new StudentArtsAndRank
+            {
+                StudentArt = "Judo",
+                Rank = "NINJA",
+                HoursInArt = 40
+            };
+            PromotionCriteria eligibilityCriteria = CreatePromotionCriteria(5); //5 = hours in art
+
+            bool result = student1.IsEligibleForPromotion(invalidStudentArt, eligibilityCriteria);
+
+            Assert.IsFalse(result);
+        }
+
+
+        //Helper methods for test data creation
         private StudentArtsAndRank CreateEligibleStudentArts(string art, string rank, int hours)
         {
             // Set up a student that is eligible based on age and total time in art. Only variable 

@@ -33,8 +33,7 @@ namespace DojoStudentManagement
 
         }
 
-        //TODO: Add Tests
-        public double StudentAgeInYears()
+        private double StudentAgeInYears()
         {
             TimeSpan span = DateTime.Now - DateOfBirth;
             double studentAgeInYears = Math.Round(span.TotalDays / 365.25, 2); // Using 365.25 to account for leap years
@@ -42,7 +41,6 @@ namespace DojoStudentManagement
             return studentAgeInYears;
         }
 
-        //TODO: Add Tests
         public bool IsEligibleForPromotion(StudentArtsAndRank art, PromotionCriteria eligibility)
         {
             if (StudentAgeInYears() < eligibility.MinimumAge)

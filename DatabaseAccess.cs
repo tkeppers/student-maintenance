@@ -30,7 +30,7 @@ namespace DojoStudentManagement
                 databasePath + ";Jet OLEDB:Database Password=" + databasePassword;
         }
 
-        internal bool DatabaseExistsAndIsValid()
+        public bool DatabaseExistsAndIsValid()
         {
             if (!System.IO.File.Exists(databasePath))
                 return false;
@@ -53,13 +53,6 @@ namespace DojoStudentManagement
         //TODO: Implement logging (use SeriLog)
         public DataTable GetStudentTable()
         {
-            if (DatabaseExistsAndIsValid() == false)
-            {
-                string errText = "Database " + databasePath + " is invalid or inaccessible. Please check the database path in application settings.";
-                MessageBox.Show(errText, "Database Access Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return new DataTable();
-            }
-
             DataTable dataTable;
 
             using (OleDbConnection connection = new OleDbConnection(connectionString))
@@ -128,6 +121,13 @@ namespace DojoStudentManagement
         /// <remarks>We will read in the entire table (it's not very big) to minimize databate hits</remarks>
         public DataTable GetStudentPromotionRequirements()
         {
+            /*if (DatabaseExistsAndIsValid() == false)
+            {
+                string errText = "Database " + databasePath + " is invalid or inaccessible. Please check the database path in application settings.";
+                MessageBox.Show(errText, "Database Access Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return new DataTable();
+            }*/
+
             DataTable dataTable;
 
             using (OleDbConnection connection = new OleDbConnection(connectionString))

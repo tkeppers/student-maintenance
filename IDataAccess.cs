@@ -23,5 +23,7 @@ namespace DojoStudentManagement
         bool AddNewStudent(Student student);
 
         bool UpdateStudent(Student student);
+
+        bool DatabaseExistsAndIsValid();
     }
 }
