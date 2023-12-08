@@ -360,6 +360,7 @@ namespace DojoStudentManagement
                 selectedArt.PromotionHours = double.TryParse(selecteditem.SubItems[5].Text, out double promotionHours) ? hoursInArt : 0;
                 selectedArt.StudentArtID = int.TryParse(selecteditem.SubItems[6].Text, out int studentArtID) ? studentArtID : 0;
                 selectedArt.DateOfLatestSignIn = DateTime.TryParse(selecteditem.SubItems[7].Text, out DateTime dateOfLatestSignin) ? dateOfLatestSignin : (DateTime?)null;
+                selectedArt.EligibleForPromotion = currentStudent.IsEligibleForPromotion(selectedArt, new PromotionCriteria(promotionRequirements));
             }
         }
 
