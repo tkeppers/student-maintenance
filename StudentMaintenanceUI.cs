@@ -81,7 +81,8 @@ namespace DojoStudentManagement
 
             foreach (StudentArtsAndRank artRank in currentStudent.StudentArtsAndRanks)
             {
-                string[] subitems = { "Art", "Rank", "Start Date", "Hours", "Promotion Date", "Promotion Hours", "ID", "Last Sign-In Date" };
+                string[] subitems = { "Art", "Rank", "Start Date", "Hours", "Promotion Date", "Promotion Hours", "ID", 
+                    "Last Sign-In Date", "Eligible for Promotion", "Next Rank" };
                 ListViewItem item = new ListViewItem(subitems);
                 item.SubItems[0].Text = artRank.StudentArt;
                 item.SubItems[1].Text = artRank.Rank;
@@ -94,9 +95,15 @@ namespace DojoStudentManagement
                 item.SubItems[6].Text = artRank.StudentArtID.ToString();
                 item.SubItems[7].Text = artRank.DateOfLatestSignIn.ToString();
 
-                lvwArtsAndRanks.Items.Add(item);
-
                 NotifyIfEligibleForPromotion(artRank);
+
+                if (artRank.EligibleForPromotion)
+                {
+                    item.SubItems[8].Text = "Y";
+                    item.SubItems[9].Text = artRank.NextRank;
+                }
+
+                lvwArtsAndRanks.Items.Add(item);
             }
         }
 
@@ -106,7 +113,7 @@ namespace DojoStudentManagement
             
             eligibility.GetNextPromotionCriteria(currentArtRank);
             currentArtRank.EligibleForPromotion = currentStudent.IsEligibleForPromotion(currentArtRank, eligibility);
-            
+
             if (currentArtRank.EligibleForPromotion)
                 txtMessages.Text += "Eligible for promotion to " + eligibility.NextRank + " in " + eligibility.CurrentArt + "\n";
         }
@@ -360,7 +367,8 @@ namespace DojoStudentManagement
                 selectedArt.PromotionHours = double.TryParse(selecteditem.SubItems[5].Text, out double promotionHours) ? hoursInArt : 0;
                 selectedArt.StudentArtID = int.TryParse(selecteditem.SubItems[6].Text, out int studentArtID) ? studentArtID : 0;
                 selectedArt.DateOfLatestSignIn = DateTime.TryParse(selecteditem.SubItems[7].Text, out DateTime dateOfLatestSignin) ? dateOfLatestSignin : (DateTime?)null;
-                selectedArt.EligibleForPromotion = currentStudent.IsEligibleForPromotion(selectedArt, new PromotionCriteria(promotionRequirements));
+                selectedArt.EligibleForPromotion = selecteditem.SubItems[8].Text.Contains("Y");
+                selectedArt.NextRank = selecteditem.SubItems[9].Text;
             }
         }
 

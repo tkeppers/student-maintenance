@@ -36,9 +36,11 @@ namespace DojoStudentManagement
             this.cmbNextRank = new System.Windows.Forms.ComboBox();
             this.dtPromotionDate = new System.Windows.Forms.DateTimePicker();
             this.lblPromotionDate = new System.Windows.Forms.Label();
-            this.cmbArt = new System.Windows.Forms.ComboBox();
             this.lblArt = new System.Windows.Forms.Label();
             this.txtStudentName = new System.Windows.Forms.TextBox();
+            this.btnPromoteStudent = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.txtArt = new System.Windows.Forms.TextBox();
             this.chkEligibleForPromotion = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
@@ -93,7 +95,7 @@ namespace DojoStudentManagement
             // 
             this.dtPromotionDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dtPromotionDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtPromotionDate.Location = new System.Drawing.Point(31, 189);
+            this.dtPromotionDate.Location = new System.Drawing.Point(21, 189);
             this.dtPromotionDate.Name = "dtPromotionDate";
             this.dtPromotionDate.Size = new System.Drawing.Size(109, 22);
             this.dtPromotionDate.TabIndex = 6;
@@ -102,20 +104,11 @@ namespace DojoStudentManagement
             // 
             this.lblPromotionDate.AutoSize = true;
             this.lblPromotionDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblPromotionDate.Location = new System.Drawing.Point(28, 170);
+            this.lblPromotionDate.Location = new System.Drawing.Point(18, 170);
             this.lblPromotionDate.Name = "lblPromotionDate";
             this.lblPromotionDate.Size = new System.Drawing.Size(101, 16);
             this.lblPromotionDate.TabIndex = 7;
             this.lblPromotionDate.Text = "Promotion Date";
-            // 
-            // cmbArt
-            // 
-            this.cmbArt.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmbArt.FormattingEnabled = true;
-            this.cmbArt.Location = new System.Drawing.Point(171, 44);
-            this.cmbArt.Name = "cmbArt";
-            this.cmbArt.Size = new System.Drawing.Size(155, 24);
-            this.cmbArt.TabIndex = 8;
             // 
             // lblArt
             // 
@@ -134,13 +127,40 @@ namespace DojoStudentManagement
             this.txtStudentName.Size = new System.Drawing.Size(133, 20);
             this.txtStudentName.TabIndex = 10;
             // 
+            // btnPromoteStudent
+            // 
+            this.btnPromoteStudent.Location = new System.Drawing.Point(21, 238);
+            this.btnPromoteStudent.Name = "btnPromoteStudent";
+            this.btnPromoteStudent.Size = new System.Drawing.Size(142, 38);
+            this.btnPromoteStudent.TabIndex = 12;
+            this.btnPromoteStudent.Text = "Promote Student";
+            this.btnPromoteStudent.UseVisualStyleBackColor = true;
+            this.btnPromoteStudent.Click += new System.EventHandler(this.btnPromoteStudent_Click);
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Location = new System.Drawing.Point(171, 238);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(85, 38);
+            this.btnCancel.TabIndex = 13;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            // 
+            // txtArt
+            // 
+            this.txtArt.Location = new System.Drawing.Point(168, 46);
+            this.txtArt.Name = "txtArt";
+            this.txtArt.Size = new System.Drawing.Size(158, 20);
+            this.txtArt.TabIndex = 14;
+            // 
             // chkEligibleForPromotion
             // 
             this.chkEligibleForPromotion.AutoSize = true;
             this.chkEligibleForPromotion.Location = new System.Drawing.Point(168, 189);
             this.chkEligibleForPromotion.Name = "chkEligibleForPromotion";
+            this.chkEligibleForPromotion.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.chkEligibleForPromotion.Size = new System.Drawing.Size(124, 17);
-            this.chkEligibleForPromotion.TabIndex = 11;
+            this.chkEligibleForPromotion.TabIndex = 15;
             this.chkEligibleForPromotion.Text = "Eligible for Promotion";
             this.chkEligibleForPromotion.UseVisualStyleBackColor = true;
             // 
@@ -150,9 +170,11 @@ namespace DojoStudentManagement
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(382, 326);
             this.Controls.Add(this.chkEligibleForPromotion);
+            this.Controls.Add(this.txtArt);
+            this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.btnPromoteStudent);
             this.Controls.Add(this.txtStudentName);
             this.Controls.Add(this.lblArt);
-            this.Controls.Add(this.cmbArt);
             this.Controls.Add(this.lblPromotionDate);
             this.Controls.Add(this.dtPromotionDate);
             this.Controls.Add(this.cmbNextRank);
@@ -177,9 +199,11 @@ namespace DojoStudentManagement
         private System.Windows.Forms.ComboBox cmbNextRank;
         private System.Windows.Forms.DateTimePicker dtPromotionDate;
         private System.Windows.Forms.Label lblPromotionDate;
-        private System.Windows.Forms.ComboBox cmbArt;
         private System.Windows.Forms.Label lblArt;
         private System.Windows.Forms.TextBox txtStudentName;
+        private System.Windows.Forms.Button btnPromoteStudent;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.TextBox txtArt;
         private System.Windows.Forms.CheckBox chkEligibleForPromotion;
     }
 }

@@ -12,6 +12,9 @@ namespace DojoStudentManagement
 {
     public partial class PromoteStudentUI : Form
     {
+        Student currentStudent;
+        StudentArtsAndRank currentArt;
+
         public PromoteStudentUI()
         {
             InitializeComponent();
@@ -21,6 +24,9 @@ namespace DojoStudentManagement
         public PromoteStudentUI(Student student, StudentArtsAndRank art, DataTable promotionRequirements)
         {
             InitializeComponent();
+
+            currentStudent = student;
+            currentArt = art;
 
             LoadListOfRanks(promotionRequirements, art.StudentArt);
             PopulatePromotionData(student, art);
@@ -39,7 +45,7 @@ namespace DojoStudentManagement
         {
             txtStudentName.Text = student.FirstName + " " + student.LastName;
             
-            cmbArt.Text = art.StudentArt;
+            txtArt.Text = art.StudentArt;
             chkEligibleForPromotion.Checked = art.EligibleForPromotion;
             
             txtCurrentRank.Text = art.Rank;
@@ -65,6 +71,29 @@ namespace DojoStudentManagement
             //      a different student after the screen loads. Not sure if allowing that is a good idea.
             //
             // Move this to a business logic class, like PromotionCriteria or Student
+        }
+
+        private bool ConfirmStudentPromotion()
+        {
+            bool confirmPromotion = false;
+
+            if (cmbNextRank.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a valid rank for promotion.", "Promotion Rank Not Set", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+
+            string message = "Promote " + currentStudent.FirstName + " " + currentStudent.LastName + " from " +
+                currentArt.Rank + " to " + cmbNextRank.Text + " in " + currentArt.StudentArt + "?";
+            MessageBox.Show(message, "Promote Student?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+
+            return confirmPromotion;
+        }
+
+        private void btnPromoteStudent_Click(object sender, EventArgs e)
+        {
+            ConfirmStudentPromotion();
         }
     }
 }
