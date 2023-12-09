@@ -49,14 +49,13 @@ namespace DojoStudentManagement
             chkEligibleForPromotion.Checked = art.EligibleForPromotion;
             
             txtCurrentRank.Text = art.Rank;
-            cmbNextRank.SelectedItem = art.NextRank;
+            cmbNextRank.Text = art.NextRank;
 
             dtPromotionDate.Value = DateTime.Now;
         }
 
         private void PromoteStudentUI_Load(object sender, EventArgs e)
         {
-
         }
 
         private void ValidatePromotion()
@@ -73,15 +72,38 @@ namespace DojoStudentManagement
             // Move this to a business logic class, like PromotionCriteria or Student
         }
 
+        private bool ValidateFormData()
+        {
+            string errorText = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(txtStudentName.Text))
+                errorText = "Invalid student name.\n";
+
+            if (string.IsNullOrWhiteSpace(txtCurrentRank.Text))
+                errorText = "Invalid value for current rank.\n";
+
+            if (string.IsNullOrWhiteSpace(txtArt.Text))
+                errorText = "Invalid value for student art.\n";
+
+            if (cmbNextRank.SelectedItem == null)
+                errorText = "Please select a valid rank for promotion.\n";
+
+            if (string.IsNullOrWhiteSpace(errorText) == false)
+            {
+                MessageBox.Show(errorText, "Form Data Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            return true;
+        }
+
+
         private bool ConfirmStudentPromotion()
         {
             bool confirmPromotion = false;
 
-            if (cmbNextRank.SelectedItem == null)
-            {
-                MessageBox.Show("Please select a valid rank for promotion.", "Promotion Rank Not Set", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            if (ValidateFormData() == false)
                 return false;
-            }
 
 
             string message = "Promote " + currentStudent.FirstName + " " + currentStudent.LastName + " from " +
@@ -93,7 +115,11 @@ namespace DojoStudentManagement
 
         private void btnPromoteStudent_Click(object sender, EventArgs e)
         {
-            ConfirmStudentPromotion();
+            if (ConfirmStudentPromotion())
+            {
+                //currentStudent.UpdatePromotionHistory(currentArt);
+                currentArt.PromoteStudentToNewLevel(cmbNextRank.Text);
+            }
         }
     }
 }

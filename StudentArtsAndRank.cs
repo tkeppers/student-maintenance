@@ -50,5 +50,14 @@ namespace DojoStudentManagement
 
             return yearsAtCurrentLevel;
         }
+
+        public void PromoteStudentToNewLevel(string newRank)
+        {
+            Rank = newRank;
+            NextRank = string.Empty;
+            EligibleForPromotion = false;
+            DatePromoted = DateTime.Now;
+            PromotionHours = 0;
+        }
     }
 }

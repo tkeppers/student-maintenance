@@ -48,7 +48,7 @@ namespace DojoStudentManagement
             // 
             this.lblStudent.AutoSize = true;
             this.lblStudent.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblStudent.Location = new System.Drawing.Point(38, 25);
+            this.lblStudent.Location = new System.Drawing.Point(18, 27);
             this.lblStudent.Name = "lblStudent";
             this.lblStudent.Size = new System.Drawing.Size(53, 16);
             this.lblStudent.TabIndex = 1;
@@ -57,16 +57,17 @@ namespace DojoStudentManagement
             // txtCurrentRank
             // 
             this.txtCurrentRank.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCurrentRank.Location = new System.Drawing.Point(21, 122);
+            this.txtCurrentRank.Location = new System.Drawing.Point(21, 110);
             this.txtCurrentRank.Name = "txtCurrentRank";
-            this.txtCurrentRank.Size = new System.Drawing.Size(123, 22);
+            this.txtCurrentRank.ReadOnly = true;
+            this.txtCurrentRank.Size = new System.Drawing.Size(157, 22);
             this.txtCurrentRank.TabIndex = 2;
             // 
             // lblCurrentRank
             // 
             this.lblCurrentRank.AutoSize = true;
             this.lblCurrentRank.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCurrentRank.Location = new System.Drawing.Point(38, 103);
+            this.lblCurrentRank.Location = new System.Drawing.Point(18, 91);
             this.lblCurrentRank.Name = "lblCurrentRank";
             this.lblCurrentRank.Size = new System.Drawing.Size(85, 16);
             this.lblCurrentRank.TabIndex = 3;
@@ -76,7 +77,7 @@ namespace DojoStudentManagement
             // 
             this.lblNextRank.AutoSize = true;
             this.lblNextRank.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNextRank.Location = new System.Drawing.Point(168, 103);
+            this.lblNextRank.Location = new System.Drawing.Point(192, 91);
             this.lblNextRank.Name = "lblNextRank";
             this.lblNextRank.Size = new System.Drawing.Size(70, 16);
             this.lblNextRank.TabIndex = 4;
@@ -86,16 +87,16 @@ namespace DojoStudentManagement
             // 
             this.cmbNextRank.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbNextRank.FormattingEnabled = true;
-            this.cmbNextRank.Location = new System.Drawing.Point(168, 122);
+            this.cmbNextRank.Location = new System.Drawing.Point(195, 110);
             this.cmbNextRank.Name = "cmbNextRank";
-            this.cmbNextRank.Size = new System.Drawing.Size(158, 24);
+            this.cmbNextRank.Size = new System.Drawing.Size(131, 24);
             this.cmbNextRank.TabIndex = 5;
             // 
             // dtPromotionDate
             // 
             this.dtPromotionDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dtPromotionDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtPromotionDate.Location = new System.Drawing.Point(21, 189);
+            this.dtPromotionDate.Location = new System.Drawing.Point(21, 177);
             this.dtPromotionDate.Name = "dtPromotionDate";
             this.dtPromotionDate.Size = new System.Drawing.Size(109, 22);
             this.dtPromotionDate.TabIndex = 6;
@@ -104,7 +105,7 @@ namespace DojoStudentManagement
             // 
             this.lblPromotionDate.AutoSize = true;
             this.lblPromotionDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblPromotionDate.Location = new System.Drawing.Point(18, 170);
+            this.lblPromotionDate.Location = new System.Drawing.Point(18, 158);
             this.lblPromotionDate.Name = "lblPromotionDate";
             this.lblPromotionDate.Size = new System.Drawing.Size(101, 16);
             this.lblPromotionDate.TabIndex = 7;
@@ -114,7 +115,7 @@ namespace DojoStudentManagement
             // 
             this.lblArt.AutoSize = true;
             this.lblArt.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblArt.Location = new System.Drawing.Point(168, 25);
+            this.lblArt.Location = new System.Drawing.Point(192, 27);
             this.lblArt.Name = "lblArt";
             this.lblArt.Size = new System.Drawing.Size(24, 16);
             this.lblArt.TabIndex = 9;
@@ -124,7 +125,8 @@ namespace DojoStudentManagement
             // 
             this.txtStudentName.Location = new System.Drawing.Point(21, 46);
             this.txtStudentName.Name = "txtStudentName";
-            this.txtStudentName.Size = new System.Drawing.Size(133, 20);
+            this.txtStudentName.ReadOnly = true;
+            this.txtStudentName.Size = new System.Drawing.Size(157, 20);
             this.txtStudentName.TabIndex = 10;
             // 
             // btnPromoteStudent
@@ -148,15 +150,16 @@ namespace DojoStudentManagement
             // 
             // txtArt
             // 
-            this.txtArt.Location = new System.Drawing.Point(168, 46);
+            this.txtArt.Location = new System.Drawing.Point(195, 46);
             this.txtArt.Name = "txtArt";
-            this.txtArt.Size = new System.Drawing.Size(158, 20);
+            this.txtArt.ReadOnly = true;
+            this.txtArt.Size = new System.Drawing.Size(131, 20);
             this.txtArt.TabIndex = 14;
             // 
             // chkEligibleForPromotion
             // 
             this.chkEligibleForPromotion.AutoSize = true;
-            this.chkEligibleForPromotion.Location = new System.Drawing.Point(168, 189);
+            this.chkEligibleForPromotion.Location = new System.Drawing.Point(171, 182);
             this.chkEligibleForPromotion.Name = "chkEligibleForPromotion";
             this.chkEligibleForPromotion.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.chkEligibleForPromotion.Size = new System.Drawing.Size(124, 17);
@@ -168,7 +171,7 @@ namespace DojoStudentManagement
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(382, 326);
+            this.ClientSize = new System.Drawing.Size(356, 307);
             this.Controls.Add(this.chkEligibleForPromotion);
             this.Controls.Add(this.txtArt);
             this.Controls.Add(this.btnCancel);
