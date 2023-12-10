@@ -24,6 +24,8 @@ namespace DojoStudentManagement
 
         bool UpdateStudent(Student student);
 
+        bool UpdateStudentPromotion(StudentArtsAndRank artsAndRank);
+
         bool DatabaseExistsAndIsValid();
     }
 }

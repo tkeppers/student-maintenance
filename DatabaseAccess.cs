@@ -307,5 +307,79 @@ namespace DojoStudentManagement
 
             return success;
         }
+
+        /// <summary>
+        /// After a student is promoted, update the main arts/rank data with the new information, then 
+        /// add a new record in the promotion history table.
+        /// </summary>
+        public bool UpdateStudentPromotion(int studentID, StudentArtsAndRank artsAndRank)
+        {
+            bool success = true;
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                connection.Open();
+                using (OleDbTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        UpdateStudArts(connection, transaction, artsAndRank);
+                        InsertPromotionHistory(connection, transaction, studentID, artsAndRank);
+
+                        transaction.Commit();
+                    }
+                    catch (OleDbException ex)
+                    {
+                        success = false;
+                        MessageBox.Show(ex.Source + "\n" + ex.Message);
+                        transaction.Rollback();
+                    }
+                }
+            }
+
+            return success;
+        }
+
+        private void UpdateStudArts(OleDbConnection connection, OleDbTransaction transaction, StudentArtsAndRank artsAndRank)
+        {
+            using (OleDbCommand command = new OleDbCommand(@"UPDATE StudArts SET 
+                studArt_rank = @NewRank,
+                studArt_prodate = @PromotionDate,
+                studArt_prohrs = @PromotionHours
+                WHERE StudArt_ID = @ArtID", connection, transaction))
+            {
+                command.Parameters.Add("@NewRank", OleDbType.VarChar).Value = artsAndRank.NextRank;
+                command.Parameters.Add("@PromotionDate", OleDbType.DBDate).Value = artsAndRank.DatePromoted;
+                command.Parameters.Add("@PromotionHours", OleDbType.Numeric).Value = artsAndRank.PromotionHours;
+                command.Parameters.Add("@ArtID", OleDbType.Integer).Value = artsAndRank.StudentArtID;
+
+                command.ExecuteNonQuery();
+            }
+        }
+
+        private void InsertPromotionHistory(OleDbConnection connection, OleDbTransaction transaction, int studentID, StudentArtsAndRank artsAndRank)
+        {
+            using (OleDbCommand command = new OleDbCommand(@"INSERT INTO Promo_History (
+                promo_student, 
+                promo_art,
+                promo_date,
+                promo_rank,
+                promo_hours)
+               VALUES (
+                @StudentID,
+                @PromotionArt,
+                @PromotionDate,
+                @PromotionRank,
+                @PromotionHours)", connection, transaction))
+            {
+                command.Parameters.Add("@StudentID", OleDbType.Integer).Value = studentID;
+                command.Parameters.Add("@PromotionArt", OleDbType.VarChar).Value = artsAndRank.StudentArt;
+                command.Parameters.Add("@PromotionRank", OleDbType.VarChar).Value = artsAndRank.NextRank;
+                command.Parameters.Add("@PromotionDate", OleDbType.DBTime).Value = artsAndRank.DatePromoted;
+                command.Parameters.Add("@PromotionHours", OleDbType.Numeric).Value = artsAndRank.HoursInArt;
+
+                command.ExecuteNonQuery();
+            }
+        }
     }
 }
