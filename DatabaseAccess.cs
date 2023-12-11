@@ -346,12 +346,13 @@ namespace DojoStudentManagement
                 studArt_rank = @NewRank,
                 studArt_prodate = @PromotionDate,
                 studArt_prohrs = @PromotionHours
-                WHERE StudArt_ID = @ArtID", connection, transaction))
+                WHERE StudArt_ID = @ArtID AND studArt_art = @Art", connection, transaction))
             {
                 command.Parameters.Add("@NewRank", OleDbType.VarChar).Value = artsAndRank.NextRank;
                 command.Parameters.Add("@PromotionDate", OleDbType.DBDate).Value = artsAndRank.DatePromoted;
                 command.Parameters.Add("@PromotionHours", OleDbType.Numeric).Value = artsAndRank.PromotionHours;
                 command.Parameters.Add("@ArtID", OleDbType.Integer).Value = artsAndRank.StudentArtID;
+                command.Parameters.Add("@Art", OleDbType.VarChar).Value = artsAndRank.StudentArt;
 
                 command.ExecuteNonQuery();
             }

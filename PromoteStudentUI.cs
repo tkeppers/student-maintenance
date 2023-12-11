@@ -135,5 +135,10 @@ namespace DojoStudentManagement
             if (ConfirmStudentPromotion())
                 UpdateStudentPromotion();
         }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

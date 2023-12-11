@@ -29,6 +29,7 @@ namespace DojoStudentManagement
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PromoteStudentUI));
             this.lblStudent = new System.Windows.Forms.Label();
             this.txtCurrentRank = new System.Windows.Forms.TextBox();
             this.lblCurrentRank = new System.Windows.Forms.Label();
@@ -131,22 +132,27 @@ namespace DojoStudentManagement
             // 
             // btnPromoteStudent
             // 
+            this.btnPromoteStudent.Image = ((System.Drawing.Image)(resources.GetObject("btnPromoteStudent.Image")));
             this.btnPromoteStudent.Location = new System.Drawing.Point(21, 238);
             this.btnPromoteStudent.Name = "btnPromoteStudent";
-            this.btnPromoteStudent.Size = new System.Drawing.Size(142, 38);
+            this.btnPromoteStudent.Size = new System.Drawing.Size(142, 45);
             this.btnPromoteStudent.TabIndex = 12;
-            this.btnPromoteStudent.Text = "Promote Student";
+            this.btnPromoteStudent.Text = "Confirm Promotion";
+            this.btnPromoteStudent.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnPromoteStudent.UseVisualStyleBackColor = true;
             this.btnPromoteStudent.Click += new System.EventHandler(this.btnPromoteStudent_Click);
             // 
             // btnCancel
             // 
+            this.btnCancel.Image = ((System.Drawing.Image)(resources.GetObject("btnCancel.Image")));
             this.btnCancel.Location = new System.Drawing.Point(171, 238);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(85, 38);
+            this.btnCancel.Size = new System.Drawing.Size(85, 45);
             this.btnCancel.TabIndex = 13;
             this.btnCancel.Text = "Cancel";
+            this.btnCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // txtArt
             // 
