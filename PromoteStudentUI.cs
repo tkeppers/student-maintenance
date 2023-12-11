@@ -14,19 +14,21 @@ namespace DojoStudentManagement
     {
         Student currentStudent;
         StudentArtsAndRank currentArt;
+        IDataAccess dataAccess;
 
         public PromoteStudentUI()
         {
             InitializeComponent();
         }
 
-        //TODO: Do we really need to depend on 3 other classes? or can we decouple this a bit?
-        public PromoteStudentUI(Student student, StudentArtsAndRank art, DataTable promotionRequirements)
+        //TODO: Now that we are passing in IDataAccess, it might be better to re-read the promotion requirements instead of passing them
+        public PromoteStudentUI(Student student, StudentArtsAndRank art, DataTable promotionRequirements, IDataAccess dataAccess)
         {
             InitializeComponent();
 
             currentStudent = student;
             currentArt = art;
+            this.dataAccess = dataAccess;
 
             LoadListOfRanks(promotionRequirements, art.StudentArt);
             PopulatePromotionData(student, art);
@@ -100,26 +102,38 @@ namespace DojoStudentManagement
 
         private bool ConfirmStudentPromotion()
         {
-            bool confirmPromotion = false;
-
-            if (ValidateFormData() == false)
+            if (!ValidateFormData())
                 return false;
 
+            currentArt.NextRank = cmbNextRank.Text;
+            currentArt.DatePromoted = dtPromotionDate.Value;
 
-            string message = "Promote " + currentStudent.FirstName + " " + currentStudent.LastName + " from " +
-                currentArt.Rank + " to " + cmbNextRank.Text + " in " + currentArt.StudentArt + "?";
-            MessageBox.Show(message, "Promote Student?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+            string message = $"Promote {currentStudent.FirstName} {currentStudent.LastName} from {currentArt.Rank} to {cmbNextRank.Text} in {currentArt.StudentArt}?";
 
-            return confirmPromotion;
+            DialogResult result = MessageBox.Show(message, "Promote Student?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+
+            return (result == DialogResult.Yes);
+        }
+
+        private void UpdateStudentPromotion()
+        {
+            if (dataAccess.UpdateStudentPromotion(currentStudent.StudentID, currentArt))
+            {
+                currentArt.PromoteStudentToNewLevel(cmbNextRank.Text);
+                MessageBox.Show($"Student {currentStudent.FirstName} {currentStudent.LastName} successfully promoted to {currentArt.Rank}",
+                    "Promotion Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Error updating database with student promotion.", "Update Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void btnPromoteStudent_Click(object sender, EventArgs e)
         {
             if (ConfirmStudentPromotion())
-            {
-                //currentStudent.UpdatePromotionHistory(currentArt);
-                currentArt.PromoteStudentToNewLevel(cmbNextRank.Text);
-            }
+                UpdateStudentPromotion();
         }
     }
 }

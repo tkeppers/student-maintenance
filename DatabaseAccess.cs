@@ -323,7 +323,7 @@ namespace DojoStudentManagement
                 {
                     try
                     {
-                        UpdateStudArts(connection, transaction, artsAndRank);
+                        UpdateStudentArts(connection, transaction, artsAndRank);
                         InsertPromotionHistory(connection, transaction, studentID, artsAndRank);
 
                         transaction.Commit();
@@ -331,7 +331,7 @@ namespace DojoStudentManagement
                     catch (OleDbException ex)
                     {
                         success = false;
-                        MessageBox.Show(ex.Source + "\n" + ex.Message);
+                        MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace);  //TODO: Log this later
                         transaction.Rollback();
                     }
                 }
@@ -340,7 +340,7 @@ namespace DojoStudentManagement
             return success;
         }
 
-        private void UpdateStudArts(OleDbConnection connection, OleDbTransaction transaction, StudentArtsAndRank artsAndRank)
+        private void UpdateStudentArts(OleDbConnection connection, OleDbTransaction transaction, StudentArtsAndRank artsAndRank)
         {
             using (OleDbCommand command = new OleDbCommand(@"UPDATE StudArts SET 
                 studArt_rank = @NewRank,
@@ -374,9 +374,9 @@ namespace DojoStudentManagement
             {
                 command.Parameters.Add("@StudentID", OleDbType.Integer).Value = studentID;
                 command.Parameters.Add("@PromotionArt", OleDbType.VarChar).Value = artsAndRank.StudentArt;
-                command.Parameters.Add("@PromotionRank", OleDbType.VarChar).Value = artsAndRank.NextRank;
-                command.Parameters.Add("@PromotionDate", OleDbType.DBTime).Value = artsAndRank.DatePromoted;
-                command.Parameters.Add("@PromotionHours", OleDbType.Numeric).Value = artsAndRank.HoursInArt;
+                command.Parameters.Add("@PromotionDate", OleDbType.DBDate).Value = artsAndRank.DatePromoted;
+                command.Parameters.Add("@PromotionRank", OleDbType.VarChar).Value = artsAndRank.NextRank.ToUpper();
+                command.Parameters.Add("@PromotionHours", OleDbType.Double).Value = artsAndRank.HoursInArt;
 
                 command.ExecuteNonQuery();
             }

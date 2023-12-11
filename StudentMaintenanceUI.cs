@@ -396,7 +396,7 @@ namespace DojoStudentManagement
                 return;
             }
 
-            PromoteStudentUI promote = new PromoteStudentUI(currentStudent, selectedArt, promotionRequirements);
+            PromoteStudentUI promote = new PromoteStudentUI(currentStudent, selectedArt, promotionRequirements, dataAccess);
             promote.ShowDialog();
         }
     }
