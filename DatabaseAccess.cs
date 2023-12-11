@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
 using System.Windows.Forms;
+using Serilog;
 
 namespace DojoStudentManagement
 {
@@ -33,83 +34,63 @@ namespace DojoStudentManagement
         public bool DatabaseExistsAndIsValid()
         {
             if (!System.IO.File.Exists(databasePath))
+            {
+                Log.Error($"{DateTime.Now}: Database file not found at {databasePath}");
                 return false;
+            }
 
             using (OleDbConnection connection = new OleDbConnection(connectionString))
             {
                 try
                 {
                     connection.Open();
-                    return true; 
+                    return true;
                 }
-                catch (OleDbException)
+                catch (OleDbException e)
                 {
+                    Log.Error($"{DateTime.Now}: Error connecting to database {databasePath}\n{e.Message}\n{e.Source}\n{e.StackTrace}");
                     return false;
                 }
             }
         }
 
-        //TODO: Refactor this into something maintainable
-        //TODO: Implement logging (use SeriLog)
         public DataTable GetStudentTable()
         {
-            DataTable dataTable;
-
-            using (OleDbConnection connection = new OleDbConnection(connectionString))
-            {
-                string sql = "select * from Students where stud_club='Windsong'";
-                OleDbDataAdapter dataAdapter = new OleDbDataAdapter(sql, connectionString);
-                DataSet dataset = new DataSet();
-                dataAdapter.Fill(dataset);
-                dataTable = dataset.Tables[0];
-            }
-
-            return dataTable;
+            return ExecuteQuery("select * from Students where stud_club='Windsong'");
         }
 
         public DataTable GetStudentArtsAndRanks(int studentID)
         {
-            DataTable dataTable;
-
-            using (OleDbConnection connection = new OleDbConnection(connectionString))
-            {
-                string sql = "select * from StudArts where StudArt_ID=" + studentID;
-                OleDbDataAdapter dataAdapter = new OleDbDataAdapter(sql, connectionString);
-                DataSet dataset = new DataSet();
-                dataAdapter.Fill(dataset);
-                dataTable = dataset.Tables[0];
-            }
-
-            return dataTable;
+            return ExecuteQuery($"select * from StudArts where StudArt_ID={studentID}");
         }
 
         public DataTable GetStudentPromotionHistory(int studentID)
         {
-            DataTable dataTable;
-
-            using (OleDbConnection connection = new OleDbConnection(connectionString))
-            {
-                string sql = "select * from Promo_History where promo_student=" + studentID;
-                OleDbDataAdapter dataAdapter = new OleDbDataAdapter(sql, connectionString);
-                DataSet dataset = new DataSet();
-                dataAdapter.Fill(dataset);
-                dataTable = dataset.Tables[0];
-            }
-
-            return dataTable;
+            return ExecuteQuery($"select * from Promo_History where promo_student={studentID}");
         }
 
         public DataTable GetStudentSignInHistory(int studentID)
         {
-            DataTable dataTable;
+            return ExecuteQuery($"select * from Signin_History where sign_student={studentID}");
+        }
+
+        private DataTable ExecuteQuery(string sql)
+        {
+            DataTable dataTable = new DataTable();
 
             using (OleDbConnection connection = new OleDbConnection(connectionString))
             {
-                string sql = "select * from Signin_History where sign_student=" + studentID;
-                OleDbDataAdapter dataAdapter = new OleDbDataAdapter(sql, connectionString);
-                DataSet dataset = new DataSet();
-                dataAdapter.Fill(dataset);
-                dataTable = dataset.Tables[0];
+                try
+                {
+                    connection.Open();
+                    OleDbDataAdapter dataAdapter = new OleDbDataAdapter(sql, connection);
+                    dataAdapter.Fill(dataTable);
+                }
+                catch (OleDbException ex)
+                {
+                    Log.Error($"{DateTime.Now}: Error executing query:\n{ ex.Message}\n{ ex.Source}\n{ ex.StackTrace}");
+                    return new DataTable();
+                }
             }
 
             return dataTable;
@@ -121,34 +102,36 @@ namespace DojoStudentManagement
         /// <remarks>We will read in the entire table (it's not very big) to minimize databate hits</remarks>
         public DataTable GetStudentPromotionRequirements()
         {
-            /*if (DatabaseExistsAndIsValid() == false)
-            {
-                string errText = "Database " + databasePath + " is invalid or inaccessible. Please check the database path in application settings.";
-                MessageBox.Show(errText, "Database Access Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return new DataTable();
-            }*/
-
-            DataTable dataTable;
-
             using (OleDbConnection connection = new OleDbConnection(connectionString))
             {
-                string sql = "select * from Promo_Requirements";
-                OleDbDataAdapter dataAdapter = new OleDbDataAdapter(sql, connectionString);
+                string sql = "SELECT * FROM Promo_Requirements";
+                OleDbDataAdapter dataAdapter = new OleDbDataAdapter(sql, connection);
                 DataSet dataset = new DataSet();
-                dataAdapter.Fill(dataset);
-                dataTable = dataset.Tables[0];
+
+                try
+                {
+                    connection.Open();
+                    dataAdapter.Fill(dataset);
+                    DataTable dataTable = dataset.Tables[0];
+
+                    // Rename columns from database schema to something more generic and readable
+                    dataTable.Columns["rank_art"].ColumnName = "Art";
+                    dataTable.Columns["rank_id"].ColumnName = "CurrentRank";
+                    dataTable.Columns["rank_next"].ColumnName = "NextRank";
+                    dataTable.Columns["rank_min_hours"].ColumnName = "MinimumTrainingHours";
+                    dataTable.Columns["rank_min_age"].ColumnName = "MinimumAge";
+                    dataTable.Columns["rank_total_years"].ColumnName = "YearsInArt";
+                    dataTable.Columns["rank_time_in_rank"].ColumnName = "YearsAtCurrentRank";
+
+                    return dataTable;
+                }
+                catch (OleDbException ex)
+                {
+                    Log.Error($"{DateTime.Now}: Error retrieving student promotion requirements:\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                    // You may want to handle the exception or return a default DataTable here
+                    return new DataTable();
+                }
             }
-
-            //Rename columns from database schema to something more generic and readable
-            dataTable.Columns["rank_art"].ColumnName = "Art";
-            dataTable.Columns["rank_id"].ColumnName = "CurrentRank";
-            dataTable.Columns["rank_next"].ColumnName = "NextRank";
-            dataTable.Columns["rank_min_hours"].ColumnName = "MinimumTrainingHours";
-            dataTable.Columns["rank_min_age"].ColumnName = "MinimumAge";
-            dataTable.Columns["rank_total_years"].ColumnName = "YearsInArt";
-            dataTable.Columns["rank_time_in_rank"].ColumnName = "YearsAtCurrentRank";
-
-            return dataTable;
         }
 
         public bool AddNewStudent(Student student)
@@ -221,14 +204,14 @@ namespace DojoStudentManagement
                     catch (OleDbException ex)
                     {
                         success = false;
-                        MessageBox.Show(ex.Source + "\n" + ex.Message);
+                        Log.Error($"{DateTime.Now}: Error inserting into Students table.\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
                         connection.Close();
                     }
                 }
                 else
                 {
                     success = false;
-                    MessageBox.Show(@"Connection Failed");
+                    Log.Error($"{DateTime.Now}: Connection failed when adding new student.\n");
                 }
             }
 
@@ -294,14 +277,14 @@ namespace DojoStudentManagement
                     catch (OleDbException ex)
                     {
                         success = false;
-                        MessageBox.Show(ex.Source + "\n" + ex.Message);
+                        Log.Error($"{DateTime.Now}: Error executing update command.\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
                         connection.Close();
                     }
                 }
                 else
                 {
                     success = false;
-                    MessageBox.Show(@"Connection Failed");
+                    Log.Error($"{DateTime.Now}: Connection failed for completing student update.\n");
                 }
             }
 
@@ -331,7 +314,7 @@ namespace DojoStudentManagement
                     catch (OleDbException ex)
                     {
                         success = false;
-                        MessageBox.Show(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace);  //TODO: Log this later
+                        Log.Error($"{DateTime.Now}: Error connecting to database {databasePath}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
                         transaction.Rollback();
                     }
                 }
