@@ -313,10 +313,10 @@ namespace DojoStudentManagement
             FilterStudentList();
         }
 
-        private void databaseConfigToolStripMenuItem_Click(object sender, EventArgs e)
+        private void databasePathToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DatabaseConfigUI updateDatabasePath = new DatabaseConfigUI();
-            updateDatabasePath.ShowDialog();
+            DatabaseConfigUI config = new DatabaseConfigUI();
+            config.ShowDialog();
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -331,12 +331,6 @@ namespace DojoStudentManagement
             addStudent.StudentAdded += AddStudent_StudentAdded;
 
             addStudent.ShowDialog();
-        }
-
-        private void tsbSettings_Click(object sender, EventArgs e)
-        {
-            DatabaseConfigUI updateDatabasePath = new DatabaseConfigUI();
-            updateDatabasePath.ShowDialog();
         }
 
         private void btnAddArt_Click(object sender, EventArgs e)

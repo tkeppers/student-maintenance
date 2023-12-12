@@ -611,19 +611,20 @@ namespace DojoStudentManagement
             this.tsbSettings.Size = new System.Drawing.Size(62, 56);
             this.tsbSettings.Text = "Settings";
             this.tsbSettings.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.tsbSettings.Click += new System.EventHandler(this.tsbSettings_Click);
             // 
             // databasePathToolStripMenuItem
             // 
             this.databasePathToolStripMenuItem.Name = "databasePathToolStripMenuItem";
-            this.databasePathToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.databasePathToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.databasePathToolStripMenuItem.Text = "Database Path";
+            this.databasePathToolStripMenuItem.Click += new System.EventHandler(this.databasePathToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // tsbAddNewStudent
             // 
