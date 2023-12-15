@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -229,14 +230,18 @@ namespace DojoStudentManagement
                 currentStudent.StudentGender = Gender.FEMALE;
             else
                 currentStudent.StudentGender = Gender.UNKNOWN;
-            
+
             if (dataAccess.UpdateStudent(currentStudent))
             {
                 MessageBox.Show("Student " + currentStudentName + " saved successfully.");
+                Log.Information($"Student " + currentStudentName + " saved successfully.");
                 btnSaveChanges.Enabled = false;
             }
             else
-               MessageBox.Show("Error updating student " + currentStudentName + ". Changes may not have been saved to the database.");
+            {
+                MessageBox.Show("Error updating student " + currentStudentName + ". Changes may not have been saved to the database.");
+                Log.Information($"Error updating student " + currentStudentName + ". Changes may not have been saved to the database.");
+            }
         }
 
         private void AddStudent_StudentAdded(object sender, EventArgs e)

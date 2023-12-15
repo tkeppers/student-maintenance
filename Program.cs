@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -17,11 +18,23 @@ namespace DojoStudentManagement
         [STAThread]
         static void Main()
         {
+            string logDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
+            string logFilePath = Path.Combine(logDirectory, "Logs-.log");
+
+            // Ensure the log directory exists
+            Directory.CreateDirectory(logDirectory);
+
             // Set up the global Serilog logger configuration
-            Log.Logger = new LoggerConfiguration().
-                    MinimumLevel.Debug().
-                    WriteTo.File(@Environment.GetEnvironmentVariable("LocalAppData") + "\\Logs\\Logs1.log").
-                    CreateLogger();
+            Log.Logger = new LoggerConfiguration()
+                    .MinimumLevel.Debug()
+                    .WriteTo.File(
+                        path: logFilePath,
+                        rollingInterval: RollingInterval.Month,
+                        rollOnFileSizeLimit: true,
+                        retainedFileCountLimit: null, // Set the retained file count as needed
+                        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}"
+                    )
+                    .CreateLogger();
 
             IDataAccess dataAccess = new DatabaseAccess();
             Application.EnableVisualStyles();

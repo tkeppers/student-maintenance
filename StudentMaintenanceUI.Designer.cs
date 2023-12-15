@@ -595,7 +595,7 @@ namespace DojoStudentManagement
             this.toolStripButton3});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(933, 59);
+            this.toolStrip1.Size = new System.Drawing.Size(933, 55);
             this.toolStrip1.TabIndex = 12;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -608,7 +608,7 @@ namespace DojoStudentManagement
             this.tsbSettings.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbSettings.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbSettings.Name = "tsbSettings";
-            this.tsbSettings.Size = new System.Drawing.Size(62, 56);
+            this.tsbSettings.Size = new System.Drawing.Size(62, 52);
             this.tsbSettings.Text = "Settings";
             this.tsbSettings.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
@@ -632,7 +632,7 @@ namespace DojoStudentManagement
             this.tsbAddNewStudent.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbAddNewStudent.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbAddNewStudent.Name = "tsbAddNewStudent";
-            this.tsbAddNewStudent.Size = new System.Drawing.Size(104, 56);
+            this.tsbAddNewStudent.Size = new System.Drawing.Size(104, 52);
             this.tsbAddNewStudent.Text = "Add New Student";
             this.tsbAddNewStudent.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.tsbAddNewStudent.ToolTipText = "Add a new student to the database";
@@ -644,7 +644,7 @@ namespace DojoStudentManagement
             this.tsbPromotionSettings.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbPromotionSettings.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbPromotionSettings.Name = "tsbPromotionSettings";
-            this.tsbPromotionSettings.Size = new System.Drawing.Size(113, 56);
+            this.tsbPromotionSettings.Size = new System.Drawing.Size(113, 52);
             this.tsbPromotionSettings.Text = "Promotion Settings";
             this.tsbPromotionSettings.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.tsbPromotionSettings.Click += new System.EventHandler(this.tsbPromotionSettings_Click);
@@ -656,7 +656,7 @@ namespace DojoStudentManagement
             this.toolStripButton2.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(99, 56);
+            this.toolStripButton2.Size = new System.Drawing.Size(99, 52);
             this.toolStripButton2.Text = "Art Maintenance";
             this.toolStripButton2.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
@@ -667,7 +667,7 @@ namespace DojoStudentManagement
             this.toolStripButton3.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new System.Drawing.Size(51, 56);
+            this.toolStripButton3.Size = new System.Drawing.Size(51, 52);
             this.toolStripButton3.Text = "Reports";
             this.toolStripButton3.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
