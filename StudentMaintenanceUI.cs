@@ -27,8 +27,8 @@ namespace DojoStudentManagement
             studentMaintenanceFunctions = new StudentMaintenanceFunctions();
             InitializeComponent();
 
-            var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            this.Text = $"Windsong Dojo Student Maintenance Application - Version {version}";
+            var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            this.Text = $"Windsong Dojo Student Maintenance Application - Version {version.Major}.{version.Minor}";
 
             if (!dataAccess.DatabaseExistsAndIsValid())
             {
@@ -296,6 +296,7 @@ namespace DojoStudentManagement
 
             currentStudentID = Convert.ToInt32(dgvStudentList.SelectedRows[0].Cells[0].Value.ToString());
             PopulateStudentInformation();
+            Log.Information($"Loaded information for student {currentStudent.FirstName} {currentStudent.LastName}");
         }
 
         private void cbShowInactiveStudents_CheckedChanged(object sender, EventArgs e)
