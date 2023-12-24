@@ -291,6 +291,51 @@ namespace DojoStudentManagement
             return success;
         }
 
+        public bool AddNewStudentArt(StudentArtsAndRank artsAndRank) 
+        {
+            return false;
+        }
+
+        public bool UpdateStudentArt(StudentArtsAndRank artsAndRank)
+        {
+            bool success = true;
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                connection.Open();
+                using (OleDbTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        using (OleDbCommand command = new OleDbCommand(@"UPDATE StudArts SET 
+                            studArt_rank = @Rank,
+                            studArt_cumm = @CumulativeHours,
+                            studArt_begin = @DateStarted
+                            WHERE StudArt_ID = @ArtID AND studArt_art = @Art", connection, transaction))
+                        {
+                            command.Parameters.Add("@Rank", OleDbType.VarChar).Value = artsAndRank.Rank;
+                            command.Parameters.Add("@DateStarted", OleDbType.DBDate).Value = artsAndRank.DateStarted;
+                            command.Parameters.Add("@CumulativeHours", OleDbType.Numeric).Value = artsAndRank.HoursInArt;
+                            command.Parameters.Add("@ArtID", OleDbType.Integer).Value = artsAndRank.StudentArtID;
+                            command.Parameters.Add("@Art", OleDbType.VarChar).Value = artsAndRank.StudentArt;
+
+                            command.ExecuteNonQuery();
+                        }
+
+                        transaction.Commit();
+                    }
+                    catch (OleDbException ex)
+                    {
+                        success = false;
+                        Log.Error($"{DateTime.Now}: Error connecting to database {databasePath}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        transaction.Rollback();
+                    }
+                }
+            }
+
+            return success;
+        }
+
         /// <summary>
         /// After a student is promoted, update the main arts/rank data with the new information, then 
         /// add a new record in the promotion history table.

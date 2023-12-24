@@ -14,41 +14,45 @@ namespace DojoStudentManagement
     {
         public bool modifyExistingArt;
         StudentArtsAndRank currentArt;
+        string studentName;
 
         public StudentAddModifyArtUI(int studentID, string studentName)
         {
             modifyExistingArt = false;
             currentArt = new StudentArtsAndRank();
+            this.studentName = studentName;
        
             InitializeComponent();
 
-            btnAddStudent.Visible = true;
-            btnPromoteStudent.Visible = false;
-            btnSave.Visible = false;
-
-            //TODO: Default rank to "White Belt" for new art. Should we let them override it?
-
-            PopulateComboBox();
-            this.Text = "Add New Art for " + studentName;
+            PopulateFormForAdd();
+            GeneralFormSetup();
         }
 
         public StudentAddModifyArtUI(int studentID, string studentName, StudentArtsAndRank artInfo)
         {
             modifyExistingArt = true;
             currentArt = artInfo;
+            this.studentName = studentName;
 
             InitializeComponent();
 
-            btnAddStudent.Visible = false;
-            btnPromoteStudent.Visible = true;
-            btnSave.Visible = true;
-            PopulateComboBox();
             PopulateFormForModify();
-
-            this.Text = "Modifying " + artInfo.StudentArt + " for " + studentName;
+            GeneralFormSetup();
         }
 
-        private void PopulateComboBox()
+        private void GeneralFormSetup()
+        {
+            PopulateListOfArts();
+
+            toolTip.SetToolTip(lblPromotionHours, "Training hours at student's last promotion");
+            toolTip.SetToolTip(txtPromotionHours, "Training hours at student's last promotion");
+            toolTip.SetToolTip(lblCumulativeHours, $"Total training hours since beginning {currentArt}");
+            toolTip.SetToolTip(txtCumulativeHours, $"Total training hours since beginning {currentArt}");
+            toolTip.SetToolTip(lblLastPromotionDate, "To change promotion date or hours, please click Promote Student option on main screen.");
+            toolTip.SetToolTip(dtPromotionDate, "To change promotion date or hours, please click Promote Student option on main screen.");
+        }
+
+        private void PopulateListOfArts()
         {
             //TODO: Remove hard-coded testing items and populate this from the database.
             cmbArtType.Items.Add("Aikido");
@@ -59,6 +63,8 @@ namespace DojoStudentManagement
 
         private void PopulateFormForModify()
         {
+            this.Text = $"Modifying {currentArt.StudentArt} for " + studentName;
+
             txtCumulativeHours.Text = currentArt.HoursInArt.ToString();
             txtPromotionHours.Text = currentArt.PromotionHours.ToString();
             txtCurrentRank.Text = currentArt.Rank;
@@ -66,6 +72,38 @@ namespace DojoStudentManagement
             dtLastSignin.Value = currentArt.DateOfLatestSignIn.Value;
             dtPromotionDate.Value = currentArt.DatePromoted.Value;
             cmbArtType.Text = currentArt.StudentArt;
+        }
+
+        private void PopulateFormForAdd()
+        {
+            this.Text = "Add New Art for " + studentName;
+
+            txtCumulativeHours.Text = "0";
+            txtPromotionHours.Text = "0";
+            txtCurrentRank.Text = "WHITE";
+            dtBeginDate.Value = DateTime.Today;
+            dtLastSignin.Value = DateTime.Today;
+            //dtPromotionDate.Value = currentArt.DatePromoted.Value;
+            cmbArtType.Text = currentArt.StudentArt;
+        }
+
+        private bool SaveUpdatesToArt()
+        {
+            return false;
+        }
+
+        private bool AddNewArt()
+        {
+
+            return false;
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            if (modifyExistingArt)
+                SaveUpdatesToArt();
+            else
+                AddNewArt();
         }
     }
 }
