@@ -85,6 +85,8 @@ namespace DojoStudentManagement
                     connection.Open();
                     OleDbDataAdapter dataAdapter = new OleDbDataAdapter(sql, connection);
                     dataAdapter.Fill(dataTable);
+
+                    Log.Information($"Executed query {sql}");
                 }
                 catch (OleDbException ex)
                 {
@@ -128,7 +130,6 @@ namespace DojoStudentManagement
                 catch (OleDbException ex)
                 {
                     Log.Error($"{DateTime.Now}: Error retrieving student promotion requirements:\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
-                    // You may want to handle the exception or return a default DataTable here
                     return new DataTable();
                 }
             }
@@ -200,6 +201,7 @@ namespace DojoStudentManagement
                     {
                         command.ExecuteNonQuery();
                         connection.Close();
+                        Log.Information($"Added new student {student.FirstName} {student.LastName}");
                     }
                     catch (OleDbException ex)
                     {
@@ -273,6 +275,7 @@ namespace DojoStudentManagement
                     {
                         command.ExecuteNonQuery();
                         connection.Close();
+                        Log.Information($"Successfully updated student {student.FirstName} {student.LastName}");
                     }
                     catch (OleDbException ex)
                     {
@@ -320,6 +323,8 @@ namespace DojoStudentManagement
                             command.Parameters.Add("@Art", OleDbType.VarChar).Value = artsAndRank.StudentArt;
 
                             command.ExecuteNonQuery();
+
+                            Log.Information($"Successfully updated information in {artsAndRank.StudentArt} for student ID {artsAndRank.StudentArtID}");
                         }
 
                         transaction.Commit();
@@ -383,6 +388,8 @@ namespace DojoStudentManagement
                 command.Parameters.Add("@Art", OleDbType.VarChar).Value = artsAndRank.StudentArt;
 
                 command.ExecuteNonQuery();
+
+                Log.Information($"Updated promotion date and rank in {artsAndRank.StudentArt} for student ID {artsAndRank.StudentArtID}");
             }
         }
 
@@ -408,6 +415,8 @@ namespace DojoStudentManagement
                 command.Parameters.Add("@PromotionHours", OleDbType.Double).Value = artsAndRank.HoursInArt;
 
                 command.ExecuteNonQuery();
+
+                Log.Information($"Updated promotion history in {artsAndRank.StudentArt} for student ID {artsAndRank.StudentArtID}");
             }
         }
     }
