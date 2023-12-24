@@ -145,7 +145,7 @@ namespace DojoStudentManagement
             this.gbStudentInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gbStudentInfo.Location = new System.Drawing.Point(412, 76);
             this.gbStudentInfo.Name = "gbStudentInfo";
-            this.gbStudentInfo.Size = new System.Drawing.Size(499, 369);
+            this.gbStudentInfo.Size = new System.Drawing.Size(478, 369);
             this.gbStudentInfo.TabIndex = 2;
             this.gbStudentInfo.TabStop = false;
             this.gbStudentInfo.Text = "Student Information";
@@ -182,7 +182,7 @@ namespace DojoStudentManagement
             // cbActiveStudent
             // 
             this.cbActiveStudent.AutoSize = true;
-            this.cbActiveStudent.Location = new System.Drawing.Point(363, 90);
+            this.cbActiveStudent.Location = new System.Drawing.Point(349, 90);
             this.cbActiveStudent.Name = "cbActiveStudent";
             this.cbActiveStudent.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.cbActiveStudent.Size = new System.Drawing.Size(64, 20);
@@ -285,7 +285,7 @@ namespace DojoStudentManagement
             this.gbGender.Controls.Add(this.rbUnknown);
             this.gbGender.Controls.Add(this.rbFemale);
             this.gbGender.Controls.Add(this.rbMale);
-            this.gbGender.Location = new System.Drawing.Point(362, 113);
+            this.gbGender.Location = new System.Drawing.Point(349, 116);
             this.gbGender.Name = "gbGender";
             this.gbGender.Size = new System.Drawing.Size(111, 100);
             this.gbGender.TabIndex = 15;
@@ -595,7 +595,7 @@ namespace DojoStudentManagement
             this.toolStripButton3});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(933, 55);
+            this.toolStrip1.Size = new System.Drawing.Size(900, 55);
             this.toolStrip1.TabIndex = 12;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -615,14 +615,14 @@ namespace DojoStudentManagement
             // databasePathToolStripMenuItem
             // 
             this.databasePathToolStripMenuItem.Name = "databasePathToolStripMenuItem";
-            this.databasePathToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.databasePathToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.databasePathToolStripMenuItem.Text = "Database Path";
             this.databasePathToolStripMenuItem.Click += new System.EventHandler(this.databasePathToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -719,7 +719,7 @@ namespace DojoStudentManagement
             this.txtMessages.Location = new System.Drawing.Point(606, 483);
             this.txtMessages.Multiline = true;
             this.txtMessages.Name = "txtMessages";
-            this.txtMessages.Size = new System.Drawing.Size(305, 75);
+            this.txtMessages.Size = new System.Drawing.Size(284, 75);
             this.txtMessages.TabIndex = 14;
             // 
             // lblPromotionEligibility
@@ -744,9 +744,11 @@ namespace DojoStudentManagement
             // 
             // StudentMaintenanceUI
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(933, 676);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.AutoScroll = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.ClientSize = new System.Drawing.Size(900, 652);
             this.Controls.Add(this.btnPromoteStudent);
             this.Controls.Add(this.lblPromotionEligibility);
             this.Controls.Add(this.txtMessages);

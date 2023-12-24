@@ -25,6 +25,9 @@ namespace DojoStudentManagement
             btnAddStudent.Visible = true;
             btnPromoteStudent.Visible = false;
             btnSave.Visible = false;
+
+            //TODO: Default rank to "White Belt" for new art. Should we let them override it?
+
             PopulateComboBox();
             this.Text = "Add New Art for " + studentName;
         }
