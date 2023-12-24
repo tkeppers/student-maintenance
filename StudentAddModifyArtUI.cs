@@ -83,7 +83,7 @@ namespace DojoStudentManagement
             txtCurrentRank.Text = "WHITE";
             dtBeginDate.Value = DateTime.Today;
             dtLastSignin.Value = DateTime.Today;
-            //dtPromotionDate.Value = currentArt.DatePromoted.Value;
+            dtPromotionDate.Value = DateTime.Today;
             cmbArtType.Text = currentArt.StudentArt;
         }
 
@@ -104,6 +104,11 @@ namespace DojoStudentManagement
                 SaveUpdatesToArt();
             else
                 AddNewArt();
+        }
+
+        private void StudentAddModifyArtUI_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
