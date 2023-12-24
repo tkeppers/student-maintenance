@@ -16,10 +16,14 @@ namespace DojoStudentManagement
         StudentArtsAndRank currentArt;
         string studentName;
 
+        //TODO: We can combine this into a single constructor
         public StudentAddModifyArtUI(int studentID, string studentName)
         {
             modifyExistingArt = false;
+
             currentArt = new StudentArtsAndRank();
+            currentArt.StudentArtID = studentID;
+
             this.studentName = studentName;
        
             InitializeComponent();
@@ -28,7 +32,7 @@ namespace DojoStudentManagement
             GeneralFormSetup();
         }
 
-        public StudentAddModifyArtUI(int studentID, string studentName, StudentArtsAndRank artInfo)
+        public StudentAddModifyArtUI(string studentName, StudentArtsAndRank artInfo)
         {
             modifyExistingArt = true;
             currentArt = artInfo;
@@ -87,14 +91,26 @@ namespace DojoStudentManagement
             cmbArtType.Text = currentArt.StudentArt;
         }
 
+        private void UpdateCurrentArtWithFormData()
+        {
+            currentArt.Rank = txtCurrentRank.Text.Trim();
+            currentArt.StudentArt = cmbArtType.Text.Trim();
+            currentArt.HoursInArt = double.TryParse(txtCumulativeHours.Text, out double hours) ? hours : 0.0;
+            currentArt.DateStarted = dtBeginDate.Value;
+            //TODO: Do we want to handle promotion date/promotion hours, even though they are read-only?
+        }
+
         private bool SaveUpdatesToArt()
         {
+            UpdateCurrentArtWithFormData();
+            //Save data to database
             return false;
         }
 
         private bool AddNewArt()
         {
-
+            UpdateCurrentArtWithFormData();
+            //Save data to database
             return false;
         }
 

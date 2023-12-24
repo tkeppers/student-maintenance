@@ -13,13 +13,9 @@ namespace DojoStudentManagement
 {
     class DatabaseAccess : IDataAccess
     {
-        //Full path to Windsong dojo student database. 
-        private string databasePath;
-
-        //Password for database access
-        string databasePassword;
-
-        private string connectionString;
+        private readonly string databasePath;
+        private readonly string databasePassword;
+        private readonly string connectionString;
 
         public DatabaseAccess()
         {
@@ -296,7 +292,52 @@ namespace DojoStudentManagement
 
         public bool AddNewStudentArt(StudentArtsAndRank artsAndRank) 
         {
-            return false;
+            bool success = true;
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                connection.Open();
+                using (OleDbTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        using (OleDbCommand command = new OleDbCommand(@"INSERT INTO StudArts (
+                             StudArt_ID, 
+                             studArt_art,
+                             studArt_rank,
+                             studArt_cumm,
+                             studArt_begin,
+                             studArt_prodate)
+                            VALUES (
+                             @StudentID,
+                             @StudentArt,
+                             @StudentRank,
+                             @CumulativeHours,
+                             @DateStarted)", connection, transaction))
+                        {
+                            command.Parameters.Add("@StudentID", OleDbType.Integer).Value = artsAndRank.StudentArtID;
+                            command.Parameters.Add("@StudentArt", OleDbType.VarChar).Value = artsAndRank.StudentArt;
+                            command.Parameters.Add("@Rank", OleDbType.VarChar).Value = artsAndRank.Rank;
+                            command.Parameters.Add("@CumulativeHours", OleDbType.Numeric).Value = artsAndRank.HoursInArt;
+                            command.Parameters.Add("@DateStarted", OleDbType.DBDate).Value = artsAndRank.DateStarted;
+
+                            command.ExecuteNonQuery();
+
+                            Log.Information($"Successfully added {artsAndRank.StudentArt} for student ID {artsAndRank.StudentArtID}");
+                        }
+
+                        transaction.Commit();
+                    }
+                    catch (OleDbException ex)
+                    {
+                        success = false;
+                        Log.Error($"{DateTime.Now}: Error connecting to database {databasePath}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        transaction.Rollback();
+                    }
+                }
+            }
+
+            return success;
         }
 
         public bool UpdateStudentArt(StudentArtsAndRank artsAndRank)
