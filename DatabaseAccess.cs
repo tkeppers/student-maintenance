@@ -264,7 +264,7 @@ namespace DojoStudentManagement
                         command.Parameters.Add("@Gender", OleDbType.VarChar).Value = "X";
 
                     command.Parameters.Add("@Email", OleDbType.VarChar).Value = student.EmailAddress;
-                    command.Parameters.Add("@StartMonth", OleDbType.Integer).Value = 1; //TODO: Fix later
+                    command.Parameters.Add("@StartMonth", OleDbType.Integer).Value = student.StartMonth;
                     command.Parameters.Add("@StudentID", OleDbType.Integer).Value = student.StudentID; 
 
                     try

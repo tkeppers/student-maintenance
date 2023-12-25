@@ -24,7 +24,7 @@ namespace DojoStudentManagement
         public string SecondaryPhoneNumber;
         public Gender StudentGender;
         public string EmailAddress;
-        private string StartMonth;
+        public int StartMonth;
 
         internal List<StudentArtsAndRank> StudentArtsAndRanks = new List<StudentArtsAndRank>();
 

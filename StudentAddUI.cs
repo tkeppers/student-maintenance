@@ -47,6 +47,7 @@ namespace DojoStudentManagement
             newStudent.PrimaryPhoneNumber = txtPrimaryPhone.Text.Trim();
             newStudent.SecondaryPhoneNumber = txtSecondaryPhone.Text.Trim();
             newStudent.DateOfBirth = dtBirthdate.Value;
+            newStudent.StartMonth = DateTime.Today.Month;
             newStudent.StudentGender = SetGender();
 
             if (dataAccess.AddNewStudent(newStudent))
@@ -73,6 +74,11 @@ namespace DojoStudentManagement
             ValidateStudentData();
             CreateNewStudent();
             OnStudentAdded();
+        }
+
+        private void StudentAddUI_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

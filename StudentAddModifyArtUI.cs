@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -98,14 +99,20 @@ namespace DojoStudentManagement
 
         private void UpdateStudentArtRecord()
         {
+            string message;
+
             UpdateCurrentArtWithFormData();
             if (DataAccess.UpdateStudentArt(currentArt))
             {
-                MessageBox.Show($"Added {currentArt.StudentArt} data for {studentName}", "Update Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                message = $"Added {currentArt.StudentArt} data for {studentName}";
+                MessageBox.Show(message, "Update Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Log.Information($"UpdateStudentArtRecord: {message}");
                 return;
             }
 
-            MessageBox.Show($"Error adding {currentArt.StudentArt} data for {studentName}", "Error Adding Art", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            message = $"Error adding {currentArt.StudentArt} data for {studentName}";
+            MessageBox.Show(message, "Error Adding Art", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Log.Error($"UpdateStudentArtRecord: {message}");
         }
 
         private void CreateNewStudentArtRecord()

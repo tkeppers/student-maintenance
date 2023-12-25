@@ -387,6 +387,7 @@ namespace DojoStudentManagement
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "StudentAddUI";
             this.Text = "Add New Student";
+            this.Load += new System.EventHandler(this.StudentAddUI_Load);
             this.gbStudentInfo.ResumeLayout(false);
             this.gbStudentInfo.PerformLayout();
             this.gbGender.ResumeLayout(false);
