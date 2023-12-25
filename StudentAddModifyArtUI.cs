@@ -13,34 +13,29 @@ namespace DojoStudentManagement
     public partial class StudentAddModifyArtUI : Form
     {
         public bool modifyExistingArt;
-        StudentArtsAndRank currentArt;
-        string studentName;
+        readonly StudentArtsAndRank currentArt;
+        readonly string studentName;
+        readonly IDataAccess DataAccess;
 
-        //TODO: We can combine this into a single constructor
-        public StudentAddModifyArtUI(int studentID, string studentName)
+        public StudentAddModifyArtUI(int studentID, string studentName, IDataAccess dataAccess, StudentArtsAndRank artInfo = null)
         {
-            modifyExistingArt = false;
-
-            currentArt = new StudentArtsAndRank();
-            currentArt.StudentArtID = studentID;
-
             this.studentName = studentName;
-       
-            InitializeComponent();
+            DataAccess = dataAccess;
 
-            PopulateFormForAdd();
-            GeneralFormSetup();
-        }
-
-        public StudentAddModifyArtUI(string studentName, StudentArtsAndRank artInfo)
-        {
-            modifyExistingArt = true;
-            currentArt = artInfo;
-            this.studentName = studentName;
+            if (artInfo != null)
+            {
+                modifyExistingArt = true;
+                currentArt = artInfo;
+                PopulateFormForModify();
+            }
+            else
+            {
+                modifyExistingArt = false;
+                currentArt = new StudentArtsAndRank { StudentArtID = studentID };
+                PopulateFormForAdd();
+            }
 
             InitializeComponent();
-
-            PopulateFormForModify();
             GeneralFormSetup();
         }
 
@@ -97,34 +92,46 @@ namespace DojoStudentManagement
             currentArt.StudentArt = cmbArtType.Text.Trim();
             currentArt.HoursInArt = double.TryParse(txtCumulativeHours.Text, out double hours) ? hours : 0.0;
             currentArt.DateStarted = dtBeginDate.Value;
-            //TODO: Do we want to handle promotion date/promotion hours, even though they are read-only?
+            currentArt.PromotionHours = double.TryParse(txtPromotionHours.Text, out double promotionHours) ? promotionHours : 0.0;
+            currentArt.DatePromoted = dtPromotionDate.Value;
         }
 
-        private bool SaveUpdatesToArt()
+        private void UpdateStudentArtRecord()
         {
             UpdateCurrentArtWithFormData();
-            //Save data to database
-            return false;
+            if (DataAccess.UpdateStudentArt(currentArt))
+            {
+                MessageBox.Show($"Added {currentArt.StudentArt} data for {studentName}", "Update Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            MessageBox.Show($"Error adding {currentArt.StudentArt} data for {studentName}", "Error Adding Art", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        private bool AddNewArt()
+        private void CreateNewStudentArtRecord()
         {
             UpdateCurrentArtWithFormData();
-            //Save data to database
-            return false;
+            if (DataAccess.AddNewStudentArt(currentArt))
+            {
+                MessageBox.Show($"Updated {currentArt.StudentArt} data for {studentName}", "Update Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            MessageBox.Show($"Error updating {currentArt.StudentArt} data for {studentName}", "Error Updating Information", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
             if (modifyExistingArt)
-                SaveUpdatesToArt();
+                UpdateStudentArtRecord();
             else
-                AddNewArt();
+                CreateNewStudentArtRecord();
         }
 
-        private void StudentAddModifyArtUI_Load(object sender, EventArgs e)
+        private void btnCancel_Click(object sender, EventArgs e)
         {
-
+            Dispose();
+            Close();
         }
     }
 }

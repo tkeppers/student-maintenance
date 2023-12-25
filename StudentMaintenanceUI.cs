@@ -187,7 +187,7 @@ namespace DojoStudentManagement
         {
             if (ValidStudentIsSelected())
             {
-                StudentAddModifyArtUI addArt = new StudentAddModifyArtUI(currentStudentID, currentStudentName);
+                StudentAddModifyArtUI addArt = new StudentAddModifyArtUI(currentStudentID, currentStudentName, dataAccess);
                 addArt.ShowDialog();
             }
         }
@@ -267,7 +267,7 @@ namespace DojoStudentManagement
                 return;
             }
 
-            StudentAddModifyArtUI modifyArt = new StudentAddModifyArtUI(currentStudentID, currentStudentName, selectedArt);
+            StudentAddModifyArtUI modifyArt = new StudentAddModifyArtUI(currentStudentID, currentStudentName, dataAccess, selectedArt);
             modifyArt.ShowDialog();
         }
 

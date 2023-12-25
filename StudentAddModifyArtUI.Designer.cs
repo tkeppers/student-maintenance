@@ -217,6 +217,7 @@ namespace DojoStudentManagement
             this.btnCancel.Text = "Cancel";
             this.btnCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // StudentAddModifyArtUI
             // 
@@ -229,7 +230,6 @@ namespace DojoStudentManagement
             this.Name = "StudentAddModifyArtUI";
             this.ShowIcon = false;
             this.Text = "StudentAddModifyArtUI";
-            this.Load += new System.EventHandler(this.StudentAddModifyArtUI_Load);
             this.gbModifyArt.ResumeLayout(false);
             this.gbModifyArt.PerformLayout();
             this.ResumeLayout(false);
