@@ -686,30 +686,36 @@ namespace DojoStudentManagement
             // 
             // btnRemoveArt
             // 
-            this.btnRemoveArt.Location = new System.Drawing.Point(174, 150);
+            this.btnRemoveArt.Image = ((System.Drawing.Image)(resources.GetObject("btnRemoveArt.Image")));
+            this.btnRemoveArt.Location = new System.Drawing.Point(178, 150);
             this.btnRemoveArt.Name = "btnRemoveArt";
-            this.btnRemoveArt.Size = new System.Drawing.Size(75, 23);
+            this.btnRemoveArt.Size = new System.Drawing.Size(94, 27);
             this.btnRemoveArt.TabIndex = 9;
             this.btnRemoveArt.Text = "Remove Art";
+            this.btnRemoveArt.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnRemoveArt.UseVisualStyleBackColor = true;
             // 
             // btnModifyArt
             // 
+            this.btnModifyArt.Image = ((System.Drawing.Image)(resources.GetObject("btnModifyArt.Image")));
             this.btnModifyArt.Location = new System.Drawing.Point(91, 150);
             this.btnModifyArt.Name = "btnModifyArt";
-            this.btnModifyArt.Size = new System.Drawing.Size(75, 23);
+            this.btnModifyArt.Size = new System.Drawing.Size(81, 27);
             this.btnModifyArt.TabIndex = 8;
             this.btnModifyArt.Text = "Modify Art";
+            this.btnModifyArt.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnModifyArt.UseVisualStyleBackColor = true;
             this.btnModifyArt.Click += new System.EventHandler(this.btnModifyArt_Click);
             // 
             // btnAddArt
             // 
+            this.btnAddArt.Image = ((System.Drawing.Image)(resources.GetObject("btnAddArt.Image")));
             this.btnAddArt.Location = new System.Drawing.Point(10, 150);
             this.btnAddArt.Name = "btnAddArt";
-            this.btnAddArt.Size = new System.Drawing.Size(75, 23);
+            this.btnAddArt.Size = new System.Drawing.Size(75, 27);
             this.btnAddArt.TabIndex = 7;
             this.btnAddArt.Text = "Add Art";
+            this.btnAddArt.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnAddArt.UseVisualStyleBackColor = true;
             this.btnAddArt.Click += new System.EventHandler(this.btnAddArt_Click);
             // 
