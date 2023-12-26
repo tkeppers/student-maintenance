@@ -313,13 +313,15 @@ namespace DojoStudentManagement
                              @StudentArt,
                              @StudentRank,
                              @CumulativeHours,
-                             @DateStarted)", connection, transaction))
+                             @DateStarted,
+                             @DatePromoted)", connection, transaction))
                         {
                             command.Parameters.Add("@StudentID", OleDbType.Integer).Value = artsAndRank.StudentArtID;
                             command.Parameters.Add("@StudentArt", OleDbType.VarChar).Value = artsAndRank.StudentArt;
                             command.Parameters.Add("@Rank", OleDbType.VarChar).Value = artsAndRank.Rank;
                             command.Parameters.Add("@CumulativeHours", OleDbType.Numeric).Value = artsAndRank.HoursInArt;
                             command.Parameters.Add("@DateStarted", OleDbType.DBDate).Value = artsAndRank.DateStarted;
+                            command.Parameters.Add("@DatePromoted", OleDbType.DBDate).Value = artsAndRank.DateStarted;  //Since this is a brand-new art, the promotion date is the start date
 
                             command.ExecuteNonQuery();
 
@@ -355,13 +357,13 @@ namespace DojoStudentManagement
                             studArt_rank = @Rank,
                             studArt_cumm = @CumulativeHours,
                             studArt_begin = @DateStarted
-                            WHERE StudArt_ID = @ArtID AND studArt_art = @Art", connection, transaction))
+                            WHERE StudArt_ID = @ArtID AND studArt_art = @StudentArt", connection, transaction))
                         {
                             command.Parameters.Add("@Rank", OleDbType.VarChar).Value = artsAndRank.Rank;
-                            command.Parameters.Add("@DateStarted", OleDbType.DBDate).Value = artsAndRank.DateStarted;
                             command.Parameters.Add("@CumulativeHours", OleDbType.Numeric).Value = artsAndRank.HoursInArt;
+                            command.Parameters.Add("@DateStarted", OleDbType.DBDate).Value = artsAndRank.DateStarted;
                             command.Parameters.Add("@ArtID", OleDbType.Integer).Value = artsAndRank.StudentArtID;
-                            command.Parameters.Add("@Art", OleDbType.VarChar).Value = artsAndRank.StudentArt;
+                            command.Parameters.Add("@StudentArt", OleDbType.VarChar).Value = artsAndRank.StudentArt;
 
                             command.ExecuteNonQuery();
 

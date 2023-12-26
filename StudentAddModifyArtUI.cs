@@ -23,6 +23,9 @@ namespace DojoStudentManagement
             this.studentName = studentName;
             DataAccess = dataAccess;
 
+            InitializeComponent();
+            GeneralFormSetup();
+
             if (artInfo != null)
             {
                 modifyExistingArt = true;
@@ -35,9 +38,6 @@ namespace DojoStudentManagement
                 currentArt = new StudentArtsAndRank { StudentArtID = studentID };
                 PopulateFormForAdd();
             }
-
-            InitializeComponent();
-            GeneralFormSetup();
         }
 
         private void GeneralFormSetup()
@@ -69,9 +69,11 @@ namespace DojoStudentManagement
             txtPromotionHours.Text = currentArt.PromotionHours.ToString();
             txtCurrentRank.Text = currentArt.Rank;
             dtBeginDate.Value = currentArt.DateStarted.Value;
-            dtLastSignin.Value = currentArt.DateOfLatestSignIn.Value;
+            dtLastSignin.Value = currentArt.DateOfLatestSignIn ?? DateTime.Today;
             dtPromotionDate.Value = currentArt.DatePromoted.Value;
             cmbArtType.Text = currentArt.StudentArt;
+
+            cmbArtType.Enabled = false;
         }
 
         private void PopulateFormForAdd()
