@@ -26,6 +26,8 @@ namespace DojoStudentManagement
 
         bool UpdateStudent(Student student);
 
+        bool DeleteStudent(int studentID);
+
         bool UpdateStudentPromotion(int studentID, StudentArtsAndRank artsAndRank);
 
         bool AddNewStudentArt(StudentArtsAndRank artsAndRank);

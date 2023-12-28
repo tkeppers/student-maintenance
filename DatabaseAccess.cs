@@ -298,6 +298,46 @@ namespace DojoStudentManagement
             return success;
         }
 
+        public bool DeleteStudent(int studentID)
+        {
+            bool success = true;
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                connection.Open();
+                OleDbCommand command = new OleDbCommand(@"DELETE FROM Students
+                    WHERE stud_id = @StudentID", connection);
+
+                if (connection.State == ConnectionState.Open)
+                {
+                    command.Parameters.Add("@StudentID", OleDbType.Integer).Value = studentID;
+
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                        Log.Information($"Successfully deleted student with ID {studentID}");
+
+                        //Also remove the enrolled martial art records associated with this student ID
+                        DeleteStudentArt(studentID);
+                    }
+                    catch (OleDbException ex)
+                    {
+                        success = false;
+                        Log.Error($"{DateTime.Now}: Error executing delete command.\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        connection.Close();
+                    }
+                }
+                else
+                {
+                    success = false;
+                    Log.Error("DeleteStudent: Connection failed during delete operation.\n");
+                }
+            }
+
+            return success;
+        }
+
         public bool AddNewStudentArt(StudentArtsAndRank artsAndRank) 
         {
             bool success = true;
@@ -341,7 +381,7 @@ namespace DojoStudentManagement
                     catch (OleDbException ex)
                     {
                         success = false;
-                        Log.Error($"{DateTime.Now}: Error connecting to database {databasePath}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        Log.Error($"AddNewStudentArt: Error connecting to database {databasePath}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
                         transaction.Rollback();
                     }
                 }
@@ -383,7 +423,7 @@ namespace DojoStudentManagement
                     catch (OleDbException ex)
                     {
                         success = false;
-                        Log.Error($"{DateTime.Now}: Error connecting to database {databasePath}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        Log.Error($"UpdateStudentArt: Error connecting to database {databasePath}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
                         transaction.Rollback();
                     }
                 }
@@ -392,7 +432,12 @@ namespace DojoStudentManagement
             return success;
         }
 
-        public bool DeleteStudentArt(int studentArtID, string studentArtName)
+        /// <summary>
+        /// If the studentArtName parameter is null, deletes all of the martial arts associated 
+        /// with the studentArtID record. Otherwise, it deletes the specific record that matches
+        /// both parameters.
+        /// </summary>
+        public bool DeleteStudentArt(int studentArtID, string studentArtName = null)
         {
             bool success = true;
 
@@ -403,16 +448,29 @@ namespace DojoStudentManagement
                 {
                     try
                     {
-                        using (OleDbCommand command = new OleDbCommand(@"DELETE FROM StudArts WHERE 
-                            StudArt_ID = @StudentArtID AND
-                            studArt_art = @StudentArtName", connection, transaction))
+                        string sqlCommandText = studentArtName != null
+                            ? @"DELETE FROM StudArts WHERE StudArt_ID = @StudentArtID AND studArt_art = @StudentArtName"
+                            : @"DELETE FROM StudArts WHERE StudArt_ID = @StudentArtID";
+
+                        using (OleDbCommand command = new OleDbCommand(sqlCommandText, connection, transaction))
                         {
                             command.Parameters.Add("@StudentArtID", OleDbType.Integer).Value = studentArtID;
-                            command.Parameters.Add("@StudentArtName", OleDbType.VarChar).Value = studentArtName;
+
+                            if (studentArtName != null)
+                            {
+                                command.Parameters.Add("@StudentArtName", OleDbType.VarChar).Value = studentArtName;
+                            }
 
                             command.ExecuteNonQuery();
 
-                            Log.Information($"Successfully removed {studentArtName} for student ID {studentArtID}");
+                            if (studentArtName != null)
+                            {
+                                Log.Information($"Successfully removed {studentArtName} for student ID {studentArtID}");
+                            }
+                            else
+                            {
+                                Log.Information($"Successfully removed all martial arts for student ID {studentArtID}");
+                            }
                         }
 
                         transaction.Commit();

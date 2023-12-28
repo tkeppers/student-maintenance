@@ -235,7 +235,25 @@ namespace DojoStudentManagement
             if (!studentMaintenanceFunctions.IsValidStudent(currentStudentID))
                 return;
 
-            //Show "Are you sure you want to delete this student" message?
+            DialogResult result = MessageBox.Show($"Are you sure you want to delete student {currentStudent.FullName}", "Delete Student?", 
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.No)
+                return;
+
+            if (dataAccess.DeleteStudent(currentStudentID))
+            {
+                string successMessage = $"Student {currentStudent.FullName} deleted successfully.";
+                MessageService.ShowErrorMessage(successMessage, "Success");
+                Log.Information(successMessage);
+                dgvStudentList.Refresh();
+            }
+            else
+            {
+                string failureMessage = $"Error deleting student {currentStudent.FullName}. Changes may not have been saved to the database.";
+                MessageService.ShowErrorMessage(failureMessage, "Error Deleting Student");
+                Log.Information(failureMessage);
+            }
 
         }
 
