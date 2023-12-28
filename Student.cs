@@ -11,6 +11,14 @@ namespace DojoStudentManagement
         public int StudentID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string FullName
+        {
+            get
+            {
+                return $"{FirstName} {LastName}";
+
+            }
+        }
         public string HomeDojo { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string Address1 { get; set; }

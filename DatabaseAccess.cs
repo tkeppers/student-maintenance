@@ -202,7 +202,7 @@ namespace DojoStudentManagement
                     {
                         command.ExecuteNonQuery();
                         connection.Close();
-                        Log.Information($"Added new student {student.FirstName} {student.LastName}");
+                        Log.Information($"Added new student {student.FullName}");
                     }
                     catch (OleDbException ex)
                     {
@@ -276,7 +276,7 @@ namespace DojoStudentManagement
                     {
                         command.ExecuteNonQuery();
                         connection.Close();
-                        Log.Information($"Successfully updated student {student.FirstName} {student.LastName}");
+                        Log.Information($"Successfully updated student {student.FullName}");
                     }
                     catch (OleDbException ex)
                     {

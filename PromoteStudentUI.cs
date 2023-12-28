@@ -45,7 +45,7 @@ namespace DojoStudentManagement
 
         private void PopulatePromotionData(Student student, StudentArtsAndRank art)
         {
-            txtStudentName.Text = student.FirstName + " " + student.LastName;
+            txtStudentName.Text = student.FullName;
             
             txtArt.Text = art.StudentArt;
             chkEligibleForPromotion.Checked = art.EligibleForPromotion;
@@ -108,7 +108,7 @@ namespace DojoStudentManagement
             currentArt.NextRank = cmbNextRank.Text;
             currentArt.DatePromoted = dtPromotionDate.Value;
 
-            string message = $"Promote {currentStudent.FirstName} {currentStudent.LastName} from {currentArt.Rank} to {cmbNextRank.Text} in {currentArt.StudentArt}?";
+            string message = $"Promote {currentStudent.FullName} from {currentArt.Rank} to {cmbNextRank.Text} in {currentArt.StudentArt}?";
 
             DialogResult result = MessageBox.Show(message, "Promote Student?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 
@@ -120,7 +120,7 @@ namespace DojoStudentManagement
             if (dataAccess.UpdateStudentPromotion(currentStudent.StudentID, currentArt))
             {
                 currentArt.PromoteStudentToNewLevel(cmbNextRank.Text);
-                MessageBox.Show($"Student {currentStudent.FirstName} {currentStudent.LastName} successfully promoted to {currentArt.Rank}",
+                MessageBox.Show($"Student {currentStudent.FullName} successfully promoted to {currentArt.Rank}",
                     "Promotion Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.Close();
             }

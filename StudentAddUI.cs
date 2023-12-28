@@ -51,7 +51,7 @@ namespace DojoStudentManagement
             newStudent.StudentGender = SetGender();
 
             if (dataAccess.AddNewStudent(newStudent))
-                MessageBox.Show("Student " + newStudent.FirstName + " " + newStudent.LastName + " successfully added.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Student {newStudent.FullName} successfully added.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private Gender SetGender()

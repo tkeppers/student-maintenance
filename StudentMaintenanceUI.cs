@@ -16,7 +16,6 @@ namespace DojoStudentManagement
         int currentStudentID;
         private readonly IDataAccess dataAccess;
         private readonly StudentMaintenanceFunctions studentMaintenanceFunctions;
-        private string currentStudentName;
         private Student currentStudent;
         private StudentArtsAndRank selectedArt;
         private DataTable promotionRequirements;
@@ -47,8 +46,6 @@ namespace DojoStudentManagement
             txtMessages.Clear();
 
             this.currentStudent = studentMaintenanceFunctions.PopulateStudentData(dataAccess, currentStudentID);
-
-            this.currentStudentName = $"{currentStudent.FirstName} {currentStudent.LastName}";
 
             txtFirstName.Text = currentStudent.FirstName;
             txtLastName.Text = currentStudent.LastName;
@@ -187,7 +184,7 @@ namespace DojoStudentManagement
         {
             if (ValidStudentIsSelected())
             {
-                StudentAddModifyArtUI addArt = new StudentAddModifyArtUI(currentStudentID, currentStudentName, dataAccess);
+                StudentAddModifyArtUI addArt = new StudentAddModifyArtUI(currentStudentID, currentStudent.FullName, dataAccess);
                 addArt.ShowDialog();
             }
         }
@@ -201,7 +198,7 @@ namespace DojoStudentManagement
                 return;
             }
 
-            DialogResult result = MessageBox.Show("Update database for student " + currentStudentName + "?", "Save Student?", 
+            DialogResult result = MessageBox.Show("Update database for student " + currentStudent.FullName + "?", "Save Student?", 
                 MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 
             if (result == DialogResult.Cancel || result == DialogResult.No)
@@ -233,14 +230,16 @@ namespace DojoStudentManagement
 
             if (dataAccess.UpdateStudent(currentStudent))
             {
-                MessageBox.Show("Student " + currentStudentName + " saved successfully.");
-                Log.Information($"Student " + currentStudentName + " saved successfully.");
+                string successMessage = $"Student {currentStudent.FullName} saved successfully.";
+                MessageBox.Show(successMessage);
+                Log.Information(successMessage);
                 btnSaveChanges.Enabled = false;
             }
             else
             {
-                MessageBox.Show("Error updating student " + currentStudentName + ". Changes may not have been saved to the database.");
-                Log.Information($"Error updating student " + currentStudentName + ". Changes may not have been saved to the database.");
+                string failureMessage = $"Error updating student {currentStudent.FullName}. Changes may not have been saved to the database.";
+                MessageBox.Show(failureMessage);
+                Log.Information(failureMessage);
             }
         }
 
@@ -264,7 +263,7 @@ namespace DojoStudentManagement
             if (IsValidArtSelected() == false)
                 return;
 
-            StudentAddModifyArtUI modifyArt = new StudentAddModifyArtUI(currentStudentID, currentStudentName, dataAccess, selectedArt);
+            StudentAddModifyArtUI modifyArt = new StudentAddModifyArtUI(currentStudentID, currentStudent.FullName, dataAccess, selectedArt);
             modifyArt.ShowDialog();
         }
 
@@ -273,7 +272,7 @@ namespace DojoStudentManagement
             if (IsValidArtSelected() == false)
                 return;
 
-            string dialogText = $"Are you sure you want to remove {selectedArt.StudentArt} from student {currentStudent.FirstName} {currentStudent.LastName}?" +
+            string dialogText = $"Are you sure you want to remove {selectedArt.StudentArt} from student {currentStudent.FullName}?" +
                 $"\n\nThis action cannot be undone.";
 
             DialogResult result = MessageBox.Show(dialogText, "Are You Sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -302,14 +301,14 @@ namespace DojoStudentManagement
 
         private void btnPromotionHistory_Click(object sender, EventArgs e)
         {
-            StudentPromotionHistoryUI promotions = new StudentPromotionHistoryUI(dataAccess, currentStudentID, currentStudentName);
+            StudentPromotionHistoryUI promotions = new StudentPromotionHistoryUI(dataAccess, currentStudentID, currentStudent.FullName);
             promotions.ShowDialog();
 
         }
 
         private void btnSignInHistory_Click(object sender, EventArgs e)
         {
-            StudentSignInHistoryUI signins = new StudentSignInHistoryUI(dataAccess, currentStudentID, currentStudentName);
+            StudentSignInHistoryUI signins = new StudentSignInHistoryUI(dataAccess, currentStudentID, currentStudent.FullName);
             signins.ShowDialog();
         }
 
@@ -320,7 +319,7 @@ namespace DojoStudentManagement
 
             currentStudentID = Convert.ToInt32(dgvStudentList.SelectedRows[0].Cells[0].Value.ToString());
             PopulateStudentInformation();
-            Log.Information($"Loaded information for student {currentStudent.FirstName} {currentStudent.LastName}");
+            Log.Information($"Loaded information for student {currentStudent.FullName}");
         }
 
         private void cbShowInactiveStudents_CheckedChanged(object sender, EventArgs e)
