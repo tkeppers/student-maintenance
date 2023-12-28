@@ -389,6 +389,43 @@ namespace DojoStudentManagement
             return success;
         }
 
+        public bool DeleteStudentArt(int studentArtID, string studentArtName)
+        {
+            bool success = true;
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                connection.Open();
+                using (OleDbTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        using (OleDbCommand command = new OleDbCommand(@"DELETE FROM StudArts WHERE 
+                            StudArt_ID = @StudentArtID AND
+                            studArt_art = @StudentArtName", connection, transaction))
+                        {
+                            command.Parameters.Add("@StudentArtID", OleDbType.Integer).Value = studentArtID;
+                            command.Parameters.Add("@StudentArtName", OleDbType.VarChar).Value = studentArtName;
+
+                            command.ExecuteNonQuery();
+
+                            Log.Information($"Successfully removed {studentArtName} for student ID {studentArtID}");
+                        }
+
+                        transaction.Commit();
+                    }
+                    catch (OleDbException ex)
+                    {
+                        success = false;
+                        Log.Error($"{DateTime.Now}: Error connecting to database {databasePath}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        transaction.Rollback();
+                    }
+                }
+            }
+
+            return success;
+        }
+
         /// <summary>
         /// After a student is promoted, update the main arts/rank data with the new information, then 
         /// add a new record in the promotion history table.
@@ -467,5 +504,7 @@ namespace DojoStudentManagement
                 Log.Information($"Updated promotion history in {artsAndRank.StudentArt} for student ID {artsAndRank.StudentArtID}");
             }
         }
+
+
     }
 }

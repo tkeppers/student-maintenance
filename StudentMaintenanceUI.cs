@@ -259,16 +259,40 @@ namespace DojoStudentManagement
             }
         }
 
-        private void ModifyStudentArt()
+        private void ModifySelectedArt()
         {
-            if (lvwArtsAndRanks.SelectedItems.Count == 0)
-            {
-                MessageBox.Show("Please select an art to modify.", "No Art Selected", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            if (IsValidArtSelected() == false)
                 return;
-            }
 
             StudentAddModifyArtUI modifyArt = new StudentAddModifyArtUI(currentStudentID, currentStudentName, dataAccess, selectedArt);
             modifyArt.ShowDialog();
+        }
+
+        private void DeleteSelectedArt()
+        {
+            if (IsValidArtSelected() == false)
+                return;
+
+            string dialogText = $"Are you sure you want to remove {selectedArt.StudentArt} from student {currentStudent.FirstName} {currentStudent.LastName}?" +
+                $"\n\nThis action cannot be undone.";
+
+            DialogResult result = MessageBox.Show(dialogText, "Are You Sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result.Equals(DialogResult.Yes))
+            {
+                dataAccess.DeleteStudentArt(selectedArt.StudentArtID, selectedArt.StudentArt);
+            }
+        }
+
+        private bool IsValidArtSelected()
+        {
+            if (lvwArtsAndRanks.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("No art is selected. Please select a valid art before performing this action.", 
+                    "No Art Selected", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            return true;
         }
 
         private void StudentMaintenance_Load(object sender, EventArgs e)
@@ -374,7 +398,7 @@ namespace DojoStudentManagement
 
         private void btnModifyArt_Click(object sender, EventArgs e)
         {
-            ModifyStudentArt();
+            ModifySelectedArt();
         }
 
         private void tsbPromotionSettings_Click(object sender, EventArgs e)
@@ -398,6 +422,11 @@ namespace DojoStudentManagement
 
             PromoteStudentUI promote = new PromoteStudentUI(currentStudent, selectedArt, promotionRequirements, dataAccess);
             promote.ShowDialog();
+        }
+
+        private void btnRemoveArt_Click(object sender, EventArgs e)
+        {
+            DeleteSelectedArt();
         }
     }
 }

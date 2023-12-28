@@ -694,6 +694,7 @@ namespace DojoStudentManagement
             this.btnRemoveArt.Text = "Remove Art";
             this.btnRemoveArt.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnRemoveArt.UseVisualStyleBackColor = true;
+            this.btnRemoveArt.Click += new System.EventHandler(this.btnRemoveArt_Click);
             // 
             // btnModifyArt
             // 

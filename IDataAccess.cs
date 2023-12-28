@@ -32,6 +32,8 @@ namespace DojoStudentManagement
 
         bool UpdateStudentArt(StudentArtsAndRank artsAndRank);
 
+        bool DeleteStudentArt(int studentArtID, string studentArtName);
+
         bool DatabaseExistsAndIsValid();
     }
 }
