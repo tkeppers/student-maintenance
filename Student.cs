@@ -8,23 +8,31 @@ namespace DojoStudentManagement
 {
     public class Student
     {
-        public int StudentID;
-        public string FirstName;
-        public string LastName;
-        public string HomeDojo;
-        public DateTime DateOfBirth;
-        public string Address1;
-        public string Address2;
-        public string AddressCity;
-        public string AddressState;
-        public string AddressZip;
-        public bool ActiveMember;
-
-        public string PrimaryPhoneNumber;
-        public string SecondaryPhoneNumber;
-        public Gender StudentGender;
-        public string EmailAddress;
-        public int StartMonth;
+        public int StudentID { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string HomeDojo { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public string Address1 { get; set; }
+        public string Address2 { get; set; }
+        public string AddressCity { get; set; }
+        public string AddressState { get; set; }
+        public string AddressZip { get; set; }
+        public bool ActiveMember { get; set; }
+        public string PrimaryPhoneNumber { get; set; }
+        public string SecondaryPhoneNumber { get; set; }
+        public Gender StudentGender { get; set; }
+        public string EmailAddress { get; set; }
+        public int StartMonth { get; set; }
+        public double StudentAgeInYears
+        {
+            get
+            {
+                const double daysInYear = 365.25;
+                TimeSpan span = DateTime.Now - DateOfBirth;
+                return Math.Round(span.TotalDays / daysInYear, 2);
+            }
+        }
 
         internal List<StudentArtsAndRank> StudentArtsAndRanks = new List<StudentArtsAndRank>();
 
@@ -33,17 +41,9 @@ namespace DojoStudentManagement
 
         }
 
-        private double StudentAgeInYears()
-        {
-            TimeSpan span = DateTime.Now - DateOfBirth;
-            double studentAgeInYears = Math.Round(span.TotalDays / 365.25, 2); // Using 365.25 to account for leap years
-
-            return studentAgeInYears;
-        }
-
         public bool IsEligibleForPromotion(StudentArtsAndRank art, PromotionCriteria eligibility)
         { 
-            if (StudentAgeInYears() < eligibility.MinimumAge)
+            if (StudentAgeInYears < eligibility.MinimumAge)
                 return false;
 
             if (art.HoursInArt < eligibility.MinimumTrainingHours)
