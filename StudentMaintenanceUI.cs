@@ -27,26 +27,31 @@ namespace DojoStudentManagement
             InitializeComponent();
 
             var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            this.Text = $"Windsong Dojo Student Maintenance Application - Version {version.Major}.{version.Minor}";
+            Text = $"Windsong Dojo Student Maintenance Application - Version {version.Major}.{version.Minor}";
 
-            if (!dataAccess.DatabaseExistsAndIsValid())
-            {
-                string errText = "Database is invalid or inaccessible. Please check the database path in application settings.";
-                MessageBox.Show(errText, "Database Access Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            if (dataAccess.DatabaseExistsAndIsValid() == false)
                 return;
-            }
 
             //Read this lookup table into memory up front because it will be accessed for 
             //most operations involving students and martial arts
             promotionRequirements = dataAccess.GetStudentPromotionRequirements();
         }
 
-        private void PopulateStudentInformation()
+        private void LoadFormInformation()
         {
             txtMessages.Clear();
 
-            this.currentStudent = studentMaintenanceFunctions.PopulateStudentData(dataAccess, currentStudentID);
+            currentStudent = studentMaintenanceFunctions.PopulateStudentData(dataAccess, currentStudentID);
 
+            PopulateStudentInformation();
+
+            PopulateArtsAndRanks();
+
+            selectedArt = new StudentArtsAndRank();
+        }
+
+        private void PopulateStudentInformation()
+        {
             txtFirstName.Text = currentStudent.FirstName;
             txtLastName.Text = currentStudent.LastName;
             txtAddress1.Text = currentStudent.Address1;
@@ -68,9 +73,6 @@ namespace DojoStudentManagement
                 rbFemale.Checked = true;
             else
                 rbUnknown.Checked = true;
-
-            PopulateArtsAndRanks();
-            selectedArt = new StudentArtsAndRank();
         }
 
         private void PopulateArtsAndRanks()
@@ -173,7 +175,7 @@ namespace DojoStudentManagement
         {
             if (!studentMaintenanceFunctions.IsValidStudent(currentStudentID))
             {
-                MessageBox.Show("Please select a student before performing this action.", "Student Not Selected", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageService.ShowErrorMessage("Please select a student before performing this action.", "Student Not Selected");
                 return false;
             }
 
@@ -184,19 +186,13 @@ namespace DojoStudentManagement
         {
             //TODO: Refactor this method
             if (!studentMaintenanceFunctions.IsValidStudent(currentStudentID))
-            {
-                MessageBox.Show("Please select a valid student", "Student Not Selected", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
-            }
 
-            DialogResult result = MessageBox.Show("Update database for student " + currentStudent.FullName + "?", "Save Student?", 
+            DialogResult result = MessageBox.Show($"Update database for student {currentStudent.FullName}", "Save Student?", 
                 MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 
             if (result == DialogResult.Cancel || result == DialogResult.No)
-            {
-                MessageBox.Show("Operation cancelled.");
                 return;
-            }
 
             currentStudent.FirstName = txtFirstName.Text.Trim();
             currentStudent.LastName = txtLastName.Text.Trim();
@@ -222,16 +218,25 @@ namespace DojoStudentManagement
             if (dataAccess.UpdateStudent(currentStudent))
             {
                 string successMessage = $"Student {currentStudent.FullName} saved successfully.";
-                MessageBox.Show(successMessage);
+                MessageService.ShowErrorMessage(successMessage, "Success");
                 Log.Information(successMessage);
                 btnSaveChanges.Enabled = false;
             }
             else
             {
                 string failureMessage = $"Error updating student {currentStudent.FullName}. Changes may not have been saved to the database.";
-                MessageBox.Show(failureMessage);
+                MessageService.ShowErrorMessage(failureMessage, "Error Saving Student Infomation");
                 Log.Information(failureMessage);
             }
+        }
+
+        private void DeleteSelectedStudent()
+        {
+            if (!studentMaintenanceFunctions.IsValidStudent(currentStudentID))
+                return;
+
+            //Show "Are you sure you want to delete this student" message?
+
         }
 
         private void AddStudent_StudentAdded(object sender, EventArgs e)
@@ -257,7 +262,7 @@ namespace DojoStudentManagement
                 DialogResult result = addArt.ShowDialog();
 
                 if (result == DialogResult.OK)
-                    PopulateStudentInformation();
+                    LoadFormInformation();
             }
         }
 
@@ -270,7 +275,7 @@ namespace DojoStudentManagement
             DialogResult result = modifyArt.ShowDialog();
 
             if (result == DialogResult.OK)
-                PopulateStudentInformation();
+                LoadFormInformation();
         }
 
         private void DeleteSelectedArt()
@@ -285,7 +290,7 @@ namespace DojoStudentManagement
             if (result.Equals(DialogResult.Yes))
             {
                 dataAccess.DeleteStudentArt(selectedArt.StudentArtID, selectedArt.StudentArt);
-                PopulateStudentInformation();
+                LoadFormInformation();
             }
         }
 
@@ -293,8 +298,7 @@ namespace DojoStudentManagement
         {
             if (lvwArtsAndRanks.SelectedItems.Count == 0)
             {
-                MessageBox.Show("No art is selected. Please select a valid art before performing this action.", 
-                    "No Art Selected", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageService.ShowErrorMessage("No art is selected. Please select a valid art before performing this action.", "No Art Selected");
                 return false;
             }
 
@@ -310,7 +314,6 @@ namespace DojoStudentManagement
         {
             StudentPromotionHistoryUI promotions = new StudentPromotionHistoryUI(dataAccess, currentStudentID, currentStudent.FullName);
             promotions.ShowDialog();
-
         }
 
         private void btnSignInHistory_Click(object sender, EventArgs e)
@@ -325,7 +328,7 @@ namespace DojoStudentManagement
                 return;
 
             currentStudentID = Convert.ToInt32(dgvStudentList.SelectedRows[0].Cells[0].Value.ToString());
-            PopulateStudentInformation();
+            LoadFormInformation();
             Log.Information($"Loaded information for student {currentStudent.FullName}");
         }
 
@@ -420,11 +423,8 @@ namespace DojoStudentManagement
             //TODO: If there isn't a student art selected AND the student is in multiple arts, but is only eligible for 
             //promotion in one of them, automatically select that one.
             //Otherwise, display a message to the user advising them to choose an art to promote the student in
-            if (string.IsNullOrEmpty(selectedArt.StudentArt))
-            {
-                MessageBox.Show("Please select a valid art before proceeding with promotion.", "Art Not Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            if (IsValidArtSelected() == false)
                 return;
-            }
 
             PromoteStudentUI promote = new PromoteStudentUI(currentStudent, selectedArt, promotionRequirements, dataAccess);
             promote.ShowDialog();
@@ -433,6 +433,11 @@ namespace DojoStudentManagement
         private void btnRemoveArt_Click(object sender, EventArgs e)
         {
             DeleteSelectedArt();
+        }
+
+        private void btnDeleteStudent_Click(object sender, EventArgs e)
+        {
+            DeleteSelectedStudent();
         }
     }
 }

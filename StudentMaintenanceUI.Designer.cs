@@ -96,6 +96,7 @@ namespace DojoStudentManagement
             this.txtMessages = new System.Windows.Forms.TextBox();
             this.lblPromotionEligibility = new System.Windows.Forms.Label();
             this.btnPromoteStudent = new System.Windows.Forms.Button();
+            this.btnDeleteStudent = new System.Windows.Forms.Button();
             this.gbStudentInfo.SuspendLayout();
             this.gbGender.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStudentList)).BeginInit();
@@ -113,6 +114,7 @@ namespace DojoStudentManagement
             // 
             // gbStudentInfo
             // 
+            this.gbStudentInfo.Controls.Add(this.btnDeleteStudent);
             this.gbStudentInfo.Controls.Add(this.btnSaveChanges);
             this.gbStudentInfo.Controls.Add(this.lblHomeDojo);
             this.gbStudentInfo.Controls.Add(this.txtHomeDojo);
@@ -615,14 +617,14 @@ namespace DojoStudentManagement
             // databasePathToolStripMenuItem
             // 
             this.databasePathToolStripMenuItem.Name = "databasePathToolStripMenuItem";
-            this.databasePathToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.databasePathToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.databasePathToolStripMenuItem.Text = "Database Path";
             this.databasePathToolStripMenuItem.Click += new System.EventHandler(this.databasePathToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -749,6 +751,16 @@ namespace DojoStudentManagement
             this.btnPromoteStudent.UseVisualStyleBackColor = true;
             this.btnPromoteStudent.Click += new System.EventHandler(this.btnPromoteStudent_Click);
             // 
+            // btnDeleteStudent
+            // 
+            this.btnDeleteStudent.Location = new System.Drawing.Point(356, 311);
+            this.btnDeleteStudent.Name = "btnDeleteStudent";
+            this.btnDeleteStudent.Size = new System.Drawing.Size(111, 52);
+            this.btnDeleteStudent.TabIndex = 29;
+            this.btnDeleteStudent.Text = "Delete Student";
+            this.btnDeleteStudent.UseVisualStyleBackColor = true;
+            this.btnDeleteStudent.Click += new System.EventHandler(this.btnDeleteStudent_Click);
+            // 
             // StudentMaintenanceUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -851,6 +863,7 @@ namespace DojoStudentManagement
         private System.Windows.Forms.TextBox txtMessages;
         private System.Windows.Forms.Label lblPromotionEligibility;
         private System.Windows.Forms.Button btnPromoteStudent;
+        private System.Windows.Forms.Button btnDeleteStudent;
     }
 }
 

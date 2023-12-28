@@ -54,7 +54,13 @@ namespace DojoStudentManagement
 
         public bool IsValidStudent(int studentID)
         {   
-            return studentID > 0 ? true : false;
+            if (studentID <= 0)
+            {
+                MessageService.ShowErrorMessage("Please select a valid student", "Student Not Selected");
+                return false;
+            }
+
+            return true;
         }
 
         internal bool IsValidEmail(string email)

@@ -111,6 +111,7 @@
     <Compile Include="DatabaseConfigUI.Designer.cs">
       <DependentUpon>DatabaseConfigUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="MessageService.cs" />
     <Compile Include="PromoteStudentUI.cs">
       <SubType>Form</SubType>
     </Compile>

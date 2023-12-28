@@ -31,6 +31,8 @@ namespace DojoStudentManagement
         {
             if (!System.IO.File.Exists(databasePath))
             {
+                string errText = "Database is invalid or inaccessible. Please check the database path in application settings.";
+                MessageService.ShowErrorMessage(errText, "Database Access Error");
                 Log.Error($"{DateTime.Now}: Database file not found at {databasePath}");
                 return false;
             }
@@ -44,6 +46,7 @@ namespace DojoStudentManagement
                 }
                 catch (OleDbException e)
                 {
+                    MessageService.ShowErrorMessage("Error connecting to database", "Database Access Error");
                     Log.Error($"{DateTime.Now}: Error connecting to database {databasePath}\n{e.Message}\n{e.Source}\n{e.StackTrace}");
                     return false;
                 }
