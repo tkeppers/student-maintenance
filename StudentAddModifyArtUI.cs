@@ -104,14 +104,14 @@ namespace DojoStudentManagement
             UpdateCurrentArtWithFormData();
             if (DataAccess.UpdateStudentArt(currentArt))
             {
-                message = $"Added {currentArt.StudentArt} data for {studentName}";
+                message = $"Updated {currentArt.StudentArt} data for {studentName}";
                 MessageBox.Show(message, "Update Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Log.Information($"UpdateStudentArtRecord: {message}");
                 return;
             }
 
-            message = $"Error adding {currentArt.StudentArt} data for {studentName}";
-            MessageBox.Show(message, "Error Adding Art", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            message = $"Error updating {currentArt.StudentArt} data for {studentName}";
+            MessageBox.Show(message, "Error Updating Art", MessageBoxButtons.OK, MessageBoxIcon.Error);
             Log.Error($"UpdateStudentArtRecord: {message}");
         }
 
@@ -120,23 +120,27 @@ namespace DojoStudentManagement
             UpdateCurrentArtWithFormData();
             if (DataAccess.AddNewStudentArt(currentArt))
             {
-                MessageBox.Show($"Updated {currentArt.StudentArt} data for {studentName}", "Update Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Added {currentArt.StudentArt} as a new art for {studentName}", "Add New Art Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            MessageBox.Show($"Error updating {currentArt.StudentArt} data for {studentName}", "Error Updating Information", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show($"Error adding {currentArt.StudentArt} for {studentName}", "Error AddingInformation", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void btnSave_Click(object sender, EventArgs e)
-        {
+        { 
             if (modifyExistingArt)
                 UpdateStudentArtRecord();
             else
                 CreateNewStudentArtRecord();
+
+            this.DialogResult = DialogResult.OK;
+            this.Close();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
+            this.DialogResult = DialogResult.Cancel;
             Dispose();
             Close();
         }

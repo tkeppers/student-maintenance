@@ -69,11 +69,11 @@ namespace DojoStudentManagement
             else
                 rbUnknown.Checked = true;
 
-            PopulateArtsAndRanks(currentStudent);
+            PopulateArtsAndRanks();
             selectedArt = new StudentArtsAndRank();
         }
 
-        private void PopulateArtsAndRanks(Student currentStudent)
+        private void PopulateArtsAndRanks()
         {
             lvwArtsAndRanks.Items.Clear();
 
@@ -180,15 +180,6 @@ namespace DojoStudentManagement
             return true;
         }
 
-        private void AddNewArtForStudent()
-        {
-            if (ValidStudentIsSelected())
-            {
-                StudentAddModifyArtUI addArt = new StudentAddModifyArtUI(currentStudentID, currentStudent.FullName, dataAccess);
-                addArt.ShowDialog();
-            }
-        }
-
         private void SaveChanges()
         {
             //TODO: Refactor this method
@@ -258,13 +249,28 @@ namespace DojoStudentManagement
             }
         }
 
+        private void AddNewArtForStudent()
+        {
+            if (ValidStudentIsSelected())
+            {
+                StudentAddModifyArtUI addArt = new StudentAddModifyArtUI(currentStudentID, currentStudent.FullName, dataAccess);
+                DialogResult result = addArt.ShowDialog();
+
+                if (result == DialogResult.OK)
+                    PopulateStudentInformation();
+            }
+        }
+
         private void ModifySelectedArt()
         {
             if (IsValidArtSelected() == false)
                 return;
 
             StudentAddModifyArtUI modifyArt = new StudentAddModifyArtUI(currentStudentID, currentStudent.FullName, dataAccess, selectedArt);
-            modifyArt.ShowDialog();
+            DialogResult result = modifyArt.ShowDialog();
+
+            if (result == DialogResult.OK)
+                PopulateStudentInformation();
         }
 
         private void DeleteSelectedArt()
@@ -279,6 +285,7 @@ namespace DojoStudentManagement
             if (result.Equals(DialogResult.Yes))
             {
                 dataAccess.DeleteStudentArt(selectedArt.StudentArtID, selectedArt.StudentArt);
+                PopulateStudentInformation();
             }
         }
 
