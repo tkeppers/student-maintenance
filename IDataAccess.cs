@@ -20,6 +20,8 @@ namespace DojoStudentManagement
 
         DataTable GetStudentPromotionRequirements();
 
+        DataTable GetListOfArts();
+
         bool AddNewStudent(Student student);
 
         bool UpdateStudent(Student student);

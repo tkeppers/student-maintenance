@@ -54,11 +54,9 @@ namespace DojoStudentManagement
 
         private void PopulateListOfArts()
         {
-            //TODO: Remove hard-coded testing items and populate this from the database.
-            cmbArtType.Items.Add("Aikido");
-            cmbArtType.Items.Add("Judo");
-            cmbArtType.Items.Add("Jyodo");
-            cmbArtType.Items.Add("Iaido");
+            cmbArtType.DataSource = DataAccess.GetListOfArts();
+            cmbArtType.DisplayMember = "art_id"; 
+            cmbArtType.ValueMember = "art_id";
         }
 
         private void PopulateFormForModify()

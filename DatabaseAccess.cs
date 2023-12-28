@@ -70,6 +70,11 @@ namespace DojoStudentManagement
             return ExecuteQuery($"select * from Signin_History where sign_student={studentID}");
         }
 
+        public DataTable GetListOfArts()
+        {
+            return ExecuteQuery("select art_id from Arts");
+        }
+
         private DataTable ExecuteQuery(string sql)
         {
             DataTable dataTable = new DataTable();
