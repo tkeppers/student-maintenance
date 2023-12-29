@@ -142,7 +142,7 @@ namespace DojoStudentManagement
             dgvStudentList.DataSource = dv;
         }
 
-        private void PopulateStudentList()
+        private void RefreshStudentList()
         {
             //dgvStudentList.Rows.Clear();
 
@@ -184,7 +184,7 @@ namespace DojoStudentManagement
 
         private void SaveChanges()
         {
-            //TODO: Refactor this method
+            //TODO: Refactor this method and give it a better name
             if (!studentMaintenanceFunctions.IsValidStudent(currentStudentID))
                 return;
 
@@ -246,7 +246,7 @@ namespace DojoStudentManagement
                 string successMessage = $"Student {currentStudent.FullName} deleted successfully.";
                 MessageService.ShowErrorMessage(successMessage, "Success");
                 Log.Information(successMessage);
-                dgvStudentList.Refresh();
+                RefreshStudentList();
             }
             else
             {
@@ -257,12 +257,22 @@ namespace DojoStudentManagement
 
         }
 
-        private void AddStudent_StudentAdded(object sender, EventArgs e)
+        private void AddNewStudent()
         {
-            PopulateStudentList();
+            using (StudentAddUI addStudent = new StudentAddUI(dataAccess))
+            {
+                DialogResult result = addStudent.ShowDialog();
 
-            //Automatically select the most recently added student and scroll
-            //to the new student's row to make it visible
+                if (result == DialogResult.OK)
+                {
+                    RefreshStudentList();
+                    SelectLastAddedStudent();
+                }
+            }
+        }
+
+        private void SelectLastAddedStudent()
+        {
             if (dgvStudentList.Rows.Count > 0)
             {
                 int lastIndex = dgvStudentList.Rows.Count - 1;
@@ -325,7 +335,7 @@ namespace DojoStudentManagement
 
         private void StudentMaintenance_Load(object sender, EventArgs e)
         {
-            PopulateStudentList();
+            RefreshStudentList();
         }
 
         private void btnPromotionHistory_Click(object sender, EventArgs e)
@@ -384,10 +394,7 @@ namespace DojoStudentManagement
 
         private void tsbAddNewStudent_Click(object sender, EventArgs e)
         {
-            StudentAddUI addStudent = new StudentAddUI(dataAccess);
-            addStudent.StudentAdded += AddStudent_StudentAdded;
-
-            addStudent.ShowDialog();
+            AddNewStudent();
         }
 
         private void btnAddArt_Click(object sender, EventArgs e)

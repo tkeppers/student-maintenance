@@ -74,11 +74,18 @@ namespace DojoStudentManagement
             ValidateStudentData();
             CreateNewStudent();
             OnStudentAdded();
+
+            DialogResult = DialogResult.OK;
         }
 
         private void StudentAddUI_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
         }
     }
 }
