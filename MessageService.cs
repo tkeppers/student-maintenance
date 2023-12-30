@@ -19,11 +19,9 @@ namespace DojoStudentManagement
             MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        public static void ShowAreYouSureMessage(string message, string title = "Are You Sure?")
+        public static DialogResult ShowAreYouSureMessage(string message, string title = "Are You Sure?")
         {
-            MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return MessageBox.Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
         }
-
-        // You can add other message types here (e.g., warnings, questions, etc.)
     }
 }

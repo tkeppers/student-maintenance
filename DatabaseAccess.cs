@@ -89,12 +89,10 @@ namespace DojoStudentManagement
                     connection.Open();
                     OleDbDataAdapter dataAdapter = new OleDbDataAdapter(sql, connection);
                     dataAdapter.Fill(dataTable);
-
-                    Log.Information($"Executed query {sql}");
                 }
                 catch (OleDbException ex)
                 {
-                    Log.Error($"{DateTime.Now}: Error executing query:\n{ ex.Message}\n{ ex.Source}\n{ ex.StackTrace}");
+                    Log.Error($"{DateTime.Now}: Error executing query:\n{sql}\n{ ex.Message}\n{ ex.Source}\n{ ex.StackTrace}");
                     return new DataTable();
                 }
             }

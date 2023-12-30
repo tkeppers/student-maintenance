@@ -79,32 +79,37 @@ namespace DojoStudentManagement
         {
             lvwArtsAndRanks.Items.Clear();
 
-            foreach (StudentArtsAndRank artRank in currentStudent.StudentArtsAndRanks)
+            foreach (StudentArtsAndRank studentArtRank in currentStudent.StudentArtsAndRanks)
             {
-                string[] subitems = { "Art", "Rank", "Start Date", "Hours", "Promotion Date", "Promotion Hours", "ID", 
-                    "Last Sign-In Date", "Eligible for Promotion", "Next Rank" };
-                ListViewItem item = new ListViewItem(subitems);
-                item.SubItems[0].Text = artRank.StudentArt;
-                item.SubItems[1].Text = artRank.Rank;
-                item.SubItems[2].Text = artRank.DateStarted.HasValue ?
-                    artRank.DateStarted.Value.ToString("MM/dd/yyyy") : string.Empty;
-                item.SubItems[3].Text = artRank.HoursInArt.ToString();
-                item.SubItems[4].Text = artRank.DatePromoted.HasValue ? 
-                    artRank.DatePromoted.Value.ToString("MM/dd/yyyy") : string.Empty;
-                item.SubItems[5].Text = artRank.PromotionHours.ToString();
-                item.SubItems[6].Text = artRank.StudentArtID.ToString();
-                item.SubItems[7].Text = artRank.DateOfLatestSignIn.ToString();
-
-                NotifyIfEligibleForPromotion(artRank);
-
-                if (artRank.EligibleForPromotion)
-                {
-                    item.SubItems[8].Text = "Y";
-                    item.SubItems[9].Text = artRank.NextRank;
-                }
-
+                ListViewItem item = CreateListViewItemForArt(studentArtRank);
                 lvwArtsAndRanks.Items.Add(item);
             }
+        }
+
+        private ListViewItem CreateListViewItemForArt(StudentArtsAndRank studentArtRank)
+        {
+            string[] subitems = new string[10];
+            subitems[0] = studentArtRank.StudentArt;
+            subitems[1] = studentArtRank.Rank;
+            subitems[2] = FormatDate(studentArtRank.DateStarted);
+            subitems[3] = studentArtRank.HoursInArt.ToString();
+            subitems[4] = FormatDate(studentArtRank.DatePromoted);
+            subitems[5] = studentArtRank.PromotionHours.ToString();
+            subitems[6] = studentArtRank.StudentArtID.ToString();
+            subitems[7] = studentArtRank.DateOfLatestSignIn.ToString();
+            subitems[8] = studentArtRank.EligibleForPromotion ? "Y" : string.Empty;
+            subitems[9] = studentArtRank.EligibleForPromotion ? studentArtRank.NextRank : string.Empty;
+
+            ListViewItem item = new ListViewItem(subitems);
+
+            NotifyIfEligibleForPromotion(studentArtRank);
+
+            return item;
+        }
+
+        private string FormatDate(DateTime? date)
+        {
+            return date.HasValue ? date.Value.ToString("MM/dd/yyyy") : string.Empty;
         }
 
         private void NotifyIfEligibleForPromotion(StudentArtsAndRank currentArtRank)
@@ -171,7 +176,7 @@ namespace DojoStudentManagement
             studentDataView.RowFilter = "stud_status = 'A'";
         }
 
-        private bool ValidStudentIsSelected()
+        private bool IsSelectedStudentValid()
         {
             if (!studentMaintenanceFunctions.IsValidStudent(currentStudentID))
             {
@@ -182,16 +187,33 @@ namespace DojoStudentManagement
             return true;
         }
 
-        private void SaveChanges()
+        private void LoadInformationForSelectedArt()
+        {
+            if (lvwArtsAndRanks.SelectedItems.Count > 0)
+            {
+                ListViewItem selecteditem = lvwArtsAndRanks.SelectedItems[0];
+                selectedArt.StudentArt = selecteditem.SubItems[0].Text;
+                selectedArt.Rank = selecteditem.SubItems[1].Text;
+                selectedArt.DateStarted = DateTime.TryParse(selecteditem.SubItems[2].Text, out DateTime dateStarted) ? dateStarted : (DateTime?)null;
+                selectedArt.HoursInArt = double.TryParse(selecteditem.SubItems[3].Text, out double hoursInArt) ? hoursInArt : 0;
+                selectedArt.DatePromoted = DateTime.TryParse(selecteditem.SubItems[4].Text, out DateTime datePromoted) ? datePromoted : (DateTime?)null;
+                selectedArt.PromotionHours = double.TryParse(selecteditem.SubItems[5].Text, out double promotionHours) ? hoursInArt : 0;
+                selectedArt.StudentArtID = int.TryParse(selecteditem.SubItems[6].Text, out int studentArtID) ? studentArtID : 0;
+                selectedArt.DateOfLatestSignIn = DateTime.TryParse(selecteditem.SubItems[7].Text, out DateTime dateOfLatestSignin) ? dateOfLatestSignin : (DateTime?)null;
+                selectedArt.EligibleForPromotion = selecteditem.SubItems[8].Text.Contains("Y");
+                selectedArt.NextRank = selecteditem.SubItems[9].Text;
+            }
+        }
+
+        private void UpdateStudentInformation()
         {
             //TODO: Refactor this method and give it a better name
             if (!studentMaintenanceFunctions.IsValidStudent(currentStudentID))
                 return;
 
-            DialogResult result = MessageBox.Show($"Update database for student {currentStudent.FullName}", "Save Student?", 
-                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+            DialogResult result = MessageService.ShowAreYouSureMessage($"Update database for student {currentStudent.FullName}", "Save Student?");
 
-            if (result == DialogResult.Cancel || result == DialogResult.No)
+            if (result == DialogResult.No)
                 return;
 
             currentStudent.FirstName = txtFirstName.Text.Trim();
@@ -235,8 +257,7 @@ namespace DojoStudentManagement
             if (!studentMaintenanceFunctions.IsValidStudent(currentStudentID))
                 return;
 
-            DialogResult result = MessageBox.Show($"Are you sure you want to delete student {currentStudent.FullName}", "Delete Student?", 
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            DialogResult result = MessageService.ShowAreYouSureMessage($"Are you sure you want to delete student {currentStudent.FullName}", "Delete Student?");
 
             if (result == DialogResult.No)
                 return;
@@ -284,7 +305,7 @@ namespace DojoStudentManagement
 
         private void AddNewArtForStudent()
         {
-            if (ValidStudentIsSelected())
+            if (IsSelectedStudentValid())
             {
                 StudentAddModifyArtUI addArt = new StudentAddModifyArtUI(currentStudentID, currentStudent.FullName, dataAccess);
                 DialogResult result = addArt.ShowDialog();
@@ -314,8 +335,8 @@ namespace DojoStudentManagement
             string dialogText = $"Are you sure you want to remove {selectedArt.StudentArt} from student {currentStudent.FullName}?" +
                 $"\n\nThis action cannot be undone.";
 
-            DialogResult result = MessageBox.Show(dialogText, "Are You Sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (result.Equals(DialogResult.Yes))
+            DialogResult result = MessageService.ShowAreYouSureMessage(dialogText, "Are You Sure?");
+            if (result == DialogResult.Yes)
             {
                 dataAccess.DeleteStudentArt(selectedArt.StudentArtID, selectedArt.StudentArt);
                 LoadFormInformation();
@@ -357,7 +378,6 @@ namespace DojoStudentManagement
 
             currentStudentID = Convert.ToInt32(dgvStudentList.SelectedRows[0].Cells[0].Value.ToString());
             LoadFormInformation();
-            Log.Information($"Loaded information for student {currentStudent.FullName}");
         }
 
         private void cbShowInactiveStudents_CheckedChanged(object sender, EventArgs e)
@@ -404,7 +424,7 @@ namespace DojoStudentManagement
 
         private void btnSaveChanges_Click(object sender, EventArgs e)
         {
-            SaveChanges();
+            UpdateStudentInformation();
         }
 
         private void txtEmailAddress_MouseLeave(object sender, EventArgs e)
@@ -414,20 +434,7 @@ namespace DojoStudentManagement
 
         private void lvwArtsAndRanks_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (lvwArtsAndRanks.SelectedItems.Count > 0)
-            {
-                ListViewItem selecteditem = lvwArtsAndRanks.SelectedItems[0];
-                selectedArt.StudentArt = selecteditem.SubItems[0].Text;
-                selectedArt.Rank = selecteditem.SubItems[1].Text;
-                selectedArt.DateStarted = DateTime.TryParse(selecteditem.SubItems[2].Text, out DateTime dateStarted) ? dateStarted : (DateTime?)null;
-                selectedArt.HoursInArt = double.TryParse(selecteditem.SubItems[3].Text, out double hoursInArt) ? hoursInArt : 0;
-                selectedArt.DatePromoted = DateTime.TryParse(selecteditem.SubItems[4].Text, out DateTime datePromoted) ? datePromoted : (DateTime?)null;
-                selectedArt.PromotionHours = double.TryParse(selecteditem.SubItems[5].Text, out double promotionHours) ? hoursInArt : 0;
-                selectedArt.StudentArtID = int.TryParse(selecteditem.SubItems[6].Text, out int studentArtID) ? studentArtID : 0;
-                selectedArt.DateOfLatestSignIn = DateTime.TryParse(selecteditem.SubItems[7].Text, out DateTime dateOfLatestSignin) ? dateOfLatestSignin : (DateTime?)null;
-                selectedArt.EligibleForPromotion = selecteditem.SubItems[8].Text.Contains("Y");
-                selectedArt.NextRank = selecteditem.SubItems[9].Text;
-            }
+            LoadInformationForSelectedArt();
         }
 
         private void btnModifyArt_Click(object sender, EventArgs e)
