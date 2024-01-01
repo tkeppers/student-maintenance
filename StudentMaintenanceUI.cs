@@ -444,7 +444,8 @@ namespace DojoStudentManagement
 
         private void tsbPromotionSettings_Click(object sender, EventArgs e)
         {
-            PromotionCriteriaUI promotionSettings = new PromotionCriteriaUI(promotionRequirements);
+            DataTable listOfArts = dataAccess.GetListOfArts();
+            PromotionCriteriaUI promotionSettings = new PromotionCriteriaUI(dataAccess);
             promotionSettings.ShowDialog();
         }
 
