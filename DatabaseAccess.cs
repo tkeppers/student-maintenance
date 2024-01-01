@@ -103,12 +103,15 @@ namespace DojoStudentManagement
         /// <summary>
         /// Gets the list of requirements for promotion to each level for each art available
         /// </summary>
-        /// <remarks>We will read in the entire table (it's not very big) to minimize databate hits</remarks>
+        /// <remarks>We will read in the entire table (it's not very big) to minimize databate hits. This
+        /// table will rarely ever be updated.</remarks>
         public DataTable GetStudentPromotionRequirements()
         {
             using (OleDbConnection connection = new OleDbConnection(connectionString))
             {
-                string sql = "SELECT * FROM Promo_Requirements";
+                string sql = "SELECT rank_art, rank_id, rank_next, rank_min_hours, " +
+                    "rank_min_age, rank_total_years, rank_time_in_rank " +
+                    "FROM Promo_Requirements";
                 OleDbDataAdapter dataAdapter = new OleDbDataAdapter(sql, connection);
                 DataSet dataset = new DataSet();
 
