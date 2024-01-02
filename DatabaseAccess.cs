@@ -100,6 +100,8 @@ namespace DojoStudentManagement
             return dataTable;
         }
 
+        #region PromotionCriteria
+
         /// <summary>
         /// Gets the list of requirements for promotion to each level for each art available
         /// </summary>
@@ -139,6 +141,117 @@ namespace DojoStudentManagement
                 }
             }
         }
+
+        public bool AddPromotionCriteria(PromotionCriteria promotionCriteria)
+        {
+            //Check to make sure adding the new record does not violate a primary key constraint (rank_art + rank_id)
+            bool success = true;
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                connection.Open();
+                OleDbCommand command = new OleDbCommand(@"INSERT INTO Promo_Requirements 
+                    (rank_art,
+                    rank_id,
+                    rank_next,
+                    rank_min_hours,
+                    rank_min_age,
+                    rank_total_years,
+                    rank_time_in_rank,
+                    rank_fee) 
+                   VALUES (@RankArt, 
+                    @RankName, 
+                    @NextRank, 
+                    @MinimumTrainingHours, 
+                    @MinimumAgeForRank, 
+                    @TotalYearsInArt, 
+                    @TotalYearsAtRank, 
+                    @RankFee)", connection);
+
+                if (connection.State == ConnectionState.Open)
+                {
+                    SetPromotionCriteriaCommandParameters(command, promotionCriteria, false);
+
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                        Log.Information($"Added new promotion requirement for {promotionCriteria.CurrentArt} - {promotionCriteria.CurrentRank}");
+                    }
+                    catch (OleDbException ex)
+                    {
+                        success = false;
+                        Log.Error($"{DateTime.Now}: Error inserting into Promo_Requirements table.\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        connection.Close();
+                    }
+                }
+                else
+                {
+                    success = false;
+                    Log.Error($"{DateTime.Now}: Connection failed when adding new promotion criteria.\n");
+                }
+            }
+
+            return success;
+        }
+
+        public bool UpdatePromotionCriteria(PromotionCriteria promotionCriteria)
+        {
+            //Check to make sure adding the new record does not violate a primary key constraint (rank_art + rank_id)
+            bool success = true;
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                connection.Open();
+                OleDbCommand command = new OleDbCommand(@"UPDATE Promo_Requirements SET
+                    (rank_next = @NextRank,
+                    rank_min_hours = @MinimumTrainingHours,
+                    rank_min_age = @MinimumAgeForRank,
+                    rank_total_years = @TotalYearsInArt,
+                    rank_time_in_rank = @TotalYearsAtRank,
+                    rank_fee = @RankFee) 
+                   WHERE rank_art = @RankArt AND rank_id = @RankName)", connection);
+
+                if (connection.State == ConnectionState.Open)
+                {
+                    SetPromotionCriteriaCommandParameters(command, promotionCriteria, false);
+
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                        Log.Information($"Added new promotion requirement for {promotionCriteria.CurrentArt} - {promotionCriteria.CurrentRank}");
+                    }
+                    catch (OleDbException ex)
+                    {
+                        success = false;
+                        Log.Error($"{DateTime.Now}: Error inserting into Promo_Requirements table.\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        connection.Close();
+                    }
+                }
+                else
+                {
+                    success = false;
+                    Log.Error($"{DateTime.Now}: Connection failed when adding new promotion criteria.\n");
+                }
+            }
+
+            return success;
+        }
+
+        private void SetPromotionCriteriaCommandParameters(OleDbCommand command, PromotionCriteria promotionCriteria, bool isUpdate = false)
+        {
+            command.Parameters.Add("@RankArt", OleDbType.VarChar).Value = promotionCriteria.CurrentArt;
+            command.Parameters.Add("@RankName", OleDbType.VarChar).Value = promotionCriteria.CurrentRank;
+            command.Parameters.Add("@NextRank", OleDbType.VarChar).Value = promotionCriteria.NextRank;
+            command.Parameters.Add("@MinimumTrainingHours", OleDbType.Double).Value = promotionCriteria.MinimumTrainingHours;
+            command.Parameters.Add("@MinimumAgeForRank", OleDbType.Double).Value = promotionCriteria.MinimumAge;
+            command.Parameters.Add("@TotalYearsInArt", OleDbType.Double).Value = promotionCriteria.YearsInArt;
+            command.Parameters.Add("@TotalYearsAtRank", OleDbType.Double).Value = promotionCriteria.YearsAtCurrentRank;
+            command.Parameters.Add("@RankFee", OleDbType.Double).Value = 0; //Dojo no longer charges rank fees
+        }
+
+        #endregion PromotionCriteria
 
         public bool AddNewStudent(Student student)
         {
@@ -180,28 +293,8 @@ namespace DojoStudentManagement
 
                 if (connection.State == ConnectionState.Open)
                 {
-                    command.Parameters.Add("@Status", OleDbType.VarChar).Value = student.ActiveMember ? "A" : "I";
-                    command.Parameters.Add("@LastName", OleDbType.VarChar).Value = student.LastName;
-                    command.Parameters.Add("@FirstName", OleDbType.VarChar).Value = student.FirstName;
-                    command.Parameters.Add("@HomeDojo", OleDbType.VarChar).Value = student.HomeDojo;
-                    command.Parameters.Add("@Birthdate", OleDbType.DBDate).Value = student.DateOfBirth;
-                    command.Parameters.Add("@Address1", OleDbType.VarChar).Value = student.Address1;
-                    command.Parameters.Add("@Address2", OleDbType.VarChar).Value = student.Address2;
-                    command.Parameters.Add("@City", OleDbType.VarChar).Value = student.AddressCity;
-                    command.Parameters.Add("@State", OleDbType.VarChar).Value = student.AddressState;
-                    command.Parameters.Add("@Zip", OleDbType.VarChar).Value = student.AddressZip;
-                    command.Parameters.Add("@PrimaryPhone", OleDbType.VarChar).Value = student.PrimaryPhoneNumber;
-                    command.Parameters.Add("@SecondaryPhone", OleDbType.VarChar).Value = student.SecondaryPhoneNumber;
+                    SetStudentCommandParameters(command, student, false);
 
-                    if (student.StudentGender == Gender.MALE)
-                        command.Parameters.Add("@Gender", OleDbType.VarChar).Value = "M";
-                    else if (student.StudentGender == Gender.FEMALE)
-                        command.Parameters.Add("@Gender", OleDbType.VarChar).Value = "F";
-                    else
-                        command.Parameters.Add("@Gender", OleDbType.VarChar).Value = "X";
-
-                    command.Parameters.Add("@Email", OleDbType.VarChar).Value = student.EmailAddress;
-                    command.Parameters.Add("@StartMonth", OleDbType.Integer).Value = 1; //TODO: Fix later
                     try
                     {
                         command.ExecuteNonQuery();
@@ -252,29 +345,7 @@ namespace DojoStudentManagement
 
                 if (connection.State == ConnectionState.Open)
                 {
-                    command.Parameters.Add("@Status", OleDbType.VarChar).Value = student.ActiveMember ? "A" : "I";
-                    command.Parameters.Add("@LastName", OleDbType.VarChar).Value = student.LastName;
-                    command.Parameters.Add("@FirstName", OleDbType.VarChar).Value = student.FirstName;
-                    command.Parameters.Add("@HomeDojo", OleDbType.VarChar).Value = student.HomeDojo;
-                    command.Parameters.Add("@Birthdate", OleDbType.DBDate).Value = student.DateOfBirth;
-                    command.Parameters.Add("@Address1", OleDbType.VarChar).Value = student.Address1;
-                    command.Parameters.Add("@Address2", OleDbType.VarChar).Value = student.Address2;
-                    command.Parameters.Add("@City", OleDbType.VarChar).Value = student.AddressCity;
-                    command.Parameters.Add("@State", OleDbType.VarChar).Value = student.AddressState;
-                    command.Parameters.Add("@Zip", OleDbType.VarChar).Value = student.AddressZip;
-                    command.Parameters.Add("@PrimaryPhone", OleDbType.VarChar).Value = student.PrimaryPhoneNumber;
-                    command.Parameters.Add("@SecondaryPhone", OleDbType.VarChar).Value = student.SecondaryPhoneNumber;
-
-                    if (student.StudentGender == Gender.MALE)
-                        command.Parameters.Add("@Gender", OleDbType.VarChar).Value = "M";
-                    else if (student.StudentGender == Gender.FEMALE)
-                        command.Parameters.Add("@Gender", OleDbType.VarChar).Value = "F";
-                    else
-                        command.Parameters.Add("@Gender", OleDbType.VarChar).Value = "X";
-
-                    command.Parameters.Add("@Email", OleDbType.VarChar).Value = student.EmailAddress;
-                    command.Parameters.Add("@StartMonth", OleDbType.Integer).Value = student.StartMonth;
-                    command.Parameters.Add("@StudentID", OleDbType.Integer).Value = student.StudentID; 
+                    SetStudentCommandParameters(command, student, true);
 
                     try
                     {
@@ -297,6 +368,38 @@ namespace DojoStudentManagement
             }
 
             return success;
+        }
+
+        private void SetStudentCommandParameters(OleDbCommand command, Student student, bool isUpdate = false)
+        {
+            command.Parameters.Add("@Status", OleDbType.VarChar).Value = student.ActiveMember ? "A" : "I";
+            command.Parameters.Add("@LastName", OleDbType.VarChar).Value = student.LastName;
+            command.Parameters.Add("@FirstName", OleDbType.VarChar).Value = student.FirstName;
+            command.Parameters.Add("@HomeDojo", OleDbType.VarChar).Value = student.HomeDojo;
+            command.Parameters.Add("@Birthdate", OleDbType.DBDate).Value = student.DateOfBirth;
+            command.Parameters.Add("@Address1", OleDbType.VarChar).Value = student.Address1;
+            command.Parameters.Add("@Address2", OleDbType.VarChar).Value = student.Address2;
+            command.Parameters.Add("@City", OleDbType.VarChar).Value = student.AddressCity;
+            command.Parameters.Add("@State", OleDbType.VarChar).Value = student.AddressState;
+            command.Parameters.Add("@Zip", OleDbType.VarChar).Value = student.AddressZip;
+            command.Parameters.Add("@PrimaryPhone", OleDbType.VarChar).Value = student.PrimaryPhoneNumber;
+            command.Parameters.Add("@SecondaryPhone", OleDbType.VarChar).Value = student.SecondaryPhoneNumber;
+
+            if (student.StudentGender == Gender.MALE)
+                command.Parameters.Add("@Gender", OleDbType.VarChar).Value = "M";
+            else if (student.StudentGender == Gender.FEMALE)
+                command.Parameters.Add("@Gender", OleDbType.VarChar).Value = "F";
+            else
+                command.Parameters.Add("@Gender", OleDbType.VarChar).Value = "X";
+
+            command.Parameters.Add("@Email", OleDbType.VarChar).Value = student.EmailAddress;
+            command.Parameters.Add("@StartMonth", OleDbType.Integer).Value = student.StartMonth;
+
+            // Only add the StudentID parameter if this is an update operation
+            if (isUpdate)
+            {
+                command.Parameters.Add("@StudentID", OleDbType.Integer).Value = student.StudentID;
+            }
         }
 
         public bool DeleteStudent(int studentID)
