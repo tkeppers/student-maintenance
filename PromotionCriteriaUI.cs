@@ -61,6 +61,16 @@ namespace DojoStudentManagement
             }
         }
 
+        private void DeletePromotionCriteria()
+        {
+
+        }
+
+        private void AddModifyPromotionCriteria(bool addNew)
+        {
+
+        }
+
         private void PromotionSettingsUI_Load(object sender, EventArgs e)
         {
 
@@ -69,6 +79,16 @@ namespace DojoStudentManagement
         private void cmbFilterByArt_SelectedIndexChanged(object sender, EventArgs e)
         {
             FilterDataGridView();
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            AddModifyPromotionCriteria(true);
+        }
+
+        private void btnModifyExisting_Click(object sender, EventArgs e)
+        {
+            AddModifyPromotionCriteria(false);
         }
     }
 }
