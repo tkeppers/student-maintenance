@@ -16,6 +16,9 @@ namespace DojoStudentManagement
         public double MinimumAge { get; set; }
         public double YearsInArt { get; set; }
         public double YearsAtCurrentRank { get; set; }
+        public double RankFee { 
+            get { return 0; } //Dojo no longer charges rank fees
+        }
 
         DataTable promotionRequirementsTable;
 

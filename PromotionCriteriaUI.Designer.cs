@@ -50,6 +50,7 @@ namespace DojoStudentManagement
             this.dgvPromotionSettings.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvPromotionSettings.Size = new System.Drawing.Size(789, 311);
             this.dgvPromotionSettings.TabIndex = 0;
+            this.dgvPromotionSettings.SelectionChanged += new System.EventHandler(this.dgvPromotionSettings_SelectionChanged);
             // 
             // cmbFilterByArt
             // 
@@ -77,6 +78,7 @@ namespace DojoStudentManagement
             this.btnAdd.TabIndex = 3;
             this.btnAdd.Text = "Add";
             this.btnAdd.UseVisualStyleBackColor = true;
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
             // btnModifyExisting
             // 

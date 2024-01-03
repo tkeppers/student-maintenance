@@ -136,7 +136,7 @@ namespace DojoStudentManagement
                 }
                 catch (OleDbException ex)
                 {
-                    Log.Error($"{DateTime.Now}: Error retrieving student promotion requirements:\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                    Log.Error($"{DateTime.Now}: Error retrieving student promotion requirements:\n{sql}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
                     return new DataTable();
                 }
             }
@@ -181,7 +181,7 @@ namespace DojoStudentManagement
                     catch (OleDbException ex)
                     {
                         success = false;
-                        Log.Error($"{DateTime.Now}: Error inserting into Promo_Requirements table.\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        Log.Error($"{DateTime.Now}: Error inserting into Promo_Requirements table.\n{command.CommandText}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
                         connection.Close();
                     }
                 }
@@ -195,7 +195,7 @@ namespace DojoStudentManagement
             return success;
         }
 
-        public bool UpdatePromotionCriteria(PromotionCriteria promotionCriteria)
+        public bool ModifyPromotionCriteria(PromotionCriteria promotionCriteria)
         {
             //Check to make sure adding the new record does not violate a primary key constraint (rank_art + rank_id)
             bool success = true;
@@ -220,19 +220,19 @@ namespace DojoStudentManagement
                     {
                         command.ExecuteNonQuery();
                         connection.Close();
-                        Log.Information($"Added new promotion requirement for {promotionCriteria.CurrentArt} - {promotionCriteria.CurrentRank}");
+                        Log.Information($"Updating promotion requirement for {promotionCriteria.CurrentArt} - {promotionCriteria.CurrentRank}");
                     }
                     catch (OleDbException ex)
                     {
                         success = false;
-                        Log.Error($"{DateTime.Now}: Error inserting into Promo_Requirements table.\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        Log.Error($"{DateTime.Now}: Error updating Promo_Requirements table.\n{command.CommandText}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
                         connection.Close();
                     }
                 }
                 else
                 {
                     success = false;
-                    Log.Error($"{DateTime.Now}: Connection failed when adding new promotion criteria.\n");
+                    Log.Error($"{DateTime.Now}: Connection failed when updating promotion criteria.\n");
                 }
             }
 
@@ -248,7 +248,46 @@ namespace DojoStudentManagement
             command.Parameters.Add("@MinimumAgeForRank", OleDbType.Double).Value = promotionCriteria.MinimumAge;
             command.Parameters.Add("@TotalYearsInArt", OleDbType.Double).Value = promotionCriteria.YearsInArt;
             command.Parameters.Add("@TotalYearsAtRank", OleDbType.Double).Value = promotionCriteria.YearsAtCurrentRank;
-            command.Parameters.Add("@RankFee", OleDbType.Double).Value = 0; //Dojo no longer charges rank fees
+            command.Parameters.Add("@RankFee", OleDbType.Double).Value = promotionCriteria.RankFee;
+        }
+
+
+        public bool DeletePromotionCriteria(string artName, string rankName)
+        {
+            bool success = true;
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                connection.Open();
+                OleDbCommand command = new OleDbCommand(@"DELETE FROM Promo_Requirements
+                    WHERE rank_art = @ArtName and rank_id = @RankName", connection);
+
+                if (connection.State == ConnectionState.Open)
+                {
+                    command.Parameters.Add("@ArtName", OleDbType.VarChar).Value = artName;
+                    command.Parameters.Add("@RankName", OleDbType.VarChar).Value = rankName;
+
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                        Log.Information($"Successfully deleted promotion criteria {artName} - {rankName}");
+                    }
+                    catch (OleDbException ex)
+                    {
+                        success = false;
+                        Log.Error($"{DateTime.Now}: Error executing delete command.\n{command.CommandText}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        connection.Close();
+                    }
+                }
+                else
+                {
+                    success = false;
+                    Log.Error("DeletePromotionCriteria: Connection failed during delete operation.\n");
+                }
+            }
+
+            return success;
         }
 
         #endregion PromotionCriteria
