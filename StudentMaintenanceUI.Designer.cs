@@ -32,6 +32,7 @@ namespace DojoStudentManagement
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StudentMaintenanceUI));
             this.txtFirstName = new System.Windows.Forms.TextBox();
             this.gbStudentInfo = new System.Windows.Forms.GroupBox();
+            this.btnDeleteStudent = new System.Windows.Forms.Button();
             this.btnSaveChanges = new System.Windows.Forms.Button();
             this.lblHomeDojo = new System.Windows.Forms.Label();
             this.txtHomeDojo = new System.Windows.Forms.TextBox();
@@ -96,7 +97,6 @@ namespace DojoStudentManagement
             this.txtMessages = new System.Windows.Forms.TextBox();
             this.lblPromotionEligibility = new System.Windows.Forms.Label();
             this.btnPromoteStudent = new System.Windows.Forms.Button();
-            this.btnDeleteStudent = new System.Windows.Forms.Button();
             this.gbStudentInfo.SuspendLayout();
             this.gbGender.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStudentList)).BeginInit();
@@ -151,6 +151,18 @@ namespace DojoStudentManagement
             this.gbStudentInfo.TabIndex = 2;
             this.gbStudentInfo.TabStop = false;
             this.gbStudentInfo.Text = "Student Information";
+            // 
+            // btnDeleteStudent
+            // 
+            this.btnDeleteStudent.Image = ((System.Drawing.Image)(resources.GetObject("btnDeleteStudent.Image")));
+            this.btnDeleteStudent.Location = new System.Drawing.Point(356, 311);
+            this.btnDeleteStudent.Name = "btnDeleteStudent";
+            this.btnDeleteStudent.Size = new System.Drawing.Size(111, 52);
+            this.btnDeleteStudent.TabIndex = 29;
+            this.btnDeleteStudent.Text = "Delete Student";
+            this.btnDeleteStudent.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnDeleteStudent.UseVisualStyleBackColor = true;
+            this.btnDeleteStudent.Click += new System.EventHandler(this.btnDeleteStudent_Click);
             // 
             // btnSaveChanges
             // 
@@ -617,14 +629,14 @@ namespace DojoStudentManagement
             // databasePathToolStripMenuItem
             // 
             this.databasePathToolStripMenuItem.Name = "databasePathToolStripMenuItem";
-            this.databasePathToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.databasePathToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.databasePathToolStripMenuItem.Text = "Database Path";
             this.databasePathToolStripMenuItem.Click += new System.EventHandler(this.databasePathToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -743,23 +755,15 @@ namespace DojoStudentManagement
             // 
             // btnPromoteStudent
             // 
+            this.btnPromoteStudent.Image = ((System.Drawing.Image)(resources.GetObject("btnPromoteStudent.Image")));
             this.btnPromoteStudent.Location = new System.Drawing.Point(606, 565);
             this.btnPromoteStudent.Name = "btnPromoteStudent";
-            this.btnPromoteStudent.Size = new System.Drawing.Size(108, 36);
+            this.btnPromoteStudent.Size = new System.Drawing.Size(108, 42);
             this.btnPromoteStudent.TabIndex = 16;
             this.btnPromoteStudent.Text = "Promote Student";
+            this.btnPromoteStudent.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnPromoteStudent.UseVisualStyleBackColor = true;
             this.btnPromoteStudent.Click += new System.EventHandler(this.btnPromoteStudent_Click);
-            // 
-            // btnDeleteStudent
-            // 
-            this.btnDeleteStudent.Location = new System.Drawing.Point(356, 311);
-            this.btnDeleteStudent.Name = "btnDeleteStudent";
-            this.btnDeleteStudent.Size = new System.Drawing.Size(111, 52);
-            this.btnDeleteStudent.TabIndex = 29;
-            this.btnDeleteStudent.Text = "Delete Student";
-            this.btnDeleteStudent.UseVisualStyleBackColor = true;
-            this.btnDeleteStudent.Click += new System.EventHandler(this.btnDeleteStudent_Click);
             // 
             // StudentMaintenanceUI
             // 
