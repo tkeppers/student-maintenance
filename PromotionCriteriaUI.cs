@@ -69,20 +69,23 @@ namespace DojoStudentManagement
             if (dgvPromotionSettings.SelectedRows.Count > 0)
             {
                 DataGridViewRow selectedRow = dgvPromotionSettings.SelectedRows[0];
-                selectedPromotionCriteria.CurrentArt = selectedRow.Cells["Art"].ToString();
-                selectedPromotionCriteria.CurrentRank = selectedRow.Cells["CurrentRank"].ToString();
-                selectedPromotionCriteria.NextRank = selectedRow.Cells["NextRank"].ToString();
-                selectedPromotionCriteria.MinimumTrainingHours = double.TryParse(selectedRow.Cells["MinimumTrainingHours"].ToString(), 
+                //Display the value in the "Art" column of the selected row
+                selectedPromotionCriteria.CurrentArt = selectedRow.Cells["Art"].Value.ToString();
+                selectedPromotionCriteria.CurrentRank = selectedRow.Cells["CurrentRank"].Value.ToString();
+                selectedPromotionCriteria.NextRank = selectedRow.Cells["NextRank"].Value.ToString();
+                selectedPromotionCriteria.MinimumTrainingHours = double.TryParse(selectedRow.Cells["MinimumTrainingHours"].Value.ToString(),
                     out double minHours) ? minHours : 0;
-                selectedPromotionCriteria.MinimumAge = double.TryParse(selectedRow.Cells["MinimumAge"].ToString(),
+                selectedPromotionCriteria.MinimumAge = double.TryParse(selectedRow.Cells["MinimumAge"].Value.ToString(),
                     out double minAge) ? minAge : 0;
-                selectedPromotionCriteria.YearsInArt = double.TryParse(selectedRow.Cells["YearsInArt"].ToString(),
+                selectedPromotionCriteria.YearsInArt = double.TryParse(selectedRow.Cells["YearsInArt"].Value.ToString(),
                     out double yearsInArt) ? yearsInArt : 0;
-                selectedPromotionCriteria.YearsAtCurrentRank = double.TryParse(selectedRow.Cells["YearsAtCurrentRank"].ToString(),
+                selectedPromotionCriteria.YearsAtCurrentRank = double.TryParse(selectedRow.Cells["YearsAtCurrentRank"].Value.ToString(),
                     out double yearsAtCurrentRank) ? yearsAtCurrentRank : 0;
             }
         }
 
+        // Comment out DeletePromotionCriteria()
+        /*
         private void DeletePromotionCriteria()
         {
             if (IsValidPromotionCriteriaRowSelected() == false)
@@ -104,23 +107,24 @@ namespace DojoStudentManagement
                 Log.Error($"Failed to delete promotion criteria for {selectedPromotionCriteria.CurrentArt} - {selectedPromotionCriteria.CurrentRank}");
             }
         }
+        */
 
-        private bool ConfirmDeletion()
+       /* private bool ConfirmDeletion()
         {
             return MessageService.ShowAreYouSureMessage($"Delete promotion criteria for {selectedPromotionCriteria.CurrentArt} - {selectedPromotionCriteria.CurrentRank}?")
                 == DialogResult.Yes;
-        }
+        }*/
 
-        private void AddModifyPromotionCriteria(bool addNew)
+        /*private void AddModifyPromotionCriteria(bool addNew)
         {
             if (addNew == false && IsValidPromotionCriteriaRowSelected() == false)
                 return;
 
             //Open a new form dialog (blank for add, pre-filled for modify) to allow the user 
             //to make changes as needed.
-        }
+        }*/
 
-        private bool IsValidPromotionCriteriaRowSelected()
+        /*private bool IsValidPromotionCriteriaRowSelected()
         {
             if (dgvPromotionSettings.SelectedRows.Count == 0)
             {
@@ -129,7 +133,34 @@ namespace DojoStudentManagement
             }
 
             return true;
+        }*/
+        private bool IsNumericColumn(string columnName)
+        {
+            return columnName == "MinimumAge" || columnName == "MinimumTrainingHours" ||
+                   columnName == "YearsInArt" || columnName == "YearsAtCurrentRank";
         }
+
+        private bool IsValidNumber(string value)
+        {
+            return float.TryParse(value, out _);
+        }
+
+        private bool IsValidString(string columnName)
+        {
+            return columnName == "Art" || columnName == "CurrentRank" || columnName == "NextRank";
+        }
+
+        private bool IsValidArt(string value)
+        {
+            return artsTable.Select($"art_id = '{value}'").Any();
+        }
+
+        private void CancelValidation(DataGridViewCellValidatingEventArgs e, string errorMessage)
+        {
+            e.Cancel = true;
+            dgvPromotionSettings.Rows[e.RowIndex].ErrorText = errorMessage;
+        }
+
 
         private void PromotionSettingsUI_Load(object sender, EventArgs e)
         {
@@ -141,24 +172,41 @@ namespace DojoStudentManagement
             FilterDataGridView();
         }
 
-        private void btnDelete_Click(object sender, EventArgs e)
-        {
-            DeletePromotionCriteria();
-        }
-
-        private void btnModifyExisting_Click(object sender, EventArgs e)
-        {
-            AddModifyPromotionCriteria(false);
-        }
-
-        private void btnAdd_Click(object sender, EventArgs e)
-        {
-            AddModifyPromotionCriteria(true);
-        }
-
         private void dgvPromotionSettings_SelectionChanged(object sender, EventArgs e)
         {
             LoadInformationForSelectedPromotionCriteria();
+        }
+
+        private void dgvPromotionSettings_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            string columnName = dgvPromotionSettings.Columns[e.ColumnIndex].Name;
+            string columnValue = e.FormattedValue.ToString();
+
+            // Validate numeric columns
+            if (IsNumericColumn(columnName) && !IsValidNumber(columnValue))
+            {
+                CancelValidation(e, $"Column {columnName} must be a valid number");
+            }
+            // Validate non-blank string columns
+            else if (IsValidString(columnName) && string.IsNullOrWhiteSpace(columnValue))
+            {
+                CancelValidation(e, $"Column {columnName} cannot be blank");
+            }
+            // Additional validation for 'Art' column
+            else if (columnName == "Art" && !IsValidArt(columnValue))
+            {
+                CancelValidation(e, $"Column {columnName} must be a valid art");
+            }
+        }
+
+        private void dgvPromotionSettings_CellValidated(object sender, DataGridViewCellEventArgs e)
+        {
+            dgvPromotionSettings.Rows[e.RowIndex].ErrorText = null;
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            dataAccess.UpdatePromotionCriteria(promotionRequirementsTable);
         }
     }
 }

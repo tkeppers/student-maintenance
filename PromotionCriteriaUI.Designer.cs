@@ -32,24 +32,21 @@ namespace DojoStudentManagement
             this.dgvPromotionSettings = new System.Windows.Forms.DataGridView();
             this.cmbFilterByArt = new System.Windows.Forms.ComboBox();
             this.lblFilterByArt = new System.Windows.Forms.Label();
-            this.btnAdd = new System.Windows.Forms.Button();
-            this.btnModifyExisting = new System.Windows.Forms.Button();
-            this.btnDelete = new System.Windows.Forms.Button();
+            this.btnSave = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPromotionSettings)).BeginInit();
             this.SuspendLayout();
             // 
             // dgvPromotionSettings
             // 
-            this.dgvPromotionSettings.AllowUserToAddRows = false;
-            this.dgvPromotionSettings.AllowUserToDeleteRows = false;
             this.dgvPromotionSettings.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvPromotionSettings.Location = new System.Drawing.Point(15, 62);
             this.dgvPromotionSettings.MultiSelect = false;
             this.dgvPromotionSettings.Name = "dgvPromotionSettings";
-            this.dgvPromotionSettings.ReadOnly = true;
             this.dgvPromotionSettings.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvPromotionSettings.Size = new System.Drawing.Size(789, 311);
             this.dgvPromotionSettings.TabIndex = 0;
+            this.dgvPromotionSettings.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvPromotionSettings_CellValidated);
+            this.dgvPromotionSettings.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dgvPromotionSettings_CellValidating);
             this.dgvPromotionSettings.SelectionChanged += new System.EventHandler(this.dgvPromotionSettings_SelectionChanged);
             // 
             // cmbFilterByArt
@@ -70,44 +67,22 @@ namespace DojoStudentManagement
             this.lblFilterByArt.TabIndex = 2;
             this.lblFilterByArt.Text = "Filter by Art";
             // 
-            // btnAdd
+            // btnSave
             // 
-            this.btnAdd.Location = new System.Drawing.Point(264, 379);
-            this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(75, 23);
-            this.btnAdd.TabIndex = 3;
-            this.btnAdd.Text = "Add";
-            this.btnAdd.UseVisualStyleBackColor = true;
-            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
-            // 
-            // btnModifyExisting
-            // 
-            this.btnModifyExisting.Location = new System.Drawing.Point(343, 379);
-            this.btnModifyExisting.Name = "btnModifyExisting";
-            this.btnModifyExisting.Size = new System.Drawing.Size(75, 23);
-            this.btnModifyExisting.TabIndex = 4;
-            this.btnModifyExisting.Text = "Modify";
-            this.btnModifyExisting.UseVisualStyleBackColor = true;
-            this.btnModifyExisting.Click += new System.EventHandler(this.btnModifyExisting_Click);
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.Location = new System.Drawing.Point(424, 379);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(75, 23);
-            this.btnDelete.TabIndex = 5;
-            this.btnDelete.Text = "Delete";
-            this.btnDelete.UseVisualStyleBackColor = true;
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            this.btnSave.Location = new System.Drawing.Point(343, 378);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(75, 23);
+            this.btnSave.TabIndex = 6;
+            this.btnSave.Text = "Save";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // PromotionCriteriaUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(827, 429);
-            this.Controls.Add(this.btnDelete);
-            this.Controls.Add(this.btnModifyExisting);
-            this.Controls.Add(this.btnAdd);
+            this.Controls.Add(this.btnSave);
             this.Controls.Add(this.lblFilterByArt);
             this.Controls.Add(this.cmbFilterByArt);
             this.Controls.Add(this.dgvPromotionSettings);
@@ -126,8 +101,6 @@ namespace DojoStudentManagement
         private System.Windows.Forms.DataGridView dgvPromotionSettings;
         private System.Windows.Forms.ComboBox cmbFilterByArt;
         private System.Windows.Forms.Label lblFilterByArt;
-        private System.Windows.Forms.Button btnAdd;
-        private System.Windows.Forms.Button btnModifyExisting;
-        private System.Windows.Forms.Button btnDelete;
+        private System.Windows.Forms.Button btnSave;
     }
 }

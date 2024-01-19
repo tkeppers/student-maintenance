@@ -20,11 +20,7 @@ namespace DojoStudentManagement
 
         DataTable GetStudentPromotionRequirements();
 
-        bool AddPromotionCriteria(PromotionCriteria promotionCriteria);
-
-        bool ModifyPromotionCriteria(PromotionCriteria promotionCriteria);
-
-        bool DeletePromotionCriteria(string artName, string rankName);
+        void UpdatePromotionCriteria(DataTable promotionCriteriaTable);
 
         DataTable GetListOfArts();
 

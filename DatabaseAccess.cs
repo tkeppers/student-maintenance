@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Configuration;
 using System.Windows.Forms;
 using Serilog;
+using System.Data.SqlClient;
 
 namespace DojoStudentManagement
 {
@@ -142,35 +143,67 @@ namespace DojoStudentManagement
             }
         }
 
-        public bool AddPromotionCriteria(PromotionCriteria promotionCriteria)
+        public void UpdatePromotionCriteria(DataTable promotionCriteriaTable)
         {
-            //Check to make sure adding the new record does not violate a primary key constraint (rank_art + rank_id)
+            PromotionCriteria promotionCriteria = new PromotionCriteria();
+
+            foreach (DataRow row in promotionCriteriaTable.Rows)
+            {
+                promotionCriteria = promotionCriteria.GetPromotionCriteriaFromDataRow(row);
+
+                if (row.RowState == DataRowState.Modified)
+                    ModifyPromotionCriteria(promotionCriteria);
+
+                else if (row.RowState == DataRowState.Added)
+                    AddPromotionCriteria(promotionCriteria);
+
+                else if (row.RowState == DataRowState.Deleted)
+                    DeletePromotionCriteria(promotionCriteria.CurrentArt, promotionCriteria.CurrentRank);
+            }
+        }
+
+        private void SetPromotionCriteriaCommandParameters(OleDbCommand command, PromotionCriteria promotionCriteria)
+        {
+            command.Parameters.Add("@RankArt", OleDbType.VarChar).Value = promotionCriteria.CurrentArt;
+            command.Parameters.Add("@RankName", OleDbType.VarChar).Value = promotionCriteria.CurrentRank;
+            command.Parameters.Add("@NextRank", OleDbType.VarChar).Value = promotionCriteria.NextRank;
+            command.Parameters.Add("@MinimumTrainingHours", OleDbType.Integer).Value = promotionCriteria.MinimumTrainingHours;
+            command.Parameters.Add("@MinimumAgeForRank", OleDbType.Integer).Value = promotionCriteria.MinimumAge;
+            command.Parameters.Add("@TotalYearsInArt", OleDbType.Double).Value = promotionCriteria.YearsInArt;
+            command.Parameters.Add("@TotalYearsAtRank", OleDbType.Double).Value = promotionCriteria.YearsAtCurrentRank;
+            command.Parameters.Add("@RankFee", OleDbType.Integer).Value = promotionCriteria.RankFee;
+        }
+
+        private bool AddPromotionCriteria(PromotionCriteria promotionCriteria)
+        {
+            //TODO: Check to make sure adding the new record does not violate a primary key constraint (rank_art + rank_id)
             bool success = true;
 
             using (OleDbConnection connection = new OleDbConnection(connectionString))
             {
                 connection.Open();
-                OleDbCommand command = new OleDbCommand(@"INSERT INTO Promo_Requirements 
-                    (rank_art,
+                OleDbCommand command = new OleDbCommand(@"INSERT INTO Promo_Requirements (
+                    rank_art,
                     rank_id,
                     rank_next,
                     rank_min_hours,
                     rank_min_age,
                     rank_total_years,
                     rank_time_in_rank,
-                    rank_fee) 
-                   VALUES (@RankArt, 
-                    @RankName, 
-                    @NextRank, 
-                    @MinimumTrainingHours, 
-                    @MinimumAgeForRank, 
-                    @TotalYearsInArt, 
-                    @TotalYearsAtRank, 
+                    rank_fee)
+                VALUES (
+                    @RankArt,
+                    @RankName,
+                    @NextRank,
+                    @MinimumTrainingHours,
+                    @MinimumAgeForRank,
+                    @TotalYearsInArt,
+                    @TotalYearsAtRank,
                     @RankFee)", connection);
 
                 if (connection.State == ConnectionState.Open)
                 {
-                    SetPromotionCriteriaCommandParameters(command, promotionCriteria, false);
+                    SetPromotionCriteriaCommandParameters(command, promotionCriteria);
 
                     try
                     {
@@ -194,8 +227,8 @@ namespace DojoStudentManagement
 
             return success;
         }
-
-        public bool ModifyPromotionCriteria(PromotionCriteria promotionCriteria)
+ 
+        private bool ModifyPromotionCriteria(PromotionCriteria promotionCriteria)
         {
             //Check to make sure adding the new record does not violate a primary key constraint (rank_art + rank_id)
             bool success = true;
@@ -204,22 +237,23 @@ namespace DojoStudentManagement
             {
                 connection.Open();
                 OleDbCommand command = new OleDbCommand(@"UPDATE Promo_Requirements SET
-                    (rank_next = @NextRank,
+                    rank_next = @NextRank,
                     rank_min_hours = @MinimumTrainingHours,
                     rank_min_age = @MinimumAgeForRank,
                     rank_total_years = @TotalYearsInArt,
                     rank_time_in_rank = @TotalYearsAtRank,
-                    rank_fee = @RankFee) 
-                   WHERE rank_art = @RankArt AND rank_id = @RankName)", connection);
+                    rank_fee = @RankFee
+                    WHERE rank_art = @RankArt AND rank_id = @RankName", connection);
 
                 if (connection.State == ConnectionState.Open)
                 {
-                    SetPromotionCriteriaCommandParameters(command, promotionCriteria, false);
+                    SetPromotionCriteriaCommandParameters(command, promotionCriteria);
 
                     try
                     {
-                        command.ExecuteNonQuery();
+                        int rowsAffected = command.ExecuteNonQuery();
                         connection.Close();
+                        Log.Information($"Updated {rowsAffected} rows in the following query:\n{GetCommandLogString(command)}");
                         Log.Information($"Updating promotion requirement for {promotionCriteria.CurrentArt} - {promotionCriteria.CurrentRank}");
                     }
                     catch (OleDbException ex)
@@ -239,20 +273,21 @@ namespace DojoStudentManagement
             return success;
         }
 
-        private void SetPromotionCriteriaCommandParameters(OleDbCommand command, PromotionCriteria promotionCriteria, bool isUpdate = false)
+        private string GetCommandLogString(OleDbCommand command)
         {
-            command.Parameters.Add("@RankArt", OleDbType.VarChar).Value = promotionCriteria.CurrentArt;
-            command.Parameters.Add("@RankName", OleDbType.VarChar).Value = promotionCriteria.CurrentRank;
-            command.Parameters.Add("@NextRank", OleDbType.VarChar).Value = promotionCriteria.NextRank;
-            command.Parameters.Add("@MinimumTrainingHours", OleDbType.Double).Value = promotionCriteria.MinimumTrainingHours;
-            command.Parameters.Add("@MinimumAgeForRank", OleDbType.Double).Value = promotionCriteria.MinimumAge;
-            command.Parameters.Add("@TotalYearsInArt", OleDbType.Double).Value = promotionCriteria.YearsInArt;
-            command.Parameters.Add("@TotalYearsAtRank", OleDbType.Double).Value = promotionCriteria.YearsAtCurrentRank;
-            command.Parameters.Add("@RankFee", OleDbType.Double).Value = promotionCriteria.RankFee;
+            StringBuilder logString = new StringBuilder();
+            logString.AppendLine("Executing SQL Command: ");
+            logString.AppendLine(command.CommandText);
+
+            foreach (OleDbParameter param in command.Parameters)
+            {
+                logString.AppendLine($"Parameter: {param.ParameterName}, Value: {param.Value}");
+            }
+
+            return logString.ToString();
         }
 
-
-        public bool DeletePromotionCriteria(string artName, string rankName)
+        private bool DeletePromotionCriteria(string artName, string rankName)
         {
             bool success = true;
 
