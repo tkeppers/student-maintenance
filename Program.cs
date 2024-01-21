@@ -39,7 +39,10 @@ namespace DojoStudentManagement
             IDataAccess dataAccess = new DatabaseAccess();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new StudentMaintenanceUI(dataAccess));
+
+            //TODO: Run a different form based on parameters passed in
+            Application.Run(new StudentSignIn(dataAccess));
+            //Application.Run(new StudentMaintenanceUI(dataAccess));
 
             Log.CloseAndFlush();
         }
