@@ -163,6 +163,7 @@
     <Compile Include="StudentSignIn.Designer.cs">
       <DependentUpon>StudentSignIn.cs</DependentUpon>
     </Compile>
+    <Compile Include="StudentSignInFunctions.cs" />
     <Compile Include="StudentSignInHistoryFunctions.cs" />
     <Compile Include="StudentSignInHistoryUI.cs">
       <SubType>Form</SubType>

@@ -665,6 +665,8 @@ namespace DojoStudentManagement
             return success;
         }
 
+    #region StudentPromotion
+
         /// <summary>
         /// After a student is promoted, update the main arts/rank data with the new information, then 
         /// add a new record in the promotion history table.
@@ -743,6 +745,141 @@ namespace DojoStudentManagement
                 Log.Information($"Updated promotion history in {artsAndRank.StudentArt} for student ID {artsAndRank.StudentArtID}");
             }
         }
+
+    #endregion StudentPromotion
+
+    #region StudentSignIn
+
+        /// <summary>
+        /// Updates the student's signin date and cumulative hours in their StudArts record, as well as adds a
+        /// log of their signin to the SigninHistory table.
+        /// </summary>
+        /// <returns>True if transaction was successful; false otherwise</returns>
+        public bool UpdateStudentSignIn(int studentID, string studentArtName, double cumulativeTrainingHours)
+        {
+            float trainingHoursPerClass = GetTrainingHoursPerClassForArt(studentArtName);
+            
+            if (trainingHoursPerClass < 0)
+                return false;
+
+            //Declaring signInDate at the top-level function so that the date/timestamp remains consistent
+            //between the database updates
+            DateTime signInDate = DateTime.Now;
+
+            if (InsertStudentSignInRecord(studentID, studentArtName, trainingHoursPerClass, signInDate) == false)
+                return false;
+
+            //Update the student arts record with the new latest signin date and cumulative training hours
+            cumulativeTrainingHours += trainingHoursPerClass;
+            return UpdateStudentArtsRecordAfterSignIn(studentID, studentArtName, cumulativeTrainingHours, signInDate);
+        }
+
+        private float GetTrainingHoursPerClassForArt(string artName)
+        {
+            float hours = 0;
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                string sql = $"SELECT art_hours FROM Arts WHERE art_id = '{artName}'";
+                OleDbCommand command = new OleDbCommand(sql, connection);
+
+                try
+                {
+                    connection.Open();
+                    hours = Convert.ToSingle(command.ExecuteScalar());
+                }
+                catch (OleDbException ex)
+                {
+                    Log.Error($"Error retrieving the hours per class for {artName}:\n{sql}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                    return -1;
+                }
+            }
+
+            return hours;
+        }   
+
+        private bool InsertStudentSignInRecord(int studentID, string artName, float hoursPerClass, DateTime signInDate)
+        {
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                connection.Open();
+                using (OleDbTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        using (OleDbCommand command = new OleDbCommand(@"INSERT INTO Signin_History (
+                            sign_student, 
+                            sign_art,
+                            sign_date,
+                            sign_reg_hours)
+                           VALUES (
+                            @StudentID,
+                            @SignInArt,
+                            @SignInDate,
+                            @SignInHours)", connection, transaction))
+                        {
+                            command.Parameters.Add("@StudentID", OleDbType.Integer).Value = studentID;
+                            command.Parameters.Add("@SignInArt", OleDbType.VarChar).Value = artName;
+                            command.Parameters.Add("@SignInDate", OleDbType.Date).Value = signInDate.ToString("MM/dd/yyyy HH:mm:ss");
+                            command.Parameters.Add("@SignInHours", OleDbType.Double).Value = hoursPerClass;
+
+                            command.ExecuteNonQuery();
+
+                            Log.Information($"Sign in for {studentID} in {artName} on {signInDate}");
+                        }
+
+                        transaction.Commit();
+                    }
+                    catch (OleDbException ex)
+                    {
+                        Log.Error($"UpdateStudentArt: Error connecting to database {databasePath}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        transaction.Rollback();
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        private bool UpdateStudentArtsRecordAfterSignIn(int studentID, string artName, double cumulativeTrainingHours, DateTime signInDate)
+        {
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                connection.Open();
+                using (OleDbTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        using (OleDbCommand command = new OleDbCommand(@"UPDATE StudArts SET 
+                            studArt_cumm = @CumulativeHours,
+                            studArt_signin = @DateOfSignIn
+                            WHERE StudArt_ID = @ArtID AND studArt_art = @StudentArt", connection, transaction))
+                        {
+                            command.Parameters.Add("@CumulativeHours", OleDbType.Numeric).Value = cumulativeTrainingHours;
+                            command.Parameters.Add("@DateOfSignIn", OleDbType.DBDate).Value = signInDate;
+                            command.Parameters.Add("@ArtID", OleDbType.Integer).Value = studentID;
+                            command.Parameters.Add("@StudentArt", OleDbType.VarChar).Value = artName;
+
+                            command.ExecuteNonQuery();
+
+                            Log.Information($"Updating cumulative hours to {cumulativeTrainingHours} in {artName} for student ID {studentID}");
+                        }
+
+                        transaction.Commit();
+                    }
+                    catch (OleDbException ex)
+                    {
+                        Log.Error($"UpdateStudentArtsRecordAfterSignIn: Error connecting to database {databasePath}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        transaction.Rollback();
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+    #endregion StudentSignIn
 
 
     }

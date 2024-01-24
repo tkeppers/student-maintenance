@@ -39,5 +39,7 @@ namespace DojoStudentManagement
         bool DeleteStudentArt(int studentArtID, string studentArtName);
 
         bool DatabaseExistsAndIsValid();
+
+        bool UpdateStudentSignIn(int studentArtID, string studentArtName, double cumulativeTrainingHours);
     }
 }

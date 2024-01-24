@@ -59,7 +59,7 @@
             this.gbQuickFilters.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gbQuickFilters.Location = new System.Drawing.Point(203, 31);
             this.gbQuickFilters.Name = "gbQuickFilters";
-            this.gbQuickFilters.Size = new System.Drawing.Size(371, 71);
+            this.gbQuickFilters.Size = new System.Drawing.Size(444, 71);
             this.gbQuickFilters.TabIndex = 10;
             this.gbQuickFilters.TabStop = false;
             this.gbQuickFilters.Text = "Filters";
@@ -67,7 +67,7 @@
             // lblLastNameFilter
             // 
             this.lblLastNameFilter.AutoSize = true;
-            this.lblLastNameFilter.Location = new System.Drawing.Point(167, 16);
+            this.lblLastNameFilter.Location = new System.Drawing.Point(201, 16);
             this.lblLastNameFilter.Name = "lblLastNameFilter";
             this.lblLastNameFilter.Size = new System.Drawing.Size(76, 17);
             this.lblLastNameFilter.TabIndex = 5;
@@ -84,17 +84,19 @@
             // 
             // txtLastNameFilter
             // 
-            this.txtLastNameFilter.Location = new System.Drawing.Point(170, 35);
+            this.txtLastNameFilter.Location = new System.Drawing.Point(204, 36);
             this.txtLastNameFilter.Name = "txtLastNameFilter";
-            this.txtLastNameFilter.Size = new System.Drawing.Size(181, 23);
+            this.txtLastNameFilter.Size = new System.Drawing.Size(225, 23);
             this.txtLastNameFilter.TabIndex = 3;
+            this.txtLastNameFilter.TextChanged += new System.EventHandler(this.txtLastNameFilter_TextChanged);
             // 
             // txtFirstNameFilter
             // 
             this.txtFirstNameFilter.Location = new System.Drawing.Point(6, 36);
             this.txtFirstNameFilter.Name = "txtFirstNameFilter";
-            this.txtFirstNameFilter.Size = new System.Drawing.Size(150, 23);
+            this.txtFirstNameFilter.Size = new System.Drawing.Size(182, 23);
             this.txtFirstNameFilter.TabIndex = 2;
+            this.txtFirstNameFilter.TextChanged += new System.EventHandler(this.txtFirstNameFilter_TextChanged);
             // 
             // dgvStudentList
             // 
@@ -106,22 +108,23 @@
             this.dgvStudentList.Name = "dgvStudentList";
             this.dgvStudentList.ReadOnly = true;
             this.dgvStudentList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvStudentList.Size = new System.Drawing.Size(371, 292);
+            this.dgvStudentList.Size = new System.Drawing.Size(444, 292);
             this.dgvStudentList.TabIndex = 9;
+            this.dgvStudentList.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvStudentList_CellMouseDoubleClick);
             // 
             // listboxSignInList
             // 
             this.listboxSignInList.FormattingEnabled = true;
             this.listboxSignInList.Location = new System.Drawing.Point(32, 425);
             this.listboxSignInList.Name = "listboxSignInList";
-            this.listboxSignInList.Size = new System.Drawing.Size(542, 147);
+            this.listboxSignInList.Size = new System.Drawing.Size(615, 147);
             this.listboxSignInList.TabIndex = 11;
             // 
             // StudentSignIn
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1143, 610);
+            this.ClientSize = new System.Drawing.Size(698, 626);
             this.Controls.Add(this.listboxSignInList);
             this.Controls.Add(this.gbQuickFilters);
             this.Controls.Add(this.dgvStudentList);
