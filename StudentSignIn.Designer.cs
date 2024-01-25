@@ -28,6 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StudentSignIn));
             this.listboxSelectArt = new System.Windows.Forms.ListBox();
             this.gbQuickFilters = new System.Windows.Forms.GroupBox();
             this.lblLastNameFilter = new System.Windows.Forms.Label();
@@ -52,6 +55,8 @@
             // 
             // gbQuickFilters
             // 
+            this.gbQuickFilters.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.gbQuickFilters.Controls.Add(this.lblLastNameFilter);
             this.gbQuickFilters.Controls.Add(this.lblFirstNameFilter);
             this.gbQuickFilters.Controls.Add(this.txtLastNameFilter);
@@ -59,7 +64,7 @@
             this.gbQuickFilters.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gbQuickFilters.Location = new System.Drawing.Point(203, 31);
             this.gbQuickFilters.Name = "gbQuickFilters";
-            this.gbQuickFilters.Size = new System.Drawing.Size(444, 71);
+            this.gbQuickFilters.Size = new System.Drawing.Size(466, 71);
             this.gbQuickFilters.TabIndex = 10;
             this.gbQuickFilters.TabStop = false;
             this.gbQuickFilters.Text = "Filters";
@@ -84,17 +89,19 @@
             // 
             // txtLastNameFilter
             // 
+            this.txtLastNameFilter.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtLastNameFilter.Location = new System.Drawing.Point(204, 36);
             this.txtLastNameFilter.Name = "txtLastNameFilter";
-            this.txtLastNameFilter.Size = new System.Drawing.Size(225, 23);
+            this.txtLastNameFilter.Size = new System.Drawing.Size(225, 26);
             this.txtLastNameFilter.TabIndex = 3;
             this.txtLastNameFilter.TextChanged += new System.EventHandler(this.txtLastNameFilter_TextChanged);
             // 
             // txtFirstNameFilter
             // 
+            this.txtFirstNameFilter.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtFirstNameFilter.Location = new System.Drawing.Point(6, 36);
             this.txtFirstNameFilter.Name = "txtFirstNameFilter";
-            this.txtFirstNameFilter.Size = new System.Drawing.Size(182, 23);
+            this.txtFirstNameFilter.Size = new System.Drawing.Size(182, 26);
             this.txtFirstNameFilter.TabIndex = 2;
             this.txtFirstNameFilter.TextChanged += new System.EventHandler(this.txtFirstNameFilter_TextChanged);
             // 
@@ -102,35 +109,56 @@
             // 
             this.dgvStudentList.AllowUserToAddRows = false;
             this.dgvStudentList.AllowUserToDeleteRows = false;
+            this.dgvStudentList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvStudentList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvStudentList.Location = new System.Drawing.Point(203, 108);
             this.dgvStudentList.MultiSelect = false;
             this.dgvStudentList.Name = "dgvStudentList";
             this.dgvStudentList.ReadOnly = true;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvStudentList.RowHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dgvStudentList.RowsDefaultCellStyle = dataGridViewCellStyle2;
             this.dgvStudentList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvStudentList.Size = new System.Drawing.Size(444, 292);
+            this.dgvStudentList.Size = new System.Drawing.Size(466, 292);
             this.dgvStudentList.TabIndex = 9;
             this.dgvStudentList.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvStudentList_CellMouseDoubleClick);
             // 
             // listboxSignInList
             // 
+            this.listboxSignInList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listboxSignInList.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listboxSignInList.FormattingEnabled = true;
+            this.listboxSignInList.ItemHeight = 20;
             this.listboxSignInList.Location = new System.Drawing.Point(32, 425);
+            this.listboxSignInList.MinimumSize = new System.Drawing.Size(630, 140);
             this.listboxSignInList.Name = "listboxSignInList";
-            this.listboxSignInList.Size = new System.Drawing.Size(615, 147);
+            this.listboxSignInList.Size = new System.Drawing.Size(637, 144);
             this.listboxSignInList.TabIndex = 11;
+            this.listboxSignInList.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.listboxSignInList_DrawItem);
             // 
             // StudentSignIn
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(698, 626);
+            this.AutoSize = true;
+            this.ClientSize = new System.Drawing.Size(720, 626);
             this.Controls.Add(this.listboxSignInList);
             this.Controls.Add(this.gbQuickFilters);
             this.Controls.Add(this.dgvStudentList);
             this.Controls.Add(this.listboxSelectArt);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "StudentSignIn";
-            this.Text = "StudentSignIn";
+            this.Text = "Windsong Student Sign In";
             this.gbQuickFilters.ResumeLayout(false);
             this.gbQuickFilters.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStudentList)).EndInit();

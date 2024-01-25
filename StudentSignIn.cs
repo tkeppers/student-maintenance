@@ -20,6 +20,10 @@ namespace DojoStudentManagement
             InitializeComponent();
             this.dataAccess = dataAccess;
 
+            //Subscribe to the DrawItem event for the listbox so we can change the color of certain messages
+            listboxSignInList.DrawMode = DrawMode.OwnerDrawFixed;
+            listboxSignInList.DrawItem += new DrawItemEventHandler(listboxSignInList_DrawItem);
+
             SetupListAOfAvailiableArts();
             RefreshStudentList();
         }
@@ -78,28 +82,29 @@ namespace DojoStudentManagement
 
         private void ProcessStudentSignIn(int selectedIndex)
         {   
-            //Make sure a valid art is selected
             if (!ValidArtIsSelected())
                 return;
 
             int studentID = Convert.ToInt32(dgvStudentList.Rows[selectedIndex].Cells["StudentID"].Value);
             string studentName = $"{dgvStudentList.Rows[selectedIndex].Cells["FirstName"].Value}  {dgvStudentList.Rows[selectedIndex].Cells["LastName"].Value}";
             string signInArt = listboxSelectArt.Text;
+            string signInMessage = string.Empty; 
 
             StudentSignInFunctions signInFunctions = new StudentSignInFunctions();
             bool success = signInFunctions.SignInStudent(dataAccess, studentID, listboxSelectArt.Text);
 
+            
             if (success)
             {
                 listboxSignInList.Items.Add($"{studentName} [{studentID}] signed in for {signInArt} on {DateTime.Now}");
-                listboxSignInList.Refresh();
             }
             else
             {
                 listboxSignInList.Items.Add($"Error signing in {studentName} [{studentID}] for {signInArt} on {DateTime.Now}");
             }
 
-           
+            if (signInMessage != string.Empty)
+                listboxSignInList.Items.Add($"    {signInMessage}");
         }
 
         private bool ValidArtIsSelected()
@@ -131,6 +136,27 @@ namespace DojoStudentManagement
                 return;
 
             ProcessStudentSignIn(selectedIndex);
+        }
+
+        private void listboxSignInList_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            if (e.Index < 0) return; // Avoid drawing when the list is empty
+
+            // Get the item from the ListBox
+            string text = listboxSignInList.Items[e.Index].ToString();
+
+            // Default color
+            Brush textBrush = Brushes.Black;
+
+            // Change the color to red for error messages
+            if (text.StartsWith("Error"))
+            {
+                textBrush = Brushes.Red;
+            }
+
+            e.DrawBackground();
+            e.Graphics.DrawString(text, e.Font, textBrush, e.Bounds);
+            e.DrawFocusRectangle();
         }
     }
 }
