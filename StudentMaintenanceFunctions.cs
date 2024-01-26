@@ -9,7 +9,7 @@ namespace DojoStudentManagement
 {
     public class StudentMaintenanceFunctions
     {
-        internal Student PopulateStudentData(IDataAccess dataAccess, int studentID)
+        public Student PopulateStudentData(IDataAccess dataAccess, int studentID)
         {
             //TODO: Remove database implementation logic to a lower-level class
             Student currentStudent = new Student();

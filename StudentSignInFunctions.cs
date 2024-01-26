@@ -66,5 +66,41 @@ namespace DojoStudentManagement
 
             return true;
         }
+
+        /// <summary>
+        /// Checks to see if the student is eligible for promotion to the next rank in the selected art
+        /// </summary>
+        /// <returns>True if student is eligigle for promotion, false otherwise</returns>
+        public bool IsEligibleForPromotion(IDataAccess dataAccess, int studentID, string studentArt, out string promotionMessage)
+        {
+            promotionMessage = string.Empty;
+            try
+            {
+                // To determine promotion eligibility, we need the student's birthdate, the date they started training, the date they were
+                // last promoted, the number of hours training in art, and the promotion requirements for their current rank. To do this, we 
+                // will need to create the entire student object from the database (which will require an additional database hit)
+                StudentMaintenanceFunctions s = new StudentMaintenanceFunctions();
+                Student student = s.PopulateStudentData(dataAccess, studentID);
+
+                // TODO: Not sure I like this approach because it duplicates some code from the StudentMaintenanceUI form. However, to not violate the 
+                // DRY principle, we would need to refactor the Student class to include the promotion requirements and the student's current rank.
+                DataTable promotionRequirements = dataAccess.GetStudentPromotionRequirements();
+                PromotionCriteria eligibility = new PromotionCriteria(promotionRequirements);
+
+                StudentArtsAndRank signInArtRank = student.StudentArtsAndRanks.FirstOrDefault(sar => sar.StudentArt == studentArt);
+
+                eligibility.GetNextPromotionCriteria(signInArtRank);
+                bool isEligible = student.IsEligibleForPromotion(signInArtRank, eligibility);
+                if (isEligible)
+                       promotionMessage = $"{student.FullName} is eligible for promotion to {signInArtRank.NextRank} in {studentArt}";
+
+                return isEligible;
+            }
+            catch (Exception ex)
+            {
+                Serilog.Log.Error(ex, $"Error determining promotion eligibility\n{ex.Message}\n{ex.Source}\n{ex.Data}\n{ex.StackTrace}");
+                return false;
+            }
+        }
     }
 }

@@ -93,10 +93,15 @@ namespace DojoStudentManagement
             StudentSignInFunctions signInFunctions = new StudentSignInFunctions();
             bool success = signInFunctions.SignInStudent(dataAccess, studentID, listboxSelectArt.Text);
 
-            
+
             if (success)
             {
                 listboxSignInList.Items.Add($"{studentName} [{studentID}] signed in for {signInArt} on {DateTime.Now}");
+
+                //TODO: Make this an optional setting
+                string promotionMessage = string.Empty;
+                if (signInFunctions.IsEligibleForPromotion(dataAccess, studentID, signInArt, out promotionMessage))
+                    listboxSignInList.Items.Add(promotionMessage);
             }
             else
             {
@@ -152,6 +157,12 @@ namespace DojoStudentManagement
             if (text.StartsWith("Error"))
             {
                 textBrush = Brushes.Red;
+            }
+
+            // Change the color to green for promotion messages
+            else if (text.Contains("promotion"))
+            {
+                textBrush = Brushes.Green;
             }
 
             e.DrawBackground();
