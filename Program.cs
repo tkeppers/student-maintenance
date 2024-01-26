@@ -16,7 +16,7 @@ namespace DojoStudentManagement
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
             string logDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
             string logFilePath = Path.Combine(logDirectory, "Logs-.log");
@@ -40,9 +40,25 @@ namespace DojoStudentManagement
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            //TODO: Run a different form based on parameters passed in
-            Application.Run(new StudentSignIn(dataAccess));
-            //Application.Run(new StudentMaintenanceUI(dataAccess));
+            //Upon login, if the "maintenance" argument is passed, the maintenance form will be displayed, which will allow the 
+            //instructor to perform student maintenance tasks (like adding students, promotions, etc.). If no argument is passed,
+            //the student sign in form will be displayed.
+            if (args.Length > 0)
+            {
+                switch (args[0].ToLower())
+                {
+                    case "maintenance":
+                        Application.Run(new StudentMaintenanceUI(dataAccess));
+                        break;
+                    default:
+                        Application.Run(new StudentSignIn(dataAccess));
+                        break;
+                }
+            }
+            else
+            {
+                Application.Run(new StudentSignIn(dataAccess));
+            }
 
             Log.CloseAndFlush();
         }
