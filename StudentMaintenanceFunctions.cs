@@ -32,8 +32,10 @@ namespace DojoStudentManagement
             currentStudent.HomeDojo = selectedStudent[0].Field<string>("stud_club");
             currentStudent.ActiveMember = selectedStudent[0].Field<string>("stud_status").Equals("A");
             currentStudent.HomeDojo = selectedStudent[0].Field<string>("stud_club");
-            //TODO: Handle null values for date of birth
-            currentStudent.DateOfBirth = selectedStudent[0].Field<DateTime>("stud_birthdate");
+
+            if (DateTime.TryParse(selectedStudent[0].Field<DateTime>("stud_birthdate").ToString(), out DateTime birthdate))
+                currentStudent.DateOfBirth = birthdate;   
+
             currentStudent.StudentGender = GetStudentGender(selectedStudent[0].Field<string>("stud_gender"));
 
             PopulateArtsAndRanks(dataAccess, currentStudent);
