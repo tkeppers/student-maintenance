@@ -35,6 +35,7 @@ namespace DojoStudentManagement
             this.btnBrowse = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.cbShowPromotionEligibility = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // lblDatabasePath
@@ -90,11 +91,24 @@ namespace DojoStudentManagement
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
+            // cbShowPromotionEligibility
+            // 
+            this.cbShowPromotionEligibility.AutoSize = true;
+            this.cbShowPromotionEligibility.Location = new System.Drawing.Point(15, 123);
+            this.cbShowPromotionEligibility.Name = "cbShowPromotionEligibility";
+            this.cbShowPromotionEligibility.Size = new System.Drawing.Size(247, 17);
+            this.cbShowPromotionEligibility.TabIndex = 5;
+            this.cbShowPromotionEligibility.Text = "Show Promotion Eligibility Messages on Sign-In";
+            this.cbShowPromotionEligibility.UseMnemonic = false;
+            this.cbShowPromotionEligibility.UseVisualStyleBackColor = true;
+            this.cbShowPromotionEligibility.CheckedChanged += new System.EventHandler(this.cbShowPromotionEligibility_CheckedChanged);
+            // 
             // DatabaseConfigUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(415, 214);
+            this.Controls.Add(this.cbShowPromotionEligibility);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.btnBrowse);
@@ -116,5 +130,6 @@ namespace DojoStudentManagement
         private System.Windows.Forms.Button btnBrowse;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.CheckBox cbShowPromotionEligibility;
     }
 }

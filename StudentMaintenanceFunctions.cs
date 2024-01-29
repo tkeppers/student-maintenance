@@ -12,6 +12,7 @@ namespace DojoStudentManagement
         public Student PopulateStudentData(IDataAccess dataAccess, int studentID)
         {
             //TODO: Remove database implementation logic to a lower-level class
+            //TODO: Considerations: A lot can go wrong here. What if the student doesn't exist? What if the database is down?
             Student currentStudent = new Student();
 
             DataTable studentDataTable = dataAccess.GetStudentTable();
@@ -31,6 +32,7 @@ namespace DojoStudentManagement
             currentStudent.HomeDojo = selectedStudent[0].Field<string>("stud_club");
             currentStudent.ActiveMember = selectedStudent[0].Field<string>("stud_status").Equals("A");
             currentStudent.HomeDojo = selectedStudent[0].Field<string>("stud_club");
+            //TODO: Handle null values for date of birth
             currentStudent.DateOfBirth = selectedStudent[0].Field<DateTime>("stud_birthdate");
             currentStudent.StudentGender = GetStudentGender(selectedStudent[0].Field<string>("stud_gender"));
 

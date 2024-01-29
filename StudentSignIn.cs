@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -98,10 +99,13 @@ namespace DojoStudentManagement
             {
                 listboxSignInList.Items.Add($"{studentName} [{studentID}] signed in for {signInArt} on {DateTime.Now}");
 
-                //TODO: Make this an optional setting
-                string promotionMessage = string.Empty;
-                if (signInFunctions.IsEligibleForPromotion(dataAccess, studentID, signInArt, out promotionMessage))
-                    listboxSignInList.Items.Add(promotionMessage);
+                bool.TryParse(ConfigurationManager.AppSettings["DatabasePassword"], out bool checkPromotionEligibility);
+                if (checkPromotionEligibility)
+                {
+                    string promotionMessage;
+                    if (signInFunctions.IsEligibleForPromotion(dataAccess, studentID, signInArt, out promotionMessage))
+                        listboxSignInList.Items.Add(promotionMessage);
+                }
             }
             else
             {

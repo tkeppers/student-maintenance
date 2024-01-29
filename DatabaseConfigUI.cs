@@ -14,11 +14,14 @@ namespace DojoStudentManagement
     public partial class DatabaseConfigUI : Form
     {
         string selectedDatabasePath;
+        bool showPromotionEligibility;
 
         public DatabaseConfigUI()
         {
             InitializeComponent();
             txtDatabaseFilePath.Text = ConfigurationManager.AppSettings["DatabasePath"];
+            showPromotionEligibility = bool.Parse(ConfigurationManager.AppSettings["ShowPromotionEligibilityOnSignIn"]);
+            cbShowPromotionEligibility.Checked = showPromotionEligibility;
         }
 
         private void UpdateAppConfig(string key, string value)
@@ -44,10 +47,18 @@ namespace DojoStudentManagement
             }
         }
 
+        private void cbShowPromotionEligibility_CheckedChanged(object sender, EventArgs e)
+        {
+            showPromotionEligibility = cbShowPromotionEligibility.Checked;
+        }
+
         private void btnOK_Click(object sender, EventArgs e)
         {
             UpdateAppConfig("DatabasePath", selectedDatabasePath);
-            MessageBox.Show($"Database path updated to: {selectedDatabasePath}.\nPlease restart software for changes to take effect.");
+            UpdateAppConfig("ShowPromotionEligibilityOnSignIn", showPromotionEligibility.ToString());
+            Serilog.Log.Information($"DatabaseConfigUI: Settings updated.\n Database path = {selectedDatabasePath}\n " +
+                $"Show promotion eligibility on sign-in = {showPromotionEligibility}. ");
+            MessageService.ShowInformationMessage("Settings updated.\nPlease restart software for changes to take effect.");
             this.Close();
         }
 
