@@ -18,15 +18,27 @@ namespace DojoStudentManagement
         /// <param name="studentArt">Martial art for which student is signing in</param>
         /// <returns>True if the transaction was successful</returns>
         /// 
-        public bool SignInStudent(IDataAccess dataAccess, int studentID, string studentArt)
+        public bool SignInStudent(IDataAccess dataAccess, int studentID, string studentArt, out string signinMessage)
         {
+            signinMessage = string.Empty;
             if (!ValidateStudentIsEnrolledInArt(dataAccess, studentID, studentArt, out double cumulativeTrainingHours))
+            {
+                signinMessage = $"Student is not currently enrolled in {studentArt}";
                 return false;
-            
-            if (!ValidateStudentIsNotAlreadySignedIn(dataAccess, studentID, studentArt))
-                return false;
+            }
 
-            return dataAccess.UpdateStudentSignIn(studentID, studentArt, cumulativeTrainingHours);
+            if (!ValidateStudentIsNotAlreadySignedIn(dataAccess, studentID, studentArt))
+            {
+                signinMessage = $"Duplicate sign-in detected for student in {studentArt}";
+                return false;
+            }
+
+            bool success = dataAccess.UpdateStudentSignIn(studentID, studentArt, cumulativeTrainingHours);
+
+            if (success)
+                signinMessage = $"Cumulative training hours in {studentArt}: {cumulativeTrainingHours}";
+
+            return success;
         }
 
         private bool ValidateStudentIsEnrolledInArt(IDataAccess dataAccess, int studentID, string studentArt, out double cumulativeTrainingHours)
@@ -46,6 +58,7 @@ namespace DojoStudentManagement
                 //Note: The cumulative training hours are stored as a decimal in the database, but the field is defined as a double
                 //in the StudentArtsAndRank class. There is no need to have decimal precision for the cumulative training hours, and 
                 //the data in the database can be adequately represented as a double, with better performance.
+                //TODO: Make sure DBNull is handled correctly here
                 cumulativeTrainingHours = Convert.ToDouble(selectedStudentArt[0].Field<decimal>("studArt_cumm"));
                 return true;
             }

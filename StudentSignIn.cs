@@ -92,7 +92,7 @@ namespace DojoStudentManagement
             string signInMessage = string.Empty; 
 
             StudentSignInFunctions signInFunctions = new StudentSignInFunctions();
-            bool success = signInFunctions.SignInStudent(dataAccess, studentID, listboxSelectArt.Text);
+            bool success = signInFunctions.SignInStudent(dataAccess, studentID, listboxSelectArt.Text, out signInMessage);
 
 
             if (success)
@@ -151,10 +151,8 @@ namespace DojoStudentManagement
         {
             if (e.Index < 0) return; // Avoid drawing when the list is empty
 
-            // Get the item from the ListBox
             string text = listboxSignInList.Items[e.Index].ToString();
 
-            // Default color
             Brush textBrush = Brushes.Black;
 
             // Change the color to red for error messages
