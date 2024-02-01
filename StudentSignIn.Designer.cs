@@ -159,6 +159,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "StudentSignIn";
             this.Text = "Windsong Student Sign In";
+            this.Load += new System.EventHandler(this.StudentSignIn_Load);
             this.gbQuickFilters.ResumeLayout(false);
             this.gbQuickFilters.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStudentList)).EndInit();

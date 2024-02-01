@@ -15,34 +15,34 @@ namespace DojoStudentManagement
     {
         DataTable promotionRequirementsTable;
         DataTable artsTable;
-        IDataAccess dataAccess;
+        IDataRepository dataRepository;
         PromotionCriteria selectedPromotionCriteria;
 
-        public PromotionCriteriaUI(IDataAccess dataAccess)
+        public PromotionCriteriaUI(IDataRepository dataRepository)
         {
             InitializeComponent();
 
-            this.dataAccess = dataAccess;
+            this.dataRepository = dataRepository;
             selectedPromotionCriteria = new PromotionCriteria();
 
-            LoadPromotionCriteriaData(dataAccess);
-            SetUpFilterByArt(dataAccess);
+            LoadPromotionCriteriaData(dataRepository);
+            SetUpFilterByArt(dataRepository);
         }
 
-        private void LoadPromotionCriteriaData(IDataAccess dataAccess)
+        private void LoadPromotionCriteriaData(IDataRepository dataRepository)
         {
-            promotionRequirementsTable = dataAccess.GetStudentPromotionRequirements();
+            promotionRequirementsTable = dataRepository.GetStudentPromotionRequirements();
             promotionRequirementsTable.DefaultView.Sort = "Art ASC, YearsInArt ASC";
 
             dgvPromotionSettings.DataSource = promotionRequirementsTable.DefaultView;
         }
 
-        private void SetUpFilterByArt(IDataAccess dataAccess)
+        private void SetUpFilterByArt(IDataRepository dataRepository)
         {
             //Arts table is just used for filtering via the on-screen combo box. Loading 
             //just the values (instead of using data binding) so we can also add
             //an option for "All"
-            artsTable = dataAccess.GetListOfArts();
+            artsTable = dataRepository.GetListOfArts();
 
             cmbFilterByArt.Items.Add("All");
             foreach (DataRow row in artsTable.Rows)
@@ -206,7 +206,7 @@ namespace DojoStudentManagement
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            dataAccess.UpdatePromotionCriteria(promotionRequirementsTable);
+            dataRepository.UpdatePromotionCriteria(promotionRequirementsTable);
         }
     }
 }

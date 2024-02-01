@@ -12,15 +12,15 @@ namespace DojoStudentManagement
 {
     public partial class StudentSignInHistoryUI : Form
     {
-        IDataAccess dataAccess;
+        IDataRepository dataRepository;
         string studentName;
         int studentID;
 
-        public StudentSignInHistoryUI(IDataAccess dataAccess, int currentStudentID, string studentName)
+        public StudentSignInHistoryUI(IDataRepository dataRepository, int currentStudentID, string studentName)
         {
             InitializeComponent();
 
-            this.dataAccess = dataAccess;
+            this.dataRepository = dataRepository;
             this.studentID = currentStudentID;
             this.studentName = studentName;
 
@@ -34,7 +34,7 @@ namespace DojoStudentManagement
 
         private void PopulateStudentSignInHistory()
         {
-            StudentSignInHistoryFunctions ssihf = new StudentSignInHistoryFunctions(dataAccess, studentID);
+            StudentSignInHistoryFunctions ssihf = new StudentSignInHistoryFunctions(dataRepository, studentID);
             DataTable studentSignInHistory = ssihf.GetStudentSignInHistory();
 
             dgvStudentSignInHistory.AutoGenerateColumns = false;

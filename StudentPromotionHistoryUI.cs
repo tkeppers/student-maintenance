@@ -12,13 +12,13 @@ namespace DojoStudentManagement
 {
     public partial class StudentPromotionHistoryUI : Form
     {
-        IDataAccess dataAccess;
+        IDataRepository dataRepository;
         int studentID;
 
-        public StudentPromotionHistoryUI(IDataAccess dataAccess, int studentID, string studentName)
+        public StudentPromotionHistoryUI(IDataRepository dataRepository, int studentID, string studentName)
         {
             this.studentID = studentID;
-            this.dataAccess = dataAccess;
+            this.dataRepository = dataRepository;
 
             this.Text = "Promotion History for " + studentName;
 
@@ -27,7 +27,7 @@ namespace DojoStudentManagement
 
         private void PopulateStudentPromotionHistory()
         {
-            StudentPromotionHistoryFunctions sphf = new StudentPromotionHistoryFunctions(dataAccess, studentID);
+            StudentPromotionHistoryFunctions sphf = new StudentPromotionHistoryFunctions(dataRepository, studentID);
             DataTable studentPromotionHistory = sphf.GetStudentPromotionHistory();
             dgvPromotionHistory.AutoGenerateColumns = false;
 

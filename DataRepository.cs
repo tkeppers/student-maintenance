@@ -1,67 +1,54 @@
-﻿using System;
+﻿using Serilog;
+using System;
+using System.Collections.Generic;
 using System.Data.OleDb;
 using System.Data;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Configuration;
-using System.Windows.Forms;
-using Serilog;
-using System.Data.SqlClient;
 
 namespace DojoStudentManagement
 {
-    class DatabaseAccess : IDataAccess
+    internal class DataRepository : BaseRepository, IDataRepository
     {
-        private readonly string databasePath;
-        private readonly string databasePassword;
-        private readonly string connectionString;
-
-        public DatabaseAccess()
+        public DataRepository()
         {
-            // Read values from configuration file
-            databasePath = ConfigurationManager.AppSettings["DatabasePath"];
-            databasePassword = ConfigurationManager.AppSettings["DatabasePassword"];
-
-            connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + 
-                databasePath + ";Jet OLEDB:Database Password=" + databasePassword;
+            DatabaseExistsAndIsValid();
         }
 
-        public bool DatabaseExistsAndIsValid()
+        public DataTable GetListOfArts()
         {
-            if (!System.IO.File.Exists(databasePath))
-            {
-                string errText = "Database is invalid or inaccessible. Please check the database path in application settings.";
-                MessageService.ShowErrorMessage(errText, "Database Access Error");
-                Log.Error($"{DateTime.Now}: Database file not found at {databasePath}");
-                return false;
-            }
-
-            using (OleDbConnection connection = new OleDbConnection(connectionString))
-            {
-                try
-                {
-                    connection.Open();
-                    return true;
-                }
-                catch (OleDbException e)
-                {
-                    MessageService.ShowErrorMessage("Error connecting to database", "Database Access Error");
-                    Log.Error($"{DateTime.Now}: Error connecting to database {databasePath}\n{e.Message}\n{e.Source}\n{e.StackTrace}");
-                    return false;
-                }
-            }
+            return ExecuteQuery("select art_id from Arts");
         }
 
+        /// <summary>
+        /// Retrieves the student table from the database.
+        /// </summary>
+        /// <returns>The DataTable containing the student records.</returns>
         public DataTable GetStudentTable()
         {
-            return ExecuteQuery("select * from Students where stud_club='Windsong'");
-        }
+            DataTable studentTable = ExecuteQuery("select * from Students where stud_club='Windsong'");
 
-        public DataTable GetStudentArtsAndRanks(int studentID)
-        {
-            return ExecuteQuery($"select * from StudArts where StudArt_ID={studentID}");
+            // Rename columns from database schema to something more generic and readable
+            studentTable.Columns["stud_id"].ColumnName = "StudentID";
+            studentTable.Columns["stud_status"].ColumnName = "StudentStatus";
+            studentTable.Columns["stud_lastname"].ColumnName = "StudentLastName";
+            studentTable.Columns["stud_firstname"].ColumnName = "StudentFirstName";
+            studentTable.Columns["stud_club"].ColumnName = "StudentDojo";
+            studentTable.Columns["stud_birthdate"].ColumnName = "StudentBirthDate";
+            studentTable.Columns["stud_addr1"].ColumnName = "StudentAddress1";
+            studentTable.Columns["stud_addr2"].ColumnName = "StudentAddress2";
+            studentTable.Columns["stud_city"].ColumnName = "StudentCity";
+            studentTable.Columns["stud_state"].ColumnName = "StudentState";
+            studentTable.Columns["stud_zip"].ColumnName = "StudentPostalCode";
+            studentTable.Columns["stud_homephone"].ColumnName = "StudentPrimaryPhone";
+            studentTable.Columns["stud_workphone"].ColumnName = "StudentSecondaryPhone";
+            studentTable.Columns["stud_gender"].ColumnName = "StudentGender";
+            studentTable.Columns["stud_email"].ColumnName = "StudentEmailAddress";
+            studentTable.Columns["stud_start_month"].ColumnName = "StudentStartMonth";
+
+            return studentTable;
+
         }
 
         public DataTable GetStudentPromotionHistory(int studentID)
@@ -74,259 +61,11 @@ namespace DojoStudentManagement
             return ExecuteQuery($"select * from Signin_History where sign_student={studentID}");
         }
 
-        public DataTable GetListOfArts()
-        {
-            return ExecuteQuery("select art_id from Arts");
-        }
-
-        private DataTable ExecuteQuery(string sql)
-        {
-            DataTable dataTable = new DataTable();
-
-            using (OleDbConnection connection = new OleDbConnection(connectionString))
-            {
-                try
-                {
-                    connection.Open();
-                    OleDbDataAdapter dataAdapter = new OleDbDataAdapter(sql, connection);
-                    dataAdapter.Fill(dataTable);
-                }
-                catch (OleDbException ex)
-                {
-                    Log.Error($"{DateTime.Now}: Error executing query:\n{sql}\n{ ex.Message}\n{ ex.Source}\n{ ex.StackTrace}");
-                    return new DataTable();
-                }
-            }
-
-            return dataTable;
-        }
-
-        #region PromotionCriteria
-
         /// <summary>
-        /// Gets the list of requirements for promotion to each level for each art available
+        /// Adds a new student to the database.
         /// </summary>
-        /// <remarks>We will read in the entire table (it's not very big) to minimize databate hits. This
-        /// table will rarely ever be updated.</remarks>
-        public DataTable GetStudentPromotionRequirements()
-        {
-            using (OleDbConnection connection = new OleDbConnection(connectionString))
-            {
-                string sql = "SELECT rank_art, rank_id, rank_next, rank_min_hours, " +
-                    "rank_min_age, rank_total_years, rank_time_in_rank " +
-                    "FROM Promo_Requirements";
-                OleDbDataAdapter dataAdapter = new OleDbDataAdapter(sql, connection);
-                DataSet dataset = new DataSet();
-
-                try
-                {
-                    connection.Open();
-                    dataAdapter.Fill(dataset);
-                    DataTable dataTable = dataset.Tables[0];
-
-                    // Rename columns from database schema to something more generic and readable
-                    dataTable.Columns["rank_art"].ColumnName = "Art";
-                    dataTable.Columns["rank_id"].ColumnName = "CurrentRank";
-                    dataTable.Columns["rank_next"].ColumnName = "NextRank";
-                    dataTable.Columns["rank_min_hours"].ColumnName = "MinimumTrainingHours";
-                    dataTable.Columns["rank_min_age"].ColumnName = "MinimumAge";
-                    dataTable.Columns["rank_total_years"].ColumnName = "YearsInArt";
-                    dataTable.Columns["rank_time_in_rank"].ColumnName = "YearsAtCurrentRank";
-
-                    return dataTable;
-                }
-                catch (OleDbException ex)
-                {
-                    Log.Error($"{DateTime.Now}: Error retrieving student promotion requirements:\n{sql}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
-                    return new DataTable();
-                }
-            }
-        }
-
-        public void UpdatePromotionCriteria(DataTable promotionCriteriaTable)
-        {
-            PromotionCriteria promotionCriteria = new PromotionCriteria();
-
-            foreach (DataRow row in promotionCriteriaTable.Rows)
-            {
-                promotionCriteria = promotionCriteria.GetPromotionCriteriaFromDataRow(row);
-
-                if (row.RowState == DataRowState.Modified)
-                    ModifyPromotionCriteria(promotionCriteria);
-
-                else if (row.RowState == DataRowState.Added)
-                    AddPromotionCriteria(promotionCriteria);
-
-                else if (row.RowState == DataRowState.Deleted)
-                    DeletePromotionCriteria(promotionCriteria.CurrentArt, promotionCriteria.CurrentRank);
-            }
-        }
-
-        private void SetPromotionCriteriaCommandParameters(OleDbCommand command, PromotionCriteria promotionCriteria)
-        {
-            command.Parameters.Add("@RankArt", OleDbType.VarChar).Value = promotionCriteria.CurrentArt;
-            command.Parameters.Add("@RankName", OleDbType.VarChar).Value = promotionCriteria.CurrentRank;
-            command.Parameters.Add("@NextRank", OleDbType.VarChar).Value = promotionCriteria.NextRank;
-            command.Parameters.Add("@MinimumTrainingHours", OleDbType.Integer).Value = promotionCriteria.MinimumTrainingHours;
-            command.Parameters.Add("@MinimumAgeForRank", OleDbType.Integer).Value = promotionCriteria.MinimumAge;
-            command.Parameters.Add("@TotalYearsInArt", OleDbType.Double).Value = promotionCriteria.YearsInArt;
-            command.Parameters.Add("@TotalYearsAtRank", OleDbType.Double).Value = promotionCriteria.YearsAtCurrentRank;
-            command.Parameters.Add("@RankFee", OleDbType.Integer).Value = promotionCriteria.RankFee;
-        }
-
-        private bool AddPromotionCriteria(PromotionCriteria promotionCriteria)
-        {
-            //TODO: Check to make sure adding the new record does not violate a primary key constraint (rank_art + rank_id)
-            bool success = true;
-
-            using (OleDbConnection connection = new OleDbConnection(connectionString))
-            {
-                connection.Open();
-                OleDbCommand command = new OleDbCommand(@"INSERT INTO Promo_Requirements (
-                    rank_art,
-                    rank_id,
-                    rank_next,
-                    rank_min_hours,
-                    rank_min_age,
-                    rank_total_years,
-                    rank_time_in_rank,
-                    rank_fee)
-                VALUES (
-                    @RankArt,
-                    @RankName,
-                    @NextRank,
-                    @MinimumTrainingHours,
-                    @MinimumAgeForRank,
-                    @TotalYearsInArt,
-                    @TotalYearsAtRank,
-                    @RankFee)", connection);
-
-                if (connection.State == ConnectionState.Open)
-                {
-                    SetPromotionCriteriaCommandParameters(command, promotionCriteria);
-
-                    try
-                    {
-                        command.ExecuteNonQuery();
-                        connection.Close();
-                        Log.Information($"Added new promotion requirement for {promotionCriteria.CurrentArt} - {promotionCriteria.CurrentRank}");
-                    }
-                    catch (OleDbException ex)
-                    {
-                        success = false;
-                        Log.Error($"{DateTime.Now}: Error inserting into Promo_Requirements table.\n{command.CommandText}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
-                        connection.Close();
-                    }
-                }
-                else
-                {
-                    success = false;
-                    Log.Error($"{DateTime.Now}: Connection failed when adding new promotion criteria.\n");
-                }
-            }
-
-            return success;
-        }
- 
-        private bool ModifyPromotionCriteria(PromotionCriteria promotionCriteria)
-        {
-            //Check to make sure adding the new record does not violate a primary key constraint (rank_art + rank_id)
-            bool success = true;
-
-            using (OleDbConnection connection = new OleDbConnection(connectionString))
-            {
-                connection.Open();
-                OleDbCommand command = new OleDbCommand(@"UPDATE Promo_Requirements SET
-                    rank_next = @NextRank,
-                    rank_min_hours = @MinimumTrainingHours,
-                    rank_min_age = @MinimumAgeForRank,
-                    rank_total_years = @TotalYearsInArt,
-                    rank_time_in_rank = @TotalYearsAtRank,
-                    rank_fee = @RankFee
-                    WHERE rank_art = @RankArt AND rank_id = @RankName", connection);
-
-                if (connection.State == ConnectionState.Open)
-                {
-                    SetPromotionCriteriaCommandParameters(command, promotionCriteria);
-
-                    try
-                    {
-                        int rowsAffected = command.ExecuteNonQuery();
-                        connection.Close();
-                        Log.Information($"Updated {rowsAffected} rows in the following query:\n{GetCommandLogString(command)}");
-                        Log.Information($"Updating promotion requirement for {promotionCriteria.CurrentArt} - {promotionCriteria.CurrentRank}");
-                    }
-                    catch (OleDbException ex)
-                    {
-                        success = false;
-                        Log.Error($"{DateTime.Now}: Error updating Promo_Requirements table.\n{command.CommandText}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
-                        connection.Close();
-                    }
-                }
-                else
-                {
-                    success = false;
-                    Log.Error($"{DateTime.Now}: Connection failed when updating promotion criteria.\n");
-                }
-            }
-
-            return success;
-        }
-
-        private string GetCommandLogString(OleDbCommand command)
-        {
-            StringBuilder logString = new StringBuilder();
-            logString.AppendLine("Executing SQL Command: ");
-            logString.AppendLine(command.CommandText);
-
-            foreach (OleDbParameter param in command.Parameters)
-            {
-                logString.AppendLine($"Parameter: {param.ParameterName}, Value: {param.Value}");
-            }
-
-            return logString.ToString();
-        }
-
-        private bool DeletePromotionCriteria(string artName, string rankName)
-        {
-            bool success = true;
-
-            using (OleDbConnection connection = new OleDbConnection(connectionString))
-            {
-                connection.Open();
-                OleDbCommand command = new OleDbCommand(@"DELETE FROM Promo_Requirements
-                    WHERE rank_art = @ArtName and rank_id = @RankName", connection);
-
-                if (connection.State == ConnectionState.Open)
-                {
-                    command.Parameters.Add("@ArtName", OleDbType.VarChar).Value = artName;
-                    command.Parameters.Add("@RankName", OleDbType.VarChar).Value = rankName;
-
-                    try
-                    {
-                        command.ExecuteNonQuery();
-                        connection.Close();
-                        Log.Information($"Successfully deleted promotion criteria {artName} - {rankName}");
-                    }
-                    catch (OleDbException ex)
-                    {
-                        success = false;
-                        Log.Error($"{DateTime.Now}: Error executing delete command.\n{command.CommandText}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
-                        connection.Close();
-                    }
-                }
-                else
-                {
-                    success = false;
-                    Log.Error("DeletePromotionCriteria: Connection failed during delete operation.\n");
-                }
-            }
-
-            return success;
-        }
-
-        #endregion PromotionCriteria
-
+        /// <param name="student">The student object to be added.</param>
+        /// <returns>True if the student was added successfully, otherwise false.</returns>
         public bool AddNewStudent(Student student)
         {
             bool success = true;
@@ -335,35 +74,35 @@ namespace DojoStudentManagement
             {
                 connection.Open();
                 OleDbCommand command = new OleDbCommand(@"INSERT INTO Students (stud_status, 
-                    stud_lastName,
-                    stud_firstname,
-                    stud_club,
-                    stud_birthdate,
-                    stud_addr1,
-                    stud_addr2,
-                    stud_city,
-                    stud_state,
-                    stud_zip,
-                    stud_homephone,
-                    stud_workphone,
-                    stud_gender,
-                    stud_email,
-                    stud_start_month) 
-                   VALUES (@Status, 
-                    @LastName, 
-                    @FirstName, 
-                    @HomeDojo, 
-                    @Birthdate, 
-                    @Address1, 
-                    @Address2, 
-                    @City, 
-                    @State, 
-                    @Zip, 
-                    @PrimaryPhone, 
-                    @SecondaryPhone, 
-                    @Gender, 
-                    @Email, 
-                    @StartMonth)", connection);
+                        stud_lastName,
+                        stud_firstname,
+                        stud_club,
+                        stud_birthdate,
+                        stud_addr1,
+                        stud_addr2,
+                        stud_city,
+                        stud_state,
+                        stud_zip,
+                        stud_homephone,
+                        stud_workphone,
+                        stud_gender,
+                        stud_email,
+                        stud_start_month) 
+                       VALUES (@Status, 
+                        @LastName, 
+                        @FirstName, 
+                        @HomeDojo, 
+                        @Birthdate, 
+                        @Address1, 
+                        @Address2, 
+                        @City, 
+                        @State, 
+                        @Zip, 
+                        @PrimaryPhone, 
+                        @SecondaryPhone, 
+                        @Gender, 
+                        @Email, 
+                        @StartMonth)", connection);
 
                 if (connection.State == ConnectionState.Open)
                 {
@@ -444,38 +183,6 @@ namespace DojoStudentManagement
             return success;
         }
 
-        private void SetStudentCommandParameters(OleDbCommand command, Student student, bool isUpdate = false)
-        {
-            command.Parameters.Add("@Status", OleDbType.VarChar).Value = student.ActiveMember ? "A" : "I";
-            command.Parameters.Add("@LastName", OleDbType.VarChar).Value = student.LastName;
-            command.Parameters.Add("@FirstName", OleDbType.VarChar).Value = student.FirstName;
-            command.Parameters.Add("@HomeDojo", OleDbType.VarChar).Value = student.HomeDojo;
-            command.Parameters.Add("@Birthdate", OleDbType.DBDate).Value = student.DateOfBirth;
-            command.Parameters.Add("@Address1", OleDbType.VarChar).Value = student.Address1;
-            command.Parameters.Add("@Address2", OleDbType.VarChar).Value = student.Address2;
-            command.Parameters.Add("@City", OleDbType.VarChar).Value = student.AddressCity;
-            command.Parameters.Add("@State", OleDbType.VarChar).Value = student.AddressState;
-            command.Parameters.Add("@Zip", OleDbType.VarChar).Value = student.AddressZip;
-            command.Parameters.Add("@PrimaryPhone", OleDbType.VarChar).Value = student.PrimaryPhoneNumber;
-            command.Parameters.Add("@SecondaryPhone", OleDbType.VarChar).Value = student.SecondaryPhoneNumber;
-
-            if (student.StudentGender == Gender.MALE)
-                command.Parameters.Add("@Gender", OleDbType.VarChar).Value = "M";
-            else if (student.StudentGender == Gender.FEMALE)
-                command.Parameters.Add("@Gender", OleDbType.VarChar).Value = "F";
-            else
-                command.Parameters.Add("@Gender", OleDbType.VarChar).Value = "X";
-
-            command.Parameters.Add("@Email", OleDbType.VarChar).Value = student.EmailAddress;
-            command.Parameters.Add("@StartMonth", OleDbType.Integer).Value = student.StartMonth;
-
-            // Only add the StudentID parameter if this is an update operation
-            if (isUpdate)
-            {
-                command.Parameters.Add("@StudentID", OleDbType.Integer).Value = student.StudentID;
-            }
-        }
-
         public bool DeleteStudent(int studentID)
         {
             bool success = true;
@@ -516,7 +223,46 @@ namespace DojoStudentManagement
             return success;
         }
 
-        public bool AddNewStudentArt(StudentArtsAndRank artsAndRank) 
+        private void SetStudentCommandParameters(OleDbCommand command, Student student, bool isUpdate = false)
+        {
+            command.Parameters.Add("@Status", OleDbType.VarChar).Value = student.ActiveMember ? "A" : "I";
+            command.Parameters.Add("@LastName", OleDbType.VarChar).Value = student.LastName;
+            command.Parameters.Add("@FirstName", OleDbType.VarChar).Value = student.FirstName;
+            command.Parameters.Add("@HomeDojo", OleDbType.VarChar).Value = student.HomeDojo;
+            command.Parameters.Add("@Birthdate", OleDbType.DBDate).Value = student.DateOfBirth;
+            command.Parameters.Add("@Address1", OleDbType.VarChar).Value = student.Address1;
+            command.Parameters.Add("@Address2", OleDbType.VarChar).Value = student.Address2;
+            command.Parameters.Add("@City", OleDbType.VarChar).Value = student.AddressCity;
+            command.Parameters.Add("@State", OleDbType.VarChar).Value = student.AddressState;
+            command.Parameters.Add("@Zip", OleDbType.VarChar).Value = student.AddressZip;
+            command.Parameters.Add("@PrimaryPhone", OleDbType.VarChar).Value = student.PrimaryPhoneNumber;
+            command.Parameters.Add("@SecondaryPhone", OleDbType.VarChar).Value = student.SecondaryPhoneNumber;
+
+            if (student.StudentGender == Gender.MALE)
+                command.Parameters.Add("@Gender", OleDbType.VarChar).Value = "M";
+            else if (student.StudentGender == Gender.FEMALE)
+                command.Parameters.Add("@Gender", OleDbType.VarChar).Value = "F";
+            else
+                command.Parameters.Add("@Gender", OleDbType.VarChar).Value = "X";
+
+            command.Parameters.Add("@Email", OleDbType.VarChar).Value = student.EmailAddress;
+            command.Parameters.Add("@StartMonth", OleDbType.Integer).Value = student.StartMonth;
+
+            // Only add the StudentID parameter if this is an update operation
+            if (isUpdate)
+            {
+                command.Parameters.Add("@StudentID", OleDbType.Integer).Value = student.StudentID;
+            }
+        }
+
+        #region StudentArtsAndRanks
+
+        public DataTable GetStudentArtsAndRanks(int studentID)
+        {
+            return ExecuteQuery($"select * from StudArts where StudArt_ID={studentID}");
+        }
+
+        public bool AddNewStudentArt(StudentArtsAndRank artsAndRank)
         {
             bool success = true;
 
@@ -656,7 +402,7 @@ namespace DojoStudentManagement
                     catch (OleDbException ex)
                     {
                         success = false;
-                        Log.Error($"{DateTime.Now}: Error connecting to database {databasePath}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        Log.Error($"Error connecting to database {databasePath}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
                         transaction.Rollback();
                     }
                 }
@@ -664,8 +410,9 @@ namespace DojoStudentManagement
 
             return success;
         }
+        #endregion StudentArtsAndRanks
 
-    #region StudentPromotion
+        #region StudentPromotion
 
         /// <summary>
         /// After a student is promoted, update the main arts/rank data with the new information, then 
@@ -746,9 +493,9 @@ namespace DojoStudentManagement
             }
         }
 
-    #endregion StudentPromotion
+        #endregion StudentPromotion
 
-    #region StudentSignIn
+        #region StudentSignIn
 
         /// <summary>
         /// Updates the student's signin date and cumulative hours in their StudArts record, as well as adds a
@@ -758,7 +505,7 @@ namespace DojoStudentManagement
         public bool UpdateStudentSignIn(int studentID, string studentArtName, double cumulativeTrainingHours)
         {
             float trainingHoursPerClass = GetTrainingHoursPerClassForArt(studentArtName);
-            
+
             if (trainingHoursPerClass < 0)
                 return false;
 
@@ -796,7 +543,7 @@ namespace DojoStudentManagement
             }
 
             return hours;
-        }   
+        }
 
         private bool InsertStudentSignInRecord(int studentID, string artName, float hoursPerClass, DateTime signInDate)
         {
@@ -879,8 +626,233 @@ namespace DojoStudentManagement
 
             return true;
         }
-    #endregion StudentSignIn
+        #endregion StudentSignIn
 
+        #region PromotionCriteria
+
+        /// <summary>
+        /// Gets the list of requirements for promotion to each level for each art available
+        /// </summary>
+        /// <remarks>We will read in the entire table (it's not very big) to minimize databate hits. This
+        /// table will rarely ever be updated.</remarks>
+        public DataTable GetStudentPromotionRequirements()
+        {
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                string sql = "SELECT rank_art, rank_id, rank_next, rank_min_hours, " +
+                    "rank_min_age, rank_total_years, rank_time_in_rank " +
+                    "FROM Promo_Requirements";
+                OleDbDataAdapter dataAdapter = new OleDbDataAdapter(sql, connection);
+                DataSet dataset = new DataSet();
+
+                try
+                {
+                    connection.Open();
+                    dataAdapter.Fill(dataset);
+                    DataTable dataTable = dataset.Tables[0];
+
+                    // Rename columns from database schema to something more generic and readable
+                    dataTable.Columns["rank_art"].ColumnName = "Art";
+                    dataTable.Columns["rank_id"].ColumnName = "CurrentRank";
+                    dataTable.Columns["rank_next"].ColumnName = "NextRank";
+                    dataTable.Columns["rank_min_hours"].ColumnName = "MinimumTrainingHours";
+                    dataTable.Columns["rank_min_age"].ColumnName = "MinimumAge";
+                    dataTable.Columns["rank_total_years"].ColumnName = "YearsInArt";
+                    dataTable.Columns["rank_time_in_rank"].ColumnName = "YearsAtCurrentRank";
+
+                    return dataTable;
+                }
+                catch (OleDbException ex)
+                {
+                    Log.Error($"{DateTime.Now}: Error retrieving student promotion requirements:\n{sql}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                    return new DataTable();
+                }
+            }
+        }
+
+        public void UpdatePromotionCriteria(DataTable promotionCriteriaTable)
+        {
+            PromotionCriteria promotionCriteria = new PromotionCriteria();
+
+            foreach (DataRow row in promotionCriteriaTable.Rows)
+            {
+                promotionCriteria = promotionCriteria.GetPromotionCriteriaFromDataRow(row);
+
+                if (row.RowState == DataRowState.Modified)
+                    ModifyPromotionCriteria(promotionCriteria);
+
+                else if (row.RowState == DataRowState.Added)
+                    AddPromotionCriteria(promotionCriteria);
+
+                else if (row.RowState == DataRowState.Deleted)
+                    DeletePromotionCriteria(promotionCriteria.CurrentArt, promotionCriteria.CurrentRank);
+            }
+        }
+
+        private void SetPromotionCriteriaCommandParameters(OleDbCommand command, PromotionCriteria promotionCriteria)
+        {
+            command.Parameters.Add("@RankArt", OleDbType.VarChar).Value = promotionCriteria.CurrentArt;
+            command.Parameters.Add("@RankName", OleDbType.VarChar).Value = promotionCriteria.CurrentRank;
+            command.Parameters.Add("@NextRank", OleDbType.VarChar).Value = promotionCriteria.NextRank;
+            command.Parameters.Add("@MinimumTrainingHours", OleDbType.Integer).Value = promotionCriteria.MinimumTrainingHours;
+            command.Parameters.Add("@MinimumAgeForRank", OleDbType.Integer).Value = promotionCriteria.MinimumAge;
+            command.Parameters.Add("@TotalYearsInArt", OleDbType.Double).Value = promotionCriteria.YearsInArt;
+            command.Parameters.Add("@TotalYearsAtRank", OleDbType.Double).Value = promotionCriteria.YearsAtCurrentRank;
+            command.Parameters.Add("@RankFee", OleDbType.Integer).Value = promotionCriteria.RankFee;
+        }
+
+        private bool AddPromotionCriteria(PromotionCriteria promotionCriteria)
+        {
+            //TODO: Check to make sure adding the new record does not violate a primary key constraint (rank_art + rank_id)
+            bool success = true;
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                connection.Open();
+                OleDbCommand command = new OleDbCommand(@"INSERT INTO Promo_Requirements (
+                    rank_art,
+                    rank_id,
+                    rank_next,
+                    rank_min_hours,
+                    rank_min_age,
+                    rank_total_years,
+                    rank_time_in_rank,
+                    rank_fee)
+                VALUES (
+                    @RankArt,
+                    @RankName,
+                    @NextRank,
+                    @MinimumTrainingHours,
+                    @MinimumAgeForRank,
+                    @TotalYearsInArt,
+                    @TotalYearsAtRank,
+                    @RankFee)", connection);
+
+                if (connection.State == ConnectionState.Open)
+                {
+                    SetPromotionCriteriaCommandParameters(command, promotionCriteria);
+
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                        Log.Information($"Added new promotion requirement for {promotionCriteria.CurrentArt} - {promotionCriteria.CurrentRank}");
+                    }
+                    catch (OleDbException ex)
+                    {
+                        success = false;
+                        Log.Error($"{DateTime.Now}: Error inserting into Promo_Requirements table.\n{command.CommandText}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        connection.Close();
+                    }
+                }
+                else
+                {
+                    success = false;
+                    Log.Error($"{DateTime.Now}: Connection failed when adding new promotion criteria.\n");
+                }
+            }
+
+            return success;
+        }
+
+        private bool ModifyPromotionCriteria(PromotionCriteria promotionCriteria)
+        {
+            //Check to make sure adding the new record does not violate a primary key constraint (rank_art + rank_id)
+            bool success = true;
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                connection.Open();
+                OleDbCommand command = new OleDbCommand(@"UPDATE Promo_Requirements SET
+                    rank_next = @NextRank,
+                    rank_min_hours = @MinimumTrainingHours,
+                    rank_min_age = @MinimumAgeForRank,
+                    rank_total_years = @TotalYearsInArt,
+                    rank_time_in_rank = @TotalYearsAtRank,
+                    rank_fee = @RankFee
+                    WHERE rank_art = @RankArt AND rank_id = @RankName", connection);
+
+                if (connection.State == ConnectionState.Open)
+                {
+                    SetPromotionCriteriaCommandParameters(command, promotionCriteria);
+
+                    try
+                    {
+                        int rowsAffected = command.ExecuteNonQuery();
+                        connection.Close();
+                        Log.Information($"Updated {rowsAffected} rows in the following query:\n{GetCommandLogString(command)}");
+                        Log.Information($"Updating promotion requirement for {promotionCriteria.CurrentArt} - {promotionCriteria.CurrentRank}");
+                    }
+                    catch (OleDbException ex)
+                    {
+                        success = false;
+                        Log.Error($"{DateTime.Now}: Error updating Promo_Requirements table.\n{command.CommandText}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        connection.Close();
+                    }
+                }
+                else
+                {
+                    success = false;
+                    Log.Error($"{DateTime.Now}: Connection failed when updating promotion criteria.\n");
+                }
+            }
+
+            return success;
+        }
+
+        private string GetCommandLogString(OleDbCommand command)
+        {
+            StringBuilder logString = new StringBuilder();
+            logString.AppendLine("Executing SQL Command: ");
+            logString.AppendLine(command.CommandText);
+
+            foreach (OleDbParameter param in command.Parameters)
+            {
+                logString.AppendLine($"Parameter: {param.ParameterName}, Value: {param.Value}");
+            }
+
+            return logString.ToString();
+        }
+
+        private bool DeletePromotionCriteria(string artName, string rankName)
+        {
+            bool success = true;
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                connection.Open();
+                OleDbCommand command = new OleDbCommand(@"DELETE FROM Promo_Requirements
+                    WHERE rank_art = @ArtName and rank_id = @RankName", connection);
+
+                if (connection.State == ConnectionState.Open)
+                {
+                    command.Parameters.Add("@ArtName", OleDbType.VarChar).Value = artName;
+                    command.Parameters.Add("@RankName", OleDbType.VarChar).Value = rankName;
+
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                        Log.Information($"Successfully deleted promotion criteria {artName} - {rankName}");
+                    }
+                    catch (OleDbException ex)
+                    {
+                        success = false;
+                        Log.Error($"{DateTime.Now}: Error executing delete command.\n{command.CommandText}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        connection.Close();
+                    }
+                }
+                else
+                {
+                    success = false;
+                    Log.Error("DeletePromotionCriteria: Connection failed during delete operation.\n");
+                }
+            }
+
+            return success;
+        }
+
+        #endregion PromotionCriteria
 
     }
 }

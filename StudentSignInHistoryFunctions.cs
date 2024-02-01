@@ -9,18 +9,18 @@ namespace DojoStudentManagement
 {
     class StudentSignInHistoryFunctions
     {
-        IDataAccess dataAccess;
+        IDataRepository dataRepository;
         int studentID;
 
-        public StudentSignInHistoryFunctions(IDataAccess dataAccess, int studentID)
+        public StudentSignInHistoryFunctions(IDataRepository dataRepository, int studentID)
         {
-            this.dataAccess = dataAccess;
+            this.dataRepository = dataRepository;
             this.studentID = studentID;
         }
 
         internal DataTable GetStudentSignInHistory()
         {
-            return dataAccess.GetStudentSignInHistory(this.studentID);
+            return dataRepository.GetStudentSignInHistory(this.studentID);
         }
     }
 }

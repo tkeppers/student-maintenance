@@ -12,12 +12,12 @@ namespace DojoStudentManagement
 {
     public partial class StudentAddUI : Form
     {
-        IDataAccess dataAccess;
+        IDataRepository dataRepository;
         public event EventHandler StudentAdded;
 
-        public StudentAddUI(IDataAccess dataAccess)
+        public StudentAddUI(IDataRepository dataRepository)
         {
-            this.dataAccess = dataAccess;
+            this.dataRepository = dataRepository;
             InitializeComponent();
         }
 
@@ -50,7 +50,7 @@ namespace DojoStudentManagement
             newStudent.StartMonth = DateTime.Today.Month;
             newStudent.StudentGender = SetGender();
 
-            if (dataAccess.AddNewStudent(newStudent))
+            if (dataRepository.AddNewStudent(newStudent))
                 MessageBox.Show($"Student {newStudent.FullName} successfully added.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 

@@ -36,7 +36,9 @@ namespace DojoStudentManagement
                     )
                     .CreateLogger();
 
-            IDataAccess dataAccess = new DatabaseAccess();
+            //TODO: Constructor checks to make sure the database is accessible and valid. Consider displaying the Settings form if this returns false?
+            IDataRepository dataRepository = new DataRepository();
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
@@ -48,16 +50,16 @@ namespace DojoStudentManagement
                 switch (args[0].ToLower())
                 {
                     case "maintenance":
-                        Application.Run(new StudentMaintenanceUI(dataAccess));
+                        Application.Run(new StudentMaintenanceUI(dataRepository));
                         break;
                     default:
-                        Application.Run(new StudentSignIn(dataAccess));
+                        Application.Run(new StudentSignIn(dataRepository));
                         break;
                 }
             }
             else
             {
-                Application.Run(new StudentSignIn(dataAccess));
+                Application.Run(new StudentSignIn(dataRepository));
             }
 
             Log.CloseAndFlush();

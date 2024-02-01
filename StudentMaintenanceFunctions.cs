@@ -9,36 +9,36 @@ namespace DojoStudentManagement
 {
     public class StudentMaintenanceFunctions
     {
-        public Student PopulateStudentData(IDataAccess dataAccess, int studentID)
+        public Student PopulateStudentData(IDataRepository dataRepository, int studentID)
         {
             //TODO: Remove database implementation logic to a lower-level class
             //TODO: Considerations: A lot can go wrong here. What if the student doesn't exist? What if the database is down?
             Student currentStudent = new Student();
 
-            DataTable studentDataTable = dataAccess.GetStudentTable();
-            DataRow[] selectedStudent = studentDataTable.Select("stud_id = " + studentID);
+            DataTable studentDataTable = dataRepository.GetStudentTable();
+            DataRow[] selectedStudent = studentDataTable.Select("StudentID = " + studentID);
 
             currentStudent.StudentID = studentID;
-            currentStudent.FirstName = selectedStudent[0].Field<string>("stud_firstname");
-            currentStudent.LastName = selectedStudent[0].Field<string>("stud_lastname");
-            currentStudent.Address1 = selectedStudent[0].Field<string>("stud_addr1");
-            currentStudent.Address2 = selectedStudent[0].Field<string>("stud_addr2");
-            currentStudent.AddressCity = selectedStudent[0].Field<string>("stud_city");
-            currentStudent.AddressState = selectedStudent[0].Field<string>("stud_state");
-            currentStudent.AddressZip = selectedStudent[0].Field<string>("stud_zip");
-            currentStudent.PrimaryPhoneNumber = selectedStudent[0].Field<string>("stud_homephone");
-            currentStudent.SecondaryPhoneNumber = selectedStudent[0].Field<string>("stud_workphone");
-            currentStudent.EmailAddress = selectedStudent[0].Field<string>("stud_email");
-            currentStudent.HomeDojo = selectedStudent[0].Field<string>("stud_club");
-            currentStudent.ActiveMember = selectedStudent[0].Field<string>("stud_status").Equals("A");
-            currentStudent.HomeDojo = selectedStudent[0].Field<string>("stud_club");
+            currentStudent.FirstName = selectedStudent[0].Field<string>("StudentFirstName");
+            currentStudent.LastName = selectedStudent[0].Field<string>("StudentLastName");
+            currentStudent.Address1 = selectedStudent[0].Field<string>("StudentAddress1");
+            currentStudent.Address2 = selectedStudent[0].Field<string>("StudentAddress2");
+            currentStudent.AddressCity = selectedStudent[0].Field<string>("StudentCity");
+            currentStudent.AddressState = selectedStudent[0].Field<string>("StudentState");
+            currentStudent.AddressZip = selectedStudent[0].Field<string>("StudentPostalCode");
+            currentStudent.PrimaryPhoneNumber = selectedStudent[0].Field<string>("StudentPrimaryPhone");
+            currentStudent.SecondaryPhoneNumber = selectedStudent[0].Field<string>("StudentSecondaryPhone");
+            currentStudent.EmailAddress = selectedStudent[0].Field<string>("StudentEmailAddress");
+            currentStudent.HomeDojo = selectedStudent[0].Field<string>("StudentDojo");
+            currentStudent.ActiveMember = selectedStudent[0].Field<string>("StudentStatus").Equals("A");
+            currentStudent.HomeDojo = selectedStudent[0].Field<string>("StudentDojo");
 
-            if (DateTime.TryParse(selectedStudent[0].Field<DateTime>("stud_birthdate").ToString(), out DateTime birthdate))
+            if (DateTime.TryParse(selectedStudent[0].Field<DateTime>("StudentBirthDate").ToString(), out DateTime birthdate))
                 currentStudent.DateOfBirth = birthdate;   
 
-            currentStudent.StudentGender = GetStudentGender(selectedStudent[0].Field<string>("stud_gender"));
+            currentStudent.StudentGender = GetStudentGender(selectedStudent[0].Field<string>("StudentGender"));
 
-            PopulateArtsAndRanks(dataAccess, currentStudent);
+            PopulateArtsAndRanks(dataRepository, currentStudent);
 
             return currentStudent;
         }
@@ -85,9 +85,9 @@ namespace DojoStudentManagement
             }
         }
 
-        private void PopulateArtsAndRanks(IDataAccess dataAccess, Student student)
+        private void PopulateArtsAndRanks(IDataRepository dataRepository, Student student)
         {
-            DataTable artsAndRanks = dataAccess.GetStudentArtsAndRanks(student.StudentID);
+            DataTable artsAndRanks = dataRepository.GetStudentArtsAndRanks(student.StudentID);
 
             foreach (DataRow row in artsAndRanks.Rows)
             {

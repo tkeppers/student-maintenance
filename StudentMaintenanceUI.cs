@@ -14,34 +14,31 @@ namespace DojoStudentManagement
     public partial class StudentMaintenanceUI : Form
     {
         int currentStudentID;
-        private readonly IDataAccess dataAccess;
+        private readonly IDataRepository dataRepository;
         private readonly StudentMaintenanceFunctions studentMaintenanceFunctions;
         private Student currentStudent;
         private StudentArtsAndRank selectedArt;
         private DataTable promotionRequirements;
 
-        public StudentMaintenanceUI(IDataAccess dataAccess)
+        public StudentMaintenanceUI(IDataRepository dataRepository)
         {
-            this.dataAccess = dataAccess;
+            this.dataRepository = dataRepository;
             studentMaintenanceFunctions = new StudentMaintenanceFunctions();
             InitializeComponent();
 
             var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             Text = $"Windsong Dojo Student Maintenance Application - Version {version.Major}.{version.Minor}";
 
-            if (dataAccess.DatabaseExistsAndIsValid() == false)
-                return;
-
             //Read this lookup table into memory up front because it will be accessed for 
             //most operations involving students and martial arts
-            promotionRequirements = dataAccess.GetStudentPromotionRequirements();
+            promotionRequirements = dataRepository.GetStudentPromotionRequirements();
         }
 
         private void LoadFormInformation()
         {
             txtMessages.Clear();
 
-            currentStudent = studentMaintenanceFunctions.PopulateStudentData(dataAccess, currentStudentID);
+            currentStudent = studentMaintenanceFunctions.PopulateStudentData(dataRepository, currentStudentID);
 
             PopulateStudentInformation();
 
@@ -126,19 +123,19 @@ namespace DojoStudentManagement
 
         private void FilterStudentList()
         {
-            string filterExpression = $"stud_id is not null ";  //Generic statement that will always be true
+            string filterExpression = $"StudentID is not null ";  //Generic statement that will always be true
 
             if (!cbNonWindsongStudents.Checked)
-                filterExpression += "and stud_club = 'Windsong' ";
+                filterExpression += "and StudentDojo = 'Windsong' ";
 
             if (!cbShowInactiveStudents.Checked)
-                filterExpression += "and stud_status = 'A' ";
+                filterExpression += "and StudentStatus = 'A' ";
 
             if (!string.IsNullOrWhiteSpace(txtFirstNameFilter.Text))
-                filterExpression += " and stud_firstname LIKE '" + txtFirstNameFilter.Text + "%'";
+                filterExpression += " and StudentFirstName LIKE '" + txtFirstNameFilter.Text + "%'";
 
             if (!string.IsNullOrWhiteSpace(txtLastNameFilter.Text))
-                filterExpression += " and stud_lastname LIKE '" + txtLastNameFilter.Text + "%'";
+                filterExpression += " and StudentLastName LIKE '" + txtLastNameFilter.Text + "%'";
 
 
             DataView dv = (DataView)dgvStudentList.DataSource;
@@ -151,7 +148,7 @@ namespace DojoStudentManagement
         {
             //dgvStudentList.Rows.Clear();
 
-            DataTable studentList = dataAccess.GetStudentTable();
+            DataTable studentList = dataRepository.GetStudentTable();
 
             //If the database isn't accessible, an empty table will be returned. Handle this 
             //gracefully to avoid exceptions being thrown.
@@ -166,14 +163,14 @@ namespace DojoStudentManagement
             dgvStudentList.Columns.Add("FirstName", "FirstName");
             dgvStudentList.Columns.Add("LastName", "LastName");
 
-            dgvStudentList.Columns["StudentID"].DataPropertyName = "stud_id";
-            dgvStudentList.Columns["FirstName"].DataPropertyName = "stud_firstname";
-            dgvStudentList.Columns["LastName"].DataPropertyName = "stud_lastname";
+            dgvStudentList.Columns["StudentID"].DataPropertyName = "StudentID";
+            dgvStudentList.Columns["FirstName"].DataPropertyName = "StudentFirstName";
+            dgvStudentList.Columns["LastName"].DataPropertyName = "StudentLastName";
 
             dgvStudentList.DataSource = studentDataView;
 
             //Display only the active students initially
-            studentDataView.RowFilter = "stud_status = 'A'";
+            studentDataView.RowFilter = "StudentStatus = 'A'";
         }
 
         private bool IsSelectedStudentValid()
@@ -237,10 +234,10 @@ namespace DojoStudentManagement
             else
                 currentStudent.StudentGender = Gender.UNKNOWN;
 
-            if (dataAccess.UpdateStudent(currentStudent))
+            if (dataRepository.UpdateStudent(currentStudent))
             {
                 string successMessage = $"Student {currentStudent.FullName} saved successfully.";
-                MessageService.ShowErrorMessage(successMessage, "Success");
+                MessageService.ShowInformationMessage(successMessage, "Success");
                 Log.Information(successMessage);
                 btnSaveChanges.Enabled = false;
             }
@@ -262,7 +259,7 @@ namespace DojoStudentManagement
             if (result == DialogResult.No)
                 return;
 
-            if (dataAccess.DeleteStudent(currentStudentID))
+            if (dataRepository.DeleteStudent(currentStudentID))
             {
                 string successMessage = $"Student {currentStudent.FullName} deleted successfully.";
                 MessageService.ShowErrorMessage(successMessage, "Success");
@@ -280,7 +277,7 @@ namespace DojoStudentManagement
 
         private void AddNewStudent()
         {
-            using (StudentAddUI addStudent = new StudentAddUI(dataAccess))
+            using (StudentAddUI addStudent = new StudentAddUI(dataRepository))
             {
                 DialogResult result = addStudent.ShowDialog();
 
@@ -307,7 +304,7 @@ namespace DojoStudentManagement
         {
             if (IsSelectedStudentValid())
             {
-                StudentAddModifyArtUI addArt = new StudentAddModifyArtUI(currentStudentID, currentStudent.FullName, dataAccess);
+                StudentAddModifyArtUI addArt = new StudentAddModifyArtUI(currentStudentID, currentStudent.FullName, dataRepository);
                 DialogResult result = addArt.ShowDialog();
 
                 if (result == DialogResult.OK)
@@ -320,7 +317,7 @@ namespace DojoStudentManagement
             if (IsValidArtSelected() == false)
                 return;
 
-            StudentAddModifyArtUI modifyArt = new StudentAddModifyArtUI(currentStudentID, currentStudent.FullName, dataAccess, selectedArt);
+            StudentAddModifyArtUI modifyArt = new StudentAddModifyArtUI(currentStudentID, currentStudent.FullName, dataRepository, selectedArt);
             DialogResult result = modifyArt.ShowDialog();
 
             if (result == DialogResult.OK)
@@ -338,7 +335,7 @@ namespace DojoStudentManagement
             DialogResult result = MessageService.ShowAreYouSureMessage(dialogText, "Are You Sure?");
             if (result == DialogResult.Yes)
             {
-                dataAccess.DeleteStudentArt(selectedArt.StudentArtID, selectedArt.StudentArt);
+                dataRepository.DeleteStudentArt(selectedArt.StudentArtID, selectedArt.StudentArt);
                 LoadFormInformation();
             }
         }
@@ -361,13 +358,13 @@ namespace DojoStudentManagement
 
         private void btnPromotionHistory_Click(object sender, EventArgs e)
         {
-            StudentPromotionHistoryUI promotions = new StudentPromotionHistoryUI(dataAccess, currentStudentID, currentStudent.FullName);
+            StudentPromotionHistoryUI promotions = new StudentPromotionHistoryUI(dataRepository, currentStudentID, currentStudent.FullName);
             promotions.ShowDialog();
         }
 
         private void btnSignInHistory_Click(object sender, EventArgs e)
         {
-            StudentSignInHistoryUI signins = new StudentSignInHistoryUI(dataAccess, currentStudentID, currentStudent.FullName);
+            StudentSignInHistoryUI signins = new StudentSignInHistoryUI(dataRepository, currentStudentID, currentStudent.FullName);
             signins.ShowDialog();
         }
 
@@ -402,7 +399,7 @@ namespace DojoStudentManagement
 
         private void databasePathToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DatabaseConfigUI config = new DatabaseConfigUI();
+            ApplicationSettingsUI config = new ApplicationSettingsUI();
             config.ShowDialog();
         }
 
@@ -444,8 +441,8 @@ namespace DojoStudentManagement
 
         private void tsbPromotionSettings_Click(object sender, EventArgs e)
         {
-            DataTable listOfArts = dataAccess.GetListOfArts();
-            PromotionCriteriaUI promotionSettings = new PromotionCriteriaUI(dataAccess);
+            DataTable listOfArts = dataRepository.GetListOfArts();
+            PromotionCriteriaUI promotionSettings = new PromotionCriteriaUI(dataRepository);
             promotionSettings.ShowDialog();
         }
 
@@ -459,7 +456,7 @@ namespace DojoStudentManagement
             if (IsValidArtSelected() == false)
                 return;
 
-            PromoteStudentUI promote = new PromoteStudentUI(currentStudent, selectedArt, promotionRequirements, dataAccess);
+            PromoteStudentUI promote = new PromoteStudentUI(currentStudent, selectedArt, promotionRequirements, dataRepository);
             promote.ShowDialog();
         }
 

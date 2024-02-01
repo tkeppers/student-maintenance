@@ -16,12 +16,12 @@ namespace DojoStudentManagement
         public bool modifyExistingArt;
         readonly StudentArtsAndRank currentArt;
         readonly string studentName;
-        readonly IDataAccess DataAccess;
+        readonly IDataRepository dataRepository;
 
-        public StudentAddModifyArtUI(int studentID, string studentName, IDataAccess dataAccess, StudentArtsAndRank artInfo = null)
+        public StudentAddModifyArtUI(int studentID, string studentName, IDataRepository dataRepository, StudentArtsAndRank artInfo = null)
         {
             this.studentName = studentName;
-            DataAccess = dataAccess;
+            this.dataRepository = dataRepository;
 
             InitializeComponent();
             GeneralFormSetup();
@@ -54,7 +54,7 @@ namespace DojoStudentManagement
 
         private void PopulateListOfArts()
         {
-            cmbArtType.DataSource = DataAccess.GetListOfArts();
+            cmbArtType.DataSource = dataRepository.GetListOfArts();
             cmbArtType.DisplayMember = "art_id"; 
             cmbArtType.ValueMember = "art_id";
         }
@@ -102,7 +102,7 @@ namespace DojoStudentManagement
             string message;
 
             UpdateCurrentArtWithFormData();
-            if (DataAccess.UpdateStudentArt(currentArt))
+            if (dataRepository.UpdateStudentArt(currentArt))
             {
                 message = $"Updated {currentArt.StudentArt} data for {studentName}";
                 MessageBox.Show(message, "Update Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -118,7 +118,7 @@ namespace DojoStudentManagement
         private void CreateNewStudentArtRecord()
         {
             UpdateCurrentArtWithFormData();
-            if (DataAccess.AddNewStudentArt(currentArt))
+            if (dataRepository.AddNewStudentArt(currentArt))
             {
                 MessageBox.Show($"Added {currentArt.StudentArt} as a new art for {studentName}", "Add New Art Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;

@@ -14,24 +14,24 @@ namespace DojoStudentManagement
 {
     public partial class StudentSignIn : Form
     {
-        IDataAccess dataAccess;
+        IDataRepository dataRepository;
 
-        public StudentSignIn(IDataAccess dataAccess)
+        public StudentSignIn(IDataRepository dataRepository)
         {
             InitializeComponent();
-            this.dataAccess = dataAccess;
+            this.dataRepository = dataRepository;
 
             //Subscribe to the DrawItem event for the listbox so we can change the color of certain messages
             listboxSignInList.DrawMode = DrawMode.OwnerDrawFixed;
             listboxSignInList.DrawItem += new DrawItemEventHandler(listboxSignInList_DrawItem);
 
-            SetupListAOfAvailiableArts();
+            SetupListOfAvailiableArts();
             RefreshStudentList();
         }
 
-        private void SetupListAOfAvailiableArts()
+        private void SetupListOfAvailiableArts()
         {
-            DataTable studentArtsTable = dataAccess.GetListOfArts();
+            DataTable studentArtsTable = dataRepository.GetListOfArts();
 
             listboxSelectArt.DataSource = studentArtsTable;
             listboxSelectArt.DisplayMember = "art_id";
@@ -40,7 +40,7 @@ namespace DojoStudentManagement
         //TODO: Move RefreshStudentList to a class where it can be accessed by both StudentSignIn and StudentMaintenance
         private void RefreshStudentList()
         {
-            DataTable studentList = dataAccess.GetStudentTable();
+            DataTable studentList = dataRepository.GetStudentTable();
 
             //If the database isn't accessible, an empty table will be returned. Handle this 
             //gracefully to avoid exceptions being thrown.
@@ -55,25 +55,25 @@ namespace DojoStudentManagement
             dgvStudentList.Columns.Add("FirstName", "FirstName");
             dgvStudentList.Columns.Add("LastName", "LastName");
 
-            dgvStudentList.Columns["StudentID"].DataPropertyName = "stud_id";
-            dgvStudentList.Columns["FirstName"].DataPropertyName = "stud_firstname";
-            dgvStudentList.Columns["LastName"].DataPropertyName = "stud_lastname";
+            dgvStudentList.Columns["StudentID"].DataPropertyName = "StudentID";
+            dgvStudentList.Columns["FirstName"].DataPropertyName = "StudentFirstName";
+            dgvStudentList.Columns["LastName"].DataPropertyName = "StudentLastName";
 
             dgvStudentList.DataSource = studentDataView;
 
             //Display only the active students initially
-            studentDataView.RowFilter = "stud_status = 'A'";
+            studentDataView.RowFilter = "StudentStatus = 'A'";
         }
 
         private void FilterStudentList()
         {
-            string filterExpression = $"stud_id is not null and stud_status = 'A' and stud_club = 'Windsong'";  
+            string filterExpression = $"StudentID is not null and StudentStatus = 'A' and StudentDojo = 'Windsong'";  
 
             if (!string.IsNullOrWhiteSpace(txtFirstNameFilter.Text))
-                filterExpression += " and stud_firstname LIKE '" + txtFirstNameFilter.Text + "%'";
+                filterExpression += " and StudentFirstName LIKE '" + txtFirstNameFilter.Text + "%'";
 
             if (!string.IsNullOrWhiteSpace(txtLastNameFilter.Text))
-                filterExpression += " and stud_lastname LIKE '" + txtLastNameFilter.Text + "%'";
+                filterExpression += " and StudentLastName LIKE '" + txtLastNameFilter.Text + "%'";
 
             DataView dv = (DataView)dgvStudentList.DataSource;
             dv.RowFilter = filterExpression;
@@ -92,7 +92,7 @@ namespace DojoStudentManagement
             string signInMessage = string.Empty; 
 
             StudentSignInFunctions signInFunctions = new StudentSignInFunctions();
-            bool success = signInFunctions.SignInStudent(dataAccess, studentID, listboxSelectArt.Text, out signInMessage);
+            bool success = signInFunctions.SignInStudent(dataRepository, studentID, listboxSelectArt.Text, out signInMessage);
 
 
             if (success)
@@ -103,7 +103,7 @@ namespace DojoStudentManagement
                 if (checkPromotionEligibility)
                 {
                     string promotionMessage;
-                    if (signInFunctions.IsEligibleForPromotion(dataAccess, studentID, signInArt, out promotionMessage))
+                    if (signInFunctions.IsEligibleForPromotion(dataRepository, studentID, signInArt, out promotionMessage))
                         listboxSignInList.Items.Add(promotionMessage);
                 }
             }
@@ -170,6 +170,11 @@ namespace DojoStudentManagement
             e.DrawBackground();
             e.Graphics.DrawString(text, e.Font, textBrush, e.Bounds);
             e.DrawFocusRectangle();
+        }
+
+        private void StudentSignIn_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

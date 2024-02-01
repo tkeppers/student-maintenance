@@ -105,12 +105,14 @@
     <Compile Include="AboutProgramUI.Designer.cs">
       <DependentUpon>AboutProgramUI.cs</DependentUpon>
     </Compile>
-    <Compile Include="DatabaseConfigUI.cs">
+    <Compile Include="BaseRepository.cs" />
+    <Compile Include="ApplicationSettingsUI.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DatabaseConfigUI.Designer.cs">
-      <DependentUpon>DatabaseConfigUI.cs</DependentUpon>
+    <Compile Include="ApplicationSettingsUI.Designer.cs">
+      <DependentUpon>ApplicationSettingsUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="IDataRepository.cs" />
     <Compile Include="MessageService.cs" />
     <Compile Include="PromoteStudentUI.cs">
       <SubType>Form</SubType>
@@ -132,7 +134,6 @@
       <DependentUpon>StudentAddModifyArtUI.cs</DependentUpon>
     </Compile>
     <Compile Include="Student.cs" />
-    <Compile Include="DatabaseAccess.cs" />
     <Compile Include="StudentAddUI.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -146,7 +147,6 @@
     <Compile Include="StudentMaintenanceUI.Designer.cs">
       <DependentUpon>StudentMaintenanceUI.cs</DependentUpon>
     </Compile>
-    <Compile Include="IDataAccess.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StudentMaintenanceFunctions.cs" />
@@ -157,6 +157,7 @@
     <Compile Include="StudentPromotionHistoryUI.Designer.cs">
       <DependentUpon>StudentPromotionHistoryUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="DataRepository.cs" />
     <Compile Include="StudentSignIn.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -174,8 +175,8 @@
     <EmbeddedResource Include="AboutProgramUI.resx">
       <DependentUpon>AboutProgramUI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DatabaseConfigUI.resx">
-      <DependentUpon>DatabaseConfigUI.cs</DependentUpon>
+    <EmbeddedResource Include="ApplicationSettingsUI.resx">
+      <DependentUpon>ApplicationSettingsUI.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PromoteStudentUI.resx">
       <DependentUpon>PromoteStudentUI.cs</DependentUpon>

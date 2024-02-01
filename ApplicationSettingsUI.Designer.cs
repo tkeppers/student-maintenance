@@ -1,7 +1,7 @@
 ﻿
 namespace DojoStudentManagement
 {
-    partial class DatabaseConfigUI
+    partial class ApplicationSettingsUI
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@ namespace DojoStudentManagement
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DatabaseConfigUI));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ApplicationSettingsUI));
             this.lblDatabasePath = new System.Windows.Forms.Label();
             this.txtDatabaseFilePath = new System.Windows.Forms.TextBox();
             this.btnBrowse = new System.Windows.Forms.Button();
@@ -103,7 +103,7 @@ namespace DojoStudentManagement
             this.cbShowPromotionEligibility.UseVisualStyleBackColor = true;
             this.cbShowPromotionEligibility.CheckedChanged += new System.EventHandler(this.cbShowPromotionEligibility_CheckedChanged);
             // 
-            // DatabaseConfigUI
+            // ApplicationSettingsUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -114,9 +114,9 @@ namespace DojoStudentManagement
             this.Controls.Add(this.btnBrowse);
             this.Controls.Add(this.txtDatabaseFilePath);
             this.Controls.Add(this.lblDatabasePath);
-            this.Name = "DatabaseConfigUI";
+            this.Name = "ApplicationSettingsUI";
             this.ShowIcon = false;
-            this.Text = "Database Configuration";
+            this.Text = "Application Settings";
             this.Load += new System.EventHandler(this.DatabaseConfigUI_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -14,21 +14,20 @@ namespace DojoStudentManagement
     {
         Student currentStudent;
         StudentArtsAndRank currentArt;
-        IDataAccess dataAccess;
+        IDataRepository dataRepository;
 
         public PromoteStudentUI()
         {
             InitializeComponent();
         }
 
-        //TODO: Now that we are passing in IDataAccess, it might be better to re-read the promotion requirements instead of passing them
-        public PromoteStudentUI(Student student, StudentArtsAndRank art, DataTable promotionRequirements, IDataAccess dataAccess)
+        public PromoteStudentUI(Student student, StudentArtsAndRank art, DataTable promotionRequirements, IDataRepository dataRepository)
         {
             InitializeComponent();
 
             currentStudent = student;
             currentArt = art;
-            this.dataAccess = dataAccess;
+            this.dataRepository = dataRepository;
 
             LoadListOfRanks(promotionRequirements, art.StudentArt);
             PopulatePromotionData(student, art);
@@ -117,7 +116,7 @@ namespace DojoStudentManagement
 
         private void UpdateStudentPromotion()
         {
-            if (dataAccess.UpdateStudentPromotion(currentStudent.StudentID, currentArt))
+            if (dataRepository.UpdateStudentPromotion(currentStudent.StudentID, currentArt))
             {
                 currentArt.PromoteStudentToNewLevel(cmbNextRank.Text);
                 MessageBox.Show($"Student {currentStudent.FullName} successfully promoted to {currentArt.Rank}",

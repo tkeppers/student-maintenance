@@ -11,12 +11,12 @@ using System.Windows.Forms;
 
 namespace DojoStudentManagement
 {
-    public partial class DatabaseConfigUI : Form
+    public partial class ApplicationSettingsUI : Form
     {
         string selectedDatabasePath;
         bool showPromotionEligibility;
 
-        public DatabaseConfigUI()
+        public ApplicationSettingsUI()
         {
             InitializeComponent();
             txtDatabaseFilePath.Text = ConfigurationManager.AppSettings["DatabasePath"];
