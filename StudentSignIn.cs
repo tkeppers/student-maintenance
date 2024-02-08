@@ -19,6 +19,9 @@ namespace DojoStudentManagement
         public StudentSignIn(IDataRepository dataRepository)
         {
             InitializeComponent();
+            
+            StudentSignInFunctions.SetupLogging();  //Initialize the logger for when students sign in
+
             this.dataRepository = dataRepository;
 
             //Subscribe to the DrawItem event for the listbox so we can change the color of certain messages
@@ -97,7 +100,10 @@ namespace DojoStudentManagement
 
             if (success)
             {
-                listboxSignInList.Items.Add($"{studentName} [{studentID}] signed in for {signInArt} on {DateTime.Now}");
+                string logText = $"{studentName} [{studentID}] signed in for {signInArt} on {DateTime.Now}";
+
+                listboxSignInList.Items.Add(logText);
+                StudentSignInFunctions.LogStudentSignIn(logText);
 
                 bool.TryParse(ConfigurationManager.AppSettings["DatabasePassword"], out bool checkPromotionEligibility);
                 if (checkPromotionEligibility)
@@ -137,16 +143,6 @@ namespace DojoStudentManagement
             FilterStudentList();
         }
 
-        private void dgvStudentList_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            int selectedIndex = e.RowIndex;
-
-            if (selectedIndex < 0)
-                return;
-
-            ProcessStudentSignIn(selectedIndex);
-        }
-
         private void listboxSignInList_DrawItem(object sender, DrawItemEventArgs e)
         {
             if (e.Index < 0) return; // Avoid drawing when the list is empty
@@ -175,6 +171,16 @@ namespace DojoStudentManagement
         private void StudentSignIn_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void dgvStudentList_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            int selectedIndex = e.RowIndex;
+
+            if (selectedIndex < 0)
+                return;
+
+            ProcessStudentSignIn(selectedIndex);
         }
     }
 }

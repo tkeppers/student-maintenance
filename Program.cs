@@ -18,51 +18,40 @@ namespace DojoStudentManagement
         [STAThread]
         static void Main(string[] args)
         {
-            string logDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
-            string logFilePath = Path.Combine(logDirectory, "Logs-.log");
+            SetupLogging();
+            var dataRepository = InitializeDataRepository();
+            RunApplication(args, dataRepository);
+            Log.CloseAndFlush();
+        }
 
-            // Ensure the log directory exists
+        static void SetupLogging()
+        {
+            var logDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
+            var logFilePath = Path.Combine(logDirectory, "Logs-.log");
             Directory.CreateDirectory(logDirectory);
 
-            // Set up the global Serilog logger configuration
             Log.Logger = new LoggerConfiguration()
-                    .MinimumLevel.Debug()
-                    .WriteTo.File(
-                        path: logFilePath,
-                        rollingInterval: RollingInterval.Month,
-                        rollOnFileSizeLimit: true,
-                        retainedFileCountLimit: null, // Set the retained file count as needed
-                        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}"
-                    )
-                    .CreateLogger();
+                .MinimumLevel.Debug()
+                .WriteTo.File(path: logFilePath, rollingInterval: RollingInterval.Month,
+                    rollOnFileSizeLimit: true, retainedFileCountLimit: null,
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+                .CreateLogger();
+        }
 
-            //TODO: Constructor checks to make sure the database is accessible and valid. Consider displaying the Settings form if this returns false?
-            IDataRepository dataRepository = new DataRepository();
+        static IDataRepository InitializeDataRepository()
+        {
+            return new DataRepository();
+        }
 
+        static void RunApplication(string[] args, IDataRepository dataRepository)
+        {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            //Upon login, if the "maintenance" argument is passed, the maintenance form will be displayed, which will allow the 
-            //instructor to perform student maintenance tasks (like adding students, promotions, etc.). If no argument is passed,
-            //the student sign in form will be displayed.
-            if (args.Length > 0)
-            {
-                switch (args[0].ToLower())
-                {
-                    case "maintenance":
-                        Application.Run(new StudentMaintenanceUI(dataRepository));
-                        break;
-                    default:
-                        Application.Run(new StudentSignIn(dataRepository));
-                        break;
-                }
-            }
+            if (args.Length > 0 && args[0].ToLower() == "maintenance")
+                Application.Run(new StudentMaintenanceUI(dataRepository));
             else
-            {
                 Application.Run(new StudentSignIn(dataRepository));
-            }
-
-            Log.CloseAndFlush();
         }
     }
 }

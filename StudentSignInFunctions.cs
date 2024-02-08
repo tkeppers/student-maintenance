@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +11,8 @@ namespace DojoStudentManagement
 {
     internal class StudentSignInFunctions
     {
+        private static ILogger _signInLogger;
+
         /// <summary>
         /// Validates that the student is enrolled in the selected art and is not already signed in.
         /// Calls the necessary routines to record the student's sign in
@@ -58,8 +62,10 @@ namespace DojoStudentManagement
                 //Note: The cumulative training hours are stored as a decimal in the database, but the field is defined as a double
                 //in the StudentArtsAndRank class. There is no need to have decimal precision for the cumulative training hours, and 
                 //the data in the database can be adequately represented as a double, with better performance.
-                //TODO: Make sure DBNull is handled correctly here
-                cumulativeTrainingHours = Convert.ToDouble(selectedStudentArt[0].Field<decimal>("studArt_cumm"));
+                if (selectedStudentArt[0].IsNull("studArt_cumm"))
+                    cumulativeTrainingHours = 0;
+                else
+                    cumulativeTrainingHours = Convert.ToDouble(selectedStudentArt[0].Field<decimal>("studArt_cumm"));
                 return true;
             }
         }
@@ -114,6 +120,25 @@ namespace DojoStudentManagement
                 Serilog.Log.Error(ex, $"Error determining promotion eligibility\n{ex.Message}\n{ex.Source}\n{ex.Data}\n{ex.StackTrace}");
                 return false;
             }
+        }
+
+        public static void SetupLogging()
+        {
+            var logDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
+            var logFilePath = Path.Combine(logDirectory, "StudentSignInLog-.log");
+            Directory.CreateDirectory(logDirectory);
+
+            _signInLogger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.File(path: logFilePath, rollingInterval: RollingInterval.Month,
+                    rollOnFileSizeLimit: true, retainedFileCountLimit: null,
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+                .CreateLogger();
+        }
+
+        public static void LogStudentSignIn(string message)
+        {
+            _signInLogger.Information(message);
         }
     }
 }
