@@ -182,7 +182,7 @@ namespace DojoStudentManagement
             this.lblHomeDojo.AutoSize = true;
             this.lblHomeDojo.Location = new System.Drawing.Point(359, 27);
             this.lblHomeDojo.Name = "lblHomeDojo";
-            this.lblHomeDojo.Size = new System.Drawing.Size(77, 16);
+            this.lblHomeDojo.Size = new System.Drawing.Size(76, 16);
             this.lblHomeDojo.TabIndex = 27;
             this.lblHomeDojo.Text = "Home Dojo";
             // 
@@ -199,7 +199,7 @@ namespace DojoStudentManagement
             this.cbActiveStudent.Location = new System.Drawing.Point(349, 90);
             this.cbActiveStudent.Name = "cbActiveStudent";
             this.cbActiveStudent.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.cbActiveStudent.Size = new System.Drawing.Size(64, 20);
+            this.cbActiveStudent.Size = new System.Drawing.Size(63, 20);
             this.cbActiveStudent.TabIndex = 25;
             this.cbActiveStudent.Text = "Active";
             this.cbActiveStudent.UseVisualStyleBackColor = true;
@@ -233,7 +233,7 @@ namespace DojoStudentManagement
             this.lblBirthDate.AutoSize = true;
             this.lblBirthDate.Location = new System.Drawing.Point(247, 253);
             this.lblBirthDate.Name = "lblBirthDate";
-            this.lblBirthDate.Size = new System.Drawing.Size(66, 16);
+            this.lblBirthDate.Size = new System.Drawing.Size(65, 16);
             this.lblBirthDate.TabIndex = 23;
             this.lblBirthDate.Text = "Birth Date";
             // 
@@ -257,7 +257,7 @@ namespace DojoStudentManagement
             this.lblSecondaryPhone.AutoSize = true;
             this.lblSecondaryPhone.Location = new System.Drawing.Point(133, 252);
             this.lblSecondaryPhone.Name = "lblSecondaryPhone";
-            this.lblSecondaryPhone.Size = new System.Drawing.Size(116, 16);
+            this.lblSecondaryPhone.Size = new System.Drawing.Size(115, 16);
             this.lblSecondaryPhone.TabIndex = 20;
             this.lblSecondaryPhone.Text = "Secondary Phone";
             // 
@@ -266,7 +266,7 @@ namespace DojoStudentManagement
             this.lblPrimaryPhone.AutoSize = true;
             this.lblPrimaryPhone.Location = new System.Drawing.Point(21, 252);
             this.lblPrimaryPhone.Name = "lblPrimaryPhone";
-            this.lblPrimaryPhone.Size = new System.Drawing.Size(96, 16);
+            this.lblPrimaryPhone.Size = new System.Drawing.Size(95, 16);
             this.lblPrimaryPhone.TabIndex = 19;
             this.lblPrimaryPhone.Text = "Primary Phone";
             // 
@@ -282,7 +282,7 @@ namespace DojoStudentManagement
             this.lblEmailAddress.AutoSize = true;
             this.lblEmailAddress.Location = new System.Drawing.Point(24, 207);
             this.lblEmailAddress.Name = "lblEmailAddress";
-            this.lblEmailAddress.Size = new System.Drawing.Size(42, 16);
+            this.lblEmailAddress.Size = new System.Drawing.Size(41, 16);
             this.lblEmailAddress.TabIndex = 17;
             this.lblEmailAddress.Text = "Email";
             // 
@@ -311,7 +311,7 @@ namespace DojoStudentManagement
             this.rbUnknown.AutoSize = true;
             this.rbUnknown.Location = new System.Drawing.Point(7, 69);
             this.rbUnknown.Name = "rbUnknown";
-            this.rbUnknown.Size = new System.Drawing.Size(81, 20);
+            this.rbUnknown.Size = new System.Drawing.Size(80, 20);
             this.rbUnknown.TabIndex = 2;
             this.rbUnknown.TabStop = true;
             this.rbUnknown.Text = "Unknown";
@@ -322,7 +322,7 @@ namespace DojoStudentManagement
             this.rbFemale.AutoSize = true;
             this.rbFemale.Location = new System.Drawing.Point(6, 45);
             this.rbFemale.Name = "rbFemale";
-            this.rbFemale.Size = new System.Drawing.Size(72, 20);
+            this.rbFemale.Size = new System.Drawing.Size(71, 20);
             this.rbFemale.TabIndex = 1;
             this.rbFemale.TabStop = true;
             this.rbFemale.Text = "Female";
@@ -333,7 +333,7 @@ namespace DojoStudentManagement
             this.rbMale.AutoSize = true;
             this.rbMale.Location = new System.Drawing.Point(7, 19);
             this.rbMale.Name = "rbMale";
-            this.rbMale.Size = new System.Drawing.Size(56, 20);
+            this.rbMale.Size = new System.Drawing.Size(55, 20);
             this.rbMale.TabIndex = 0;
             this.rbMale.TabStop = true;
             this.rbMale.Text = "Male";
@@ -344,7 +344,7 @@ namespace DojoStudentManagement
             this.lblZip.AutoSize = true;
             this.lblZip.Location = new System.Drawing.Point(247, 157);
             this.lblZip.Name = "lblZip";
-            this.lblZip.Size = new System.Drawing.Size(27, 16);
+            this.lblZip.Size = new System.Drawing.Size(26, 16);
             this.lblZip.TabIndex = 14;
             this.lblZip.Text = "Zip";
             // 
@@ -360,7 +360,7 @@ namespace DojoStudentManagement
             this.lblState.AutoSize = true;
             this.lblState.Location = new System.Drawing.Point(188, 158);
             this.lblState.Name = "lblState";
-            this.lblState.Size = new System.Drawing.Size(39, 16);
+            this.lblState.Size = new System.Drawing.Size(38, 16);
             this.lblState.TabIndex = 12;
             this.lblState.Text = "State";
             // 
@@ -383,7 +383,7 @@ namespace DojoStudentManagement
             this.lblCity.AutoSize = true;
             this.lblCity.Location = new System.Drawing.Point(24, 158);
             this.lblCity.Name = "lblCity";
-            this.lblCity.Size = new System.Drawing.Size(30, 16);
+            this.lblCity.Size = new System.Drawing.Size(29, 16);
             this.lblCity.TabIndex = 9;
             this.lblCity.Text = "City";
             // 
@@ -392,7 +392,7 @@ namespace DojoStudentManagement
             this.lblAddress2.AutoSize = true;
             this.lblAddress2.Location = new System.Drawing.Point(24, 112);
             this.lblAddress2.Name = "lblAddress2";
-            this.lblAddress2.Size = new System.Drawing.Size(69, 16);
+            this.lblAddress2.Size = new System.Drawing.Size(68, 16);
             this.lblAddress2.TabIndex = 8;
             this.lblAddress2.Text = "Address 2";
             // 
@@ -401,7 +401,7 @@ namespace DojoStudentManagement
             this.lblAddress1.AutoSize = true;
             this.lblAddress1.Location = new System.Drawing.Point(24, 72);
             this.lblAddress1.Name = "lblAddress1";
-            this.lblAddress1.Size = new System.Drawing.Size(69, 16);
+            this.lblAddress1.Size = new System.Drawing.Size(68, 16);
             this.lblAddress1.TabIndex = 7;
             this.lblAddress1.Text = "Address 1";
             // 
@@ -424,7 +424,7 @@ namespace DojoStudentManagement
             this.lblLastName.AutoSize = true;
             this.lblLastName.Location = new System.Drawing.Point(185, 27);
             this.lblLastName.Name = "lblLastName";
-            this.lblLastName.Size = new System.Drawing.Size(73, 16);
+            this.lblLastName.Size = new System.Drawing.Size(72, 16);
             this.lblLastName.TabIndex = 4;
             this.lblLastName.Text = "Last Name";
             // 
@@ -433,7 +433,7 @@ namespace DojoStudentManagement
             this.lblFirstName.AutoSize = true;
             this.lblFirstName.Location = new System.Drawing.Point(21, 30);
             this.lblFirstName.Name = "lblFirstName";
-            this.lblFirstName.Size = new System.Drawing.Size(73, 16);
+            this.lblFirstName.Size = new System.Drawing.Size(72, 16);
             this.lblFirstName.TabIndex = 3;
             this.lblFirstName.Text = "First Name";
             // 
@@ -629,14 +629,14 @@ namespace DojoStudentManagement
             // databasePathToolStripMenuItem
             // 
             this.databasePathToolStripMenuItem.Name = "databasePathToolStripMenuItem";
-            this.databasePathToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
-            this.databasePathToolStripMenuItem.Text = "Database Path";
+            this.databasePathToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.databasePathToolStripMenuItem.Text = "Application Settings";
             this.databasePathToolStripMenuItem.Click += new System.EventHandler(this.databasePathToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -749,7 +749,7 @@ namespace DojoStudentManagement
             this.lblPromotionEligibility.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblPromotionEligibility.Location = new System.Drawing.Point(603, 464);
             this.lblPromotionEligibility.Name = "lblPromotionEligibility";
-            this.lblPromotionEligibility.Size = new System.Drawing.Size(125, 16);
+            this.lblPromotionEligibility.Size = new System.Drawing.Size(124, 16);
             this.lblPromotionEligibility.TabIndex = 15;
             this.lblPromotionEligibility.Text = "Promotion Eligibility";
             // 

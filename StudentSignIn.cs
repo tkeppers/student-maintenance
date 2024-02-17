@@ -120,6 +120,10 @@ namespace DojoStudentManagement
 
             if (signInMessage != string.Empty)
                 listboxSignInList.Items.Add($"    {signInMessage}");
+
+            //Set the scrollbar at the bottom of the listbox
+            if (listboxSignInList.Items.Count > 0)
+                listboxSignInList.TopIndex = listboxSignInList.Items.Count - 1;
         }
 
         private bool ValidArtIsSelected()
@@ -174,6 +178,16 @@ namespace DojoStudentManagement
         }
 
         private void dgvStudentList_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            //int selectedIndex = e.RowIndex;
+
+            //if (selectedIndex < 0)
+            //    return;
+
+            //ProcessStudentSignIn(selectedIndex);
+        }
+
+        private void dgvStudentList_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             int selectedIndex = e.RowIndex;
 
