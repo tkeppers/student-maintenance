@@ -27,6 +27,9 @@ namespace DojoStudentManagement
         /// <returns>The DataTable containing the student records.</returns>
         public DataTable GetStudentTable()
         {
+            if (DatabaseExistsAndIsValid() == false)
+                return new DataTable();
+
             DataTable studentTable = ExecuteQuery("select * from Students where stud_club='Windsong'");
 
             // Rename columns from database schema to something more generic and readable
