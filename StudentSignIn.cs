@@ -85,49 +85,79 @@ namespace DojoStudentManagement
         }
 
         private void ProcessStudentSignIn(int selectedIndex)
-        {   
+        {
             if (!ValidArtIsSelected())
                 return;
 
-            int studentID = Convert.ToInt32(dgvStudentList.Rows[selectedIndex].Cells["StudentID"].Value);
-            string studentName = $"{dgvStudentList.Rows[selectedIndex].Cells["FirstName"].Value}  {dgvStudentList.Rows[selectedIndex].Cells["LastName"].Value}";
-            string signInArt = listboxSelectArt.Text;
-            string signInMessage = string.Empty; 
+            var studentInfo = GetStudentInfo(selectedIndex);
+            var signInArt = listboxSelectArt.Text;
+            var signInFunctions = new StudentSignInFunctions();
 
-            StudentSignInFunctions signInFunctions = new StudentSignInFunctions();
-            bool success = signInFunctions.SignInStudent(dataRepository, studentID, listboxSelectArt.Text, out signInMessage);
-
-
-            if (success)
+            if (TrySignInStudent(signInFunctions, studentInfo.StudentID, signInArt, out var signInMessage))
             {
-                string logText = $"{studentName} [{studentID}] signed in for {signInArt} on {DateTime.Now}";
-
-                listboxSignInList.Items.Add(logText);
-                StudentSignInFunctions.LogStudentSignIn(logText);
-
-                bool.TryParse(ConfigurationManager.AppSettings["DatabasePassword"], out bool checkPromotionEligibility);
-                if (checkPromotionEligibility)
-                {
-                    string promotionMessage;
-                    if (signInFunctions.IsEligibleForPromotion(dataRepository, studentID, signInArt, out promotionMessage))
-                        listboxSignInList.Items.Add(promotionMessage);
-                }
+                LogSuccessfulSignIn(studentInfo, signInArt);
+                CheckAndLogPromotionEligibility(signInFunctions, studentInfo.StudentID, signInArt);
             }
             else
             {
-                listboxSignInList.Items.Add($"Error signing in {studentName} [{studentID}] for {signInArt} on {DateTime.Now}");
+                LogSignInError(studentInfo, signInArt);
             }
 
-            if (signInMessage != string.Empty)
-                listboxSignInList.Items.Add($"    {signInMessage}");
+            AppendSignInMessage(signInMessage);
+            ScrollSignInListToBottom();
+            ClearNameFilterFields();
+        }
 
-            //Set the scrollbar at the bottom of the listbox
+        private (int StudentID, string StudentName) GetStudentInfo(int selectedIndex)
+        {
+            int studentID = Convert.ToInt32(dgvStudentList.Rows[selectedIndex].Cells["StudentID"].Value);
+            string studentName = $"{dgvStudentList.Rows[selectedIndex].Cells["FirstName"].Value} {dgvStudentList.Rows[selectedIndex].Cells["LastName"].Value}";
+            return (studentID, studentName);
+        }
+
+        private bool TrySignInStudent(StudentSignInFunctions signInFunctions, int studentID, string signInArt, out string signInMessage)
+        {
+            return signInFunctions.SignInStudent(dataRepository, studentID, signInArt, out signInMessage);
+        }
+
+        private void LogSuccessfulSignIn((int StudentID, string StudentName) studentInfo, string signInArt)
+        {
+            string logText = $"{studentInfo.StudentName} [{studentInfo.StudentID}] signed in for {signInArt} on {DateTime.Now}";
+            listboxSignInList.Items.Add(logText);
+            StudentSignInFunctions.LogStudentSignIn(logText);
+        }
+
+        private void CheckAndLogPromotionEligibility(StudentSignInFunctions signInFunctions, int studentID, string signInArt)
+        {
+            bool.TryParse(ConfigurationManager.AppSettings["DatabasePassword"], out bool checkPromotionEligibility);
+            if (checkPromotionEligibility)
+            {
+                if (signInFunctions.IsEligibleForPromotion(dataRepository, studentID, signInArt, out var promotionMessage))
+                    listboxSignInList.Items.Add(promotionMessage);
+            }
+        }
+
+        private void LogSignInError((int StudentID, string StudentName) studentInfo, string signInArt)
+        {
+            listboxSignInList.Items.Add($"Error signing in {studentInfo.StudentName} [{studentInfo.StudentID}] for {signInArt} on {DateTime.Now}");
+        }
+
+        private void AppendSignInMessage(string signInMessage)
+        {
+            if (!string.IsNullOrEmpty(signInMessage))
+                listboxSignInList.Items.Add($"    {signInMessage}");
+        }
+
+        private void ScrollSignInListToBottom()
+        {
             if (listboxSignInList.Items.Count > 0)
                 listboxSignInList.TopIndex = listboxSignInList.Items.Count - 1;
+        }
 
-            //Clear the name filter fields of any existing filter criteria
+        private void ClearNameFilterFields()
+        {
             txtFirstNameFilter.Text = string.Empty;
-            txtLastNameFilter.Text = string.Empty;  
+            txtLastNameFilter.Text = string.Empty;
         }
 
         private bool ValidArtIsSelected()
