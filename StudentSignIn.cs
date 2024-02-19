@@ -124,6 +124,10 @@ namespace DojoStudentManagement
             //Set the scrollbar at the bottom of the listbox
             if (listboxSignInList.Items.Count > 0)
                 listboxSignInList.TopIndex = listboxSignInList.Items.Count - 1;
+
+            //Clear the name filter fields of any existing filter criteria
+            txtFirstNameFilter.Text = string.Empty;
+            txtLastNameFilter.Text = string.Empty;  
         }
 
         private bool ValidArtIsSelected()

@@ -37,10 +37,11 @@ namespace DojoStudentManagement
                 return false;
             }
 
-            bool success = dataRepository.UpdateStudentSignIn(studentID, studentArt, cumulativeTrainingHours);
+            double newTotalTrainingHours = cumulativeTrainingHours;
+            bool success = dataRepository.UpdateStudentSignIn(studentID, studentArt, cumulativeTrainingHours, out newTotalTrainingHours);
 
             if (success)
-                signinMessage = $"Cumulative training hours in {studentArt}: {cumulativeTrainingHours}";
+                signinMessage = $"Cumulative training hours in {studentArt}: {newTotalTrainingHours}";
 
             return success;
         }

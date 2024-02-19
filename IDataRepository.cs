@@ -27,7 +27,7 @@ namespace DojoStudentManagement
 
         bool UpdateStudentPromotion(int studentID, StudentArtsAndRank artsAndRank);
 
-        bool UpdateStudentSignIn(int studentID, string studentArtName, double cumulativeTrainingHours);
+        bool UpdateStudentSignIn(int studentID, string studentArtName, double cumulativeTrainingHours, out double newCumulativeHours);
 
         //bool AddPromotionCriteria(PromotionCriteria promotionCriteria)
         void UpdatePromotionCriteria(DataTable promotionCriteriaTable);

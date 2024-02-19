@@ -505,9 +505,10 @@ namespace DojoStudentManagement
         /// log of their signin to the SigninHistory table.
         /// </summary>
         /// <returns>True if transaction was successful; false otherwise</returns>
-        public bool UpdateStudentSignIn(int studentID, string studentArtName, double cumulativeTrainingHours)
+        public bool UpdateStudentSignIn(int studentID, string studentArtName, double cumulativeTrainingHours, out double updatedCumulativeHours)
         {
             float trainingHoursPerClass = GetTrainingHoursPerClassForArt(studentArtName);
+            updatedCumulativeHours = cumulativeTrainingHours;
 
             if (trainingHoursPerClass < 0)
                 return false;
@@ -520,8 +521,8 @@ namespace DojoStudentManagement
                 return false;
 
             //Update the student arts record with the new latest signin date and cumulative training hours
-            cumulativeTrainingHours += trainingHoursPerClass;
-            return UpdateStudentArtsRecordAfterSignIn(studentID, studentArtName, cumulativeTrainingHours, signInDate);
+            updatedCumulativeHours = cumulativeTrainingHours + trainingHoursPerClass;
+            return UpdateStudentArtsRecordAfterSignIn(studentID, studentArtName, updatedCumulativeHours, signInDate);
         }
 
         private float GetTrainingHoursPerClassForArt(string artName)
