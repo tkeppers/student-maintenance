@@ -4,6 +4,11 @@
 
 The Windsong Dojo Student Management Tool is a Windows Forms application developed in C# using .NET Framework 4.8. This tool is designed to assist Windsong Dojo, a nonprofit martial arts school in Oklahoma City, in managing student information effectively.
 
+## Screenshots
+![Screenshot1](https://github.com/tkeppers/student-maintenance/assets/72893908/3581c517-a826-4ba5-844a-a3afe400d924)
+![Screenshot2](https://github.com/tkeppers/student-maintenance/assets/72893908/8ec32441-fffe-4eae-a70d-483ac74d18d0)
+![Screenshot3](https://github.com/tkeppers/student-maintenance/assets/72893908/64700d8f-8625-40b2-bd88-022c20f3b084)
+
 ## Features
 
 - **Student Information Management:** Store and manage essential student details, including names, birthdates, contact information, and enrollment status.
@@ -19,7 +24,7 @@ The Windsong Dojo Student Management Tool is a Windows Forms application develop
 ## Prerequisites
 
 - .NET Framework 4.8
-- Visual Studio 2019 (or any C# IDE of your choice)
+- Visual Studio 2022 (or any C# IDE of your choice)
 
 ## Getting Started
 
