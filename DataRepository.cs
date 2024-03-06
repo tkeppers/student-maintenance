@@ -18,7 +18,7 @@ namespace DojoStudentManagement
 
         public DataTable GetListOfArts()
         {
-            return ExecuteQuery("select art_id from Arts");
+            return ExecuteQuery("select art_id, art_hours from Arts");
         }
 
         /// <summary>

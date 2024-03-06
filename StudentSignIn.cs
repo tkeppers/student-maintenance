@@ -36,7 +36,13 @@ namespace DojoStudentManagement
         {
             DataTable studentArtsTable = dataRepository.GetListOfArts();
 
-            listboxSelectArt.DataSource = studentArtsTable;
+            // Sort by 'art_hours' in descending order, then by 'art_id' in ascending order. This will make the arts
+            // appear like "Aikido, Judo, Jyodo, Iaido" in that order. We wanted to do this since Aikido and Judo are
+            // the two most frequent arts that students sign in as. 
+            studentArtsTable.DefaultView.Sort = "art_hours DESC, art_id ASC";
+
+            // Assign the sorted DataView to the ListBox
+            listboxSelectArt.DataSource = studentArtsTable.DefaultView;
             listboxSelectArt.DisplayMember = "art_id";
         }
 
