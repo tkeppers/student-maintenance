@@ -19,7 +19,10 @@ namespace DojoStudentManagement
         public StudentSignIn(IDataRepository dataRepository)
         {
             InitializeComponent();
-            
+
+            var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            Text = $"Windsong Dojo Student Sign-In - Version {version.Major}.{version.Minor}";
+
             StudentSignInFunctions.SetupLogging();  //Initialize the logger for when students sign in
 
             this.dataRepository = dataRepository;
