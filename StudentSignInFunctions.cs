@@ -25,7 +25,7 @@ namespace DojoStudentManagement
         public bool SignInStudent(IDataRepository dataRepository, int studentID, string studentArt, out string signinMessage)
         {
             signinMessage = string.Empty;
-            if (!ValidateStudentIsEnrolledInArt(dataRepository, studentID, studentArt, out double cumulativeTrainingHours))
+            if (!ValidateStudentIsEnrolledInArt(dataRepository, studentID, studentArt, out double cumulativeTrainingHours, out string currentRank))
             {
                 signinMessage = $"Student is not currently enrolled in {studentArt}";
                 return false;
@@ -41,12 +41,12 @@ namespace DojoStudentManagement
             bool success = dataRepository.UpdateStudentSignIn(studentID, studentArt, cumulativeTrainingHours, out newTotalTrainingHours);
 
             if (success)
-                signinMessage = $"Cumulative training hours in {studentArt}: {newTotalTrainingHours}";
+                signinMessage = $"Cumulative training hours in {studentArt}: {newTotalTrainingHours}. Current rank: {currentRank}";
 
             return success;
         }
 
-        private bool ValidateStudentIsEnrolledInArt(IDataRepository dataRepository, int studentID, string studentArt, out double cumulativeTrainingHours)
+        private bool ValidateStudentIsEnrolledInArt(IDataRepository dataRepository, int studentID, string studentArt, out double cumulativeTrainingHours, out string currentRank)
         {
 
             DataTable studentArtsTable = dataRepository.GetStudentArtsAndRanks(studentID);
@@ -56,10 +56,14 @@ namespace DojoStudentManagement
             {
                 MessageService.ShowErrorMessage("The student is not enrolled in the selected art.", "Student Not Enrolled");
                 cumulativeTrainingHours = 0.0;
+                currentRank = string.Empty;
                 return false;
             }
             else
             {
+                //Get the student's current rank in the selected art
+                currentRank = selectedStudentArt[0].Field<string>("studArt_rank");
+
                 //Note: The cumulative training hours are stored as a decimal in the database, but the field is defined as a double
                 //in the StudentArtsAndRank class. There is no need to have decimal precision for the cumulative training hours, and 
                 //the data in the database can be adequately represented as a double, with better performance.
