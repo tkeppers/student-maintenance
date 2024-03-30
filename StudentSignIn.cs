@@ -104,7 +104,7 @@ namespace DojoStudentManagement
 
             if (TrySignInStudent(signInFunctions, studentInfo.StudentID, signInArt, out var signInMessage))
             {
-                LogSuccessfulSignIn(studentInfo, signInArt);
+                LogSuccessfulSignIn(studentInfo, signInArt, signInMessage);
                 CheckAndLogPromotionEligibility(signInFunctions, studentInfo.StudentID, signInArt);
             }
             else
@@ -129,11 +129,11 @@ namespace DojoStudentManagement
             return signInFunctions.SignInStudent(dataRepository, studentID, signInArt, out signInMessage);
         }
 
-        private void LogSuccessfulSignIn((int StudentID, string StudentName) studentInfo, string signInArt)
+        private void LogSuccessfulSignIn((int StudentID, string StudentName) studentInfo, string signInArt, string signInMessage)
         {
             string logText = $"{studentInfo.StudentName} [{studentInfo.StudentID}] signed in for {signInArt} on {DateTime.Now}";
             listboxSignInList.Items.Add(logText);
-            StudentSignInFunctions.LogStudentSignIn(logText);
+            StudentSignInFunctions.LogStudentSignIn($"{logText} { signInMessage}");   //Added the student rank and hours to the log message. I'm sure there is a more elegant way to do this.
         }
 
         private void CheckAndLogPromotionEligibility(StudentSignInFunctions signInFunctions, int studentID, string signInArt)
@@ -218,16 +218,6 @@ namespace DojoStudentManagement
         private void StudentSignIn_Load(object sender, EventArgs e)
         {
 
-        }
-
-        private void dgvStudentList_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            //int selectedIndex = e.RowIndex;
-
-            //if (selectedIndex < 0)
-            //    return;
-
-            //ProcessStudentSignIn(selectedIndex);
         }
 
         private void dgvStudentList_CellClick(object sender, DataGridViewCellEventArgs e)

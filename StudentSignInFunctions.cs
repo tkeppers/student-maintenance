@@ -37,7 +37,7 @@ namespace DojoStudentManagement
                 return false;
             }
 
-            double newTotalTrainingHours = cumulativeTrainingHours;
+            double newTotalTrainingHours;
             bool success = dataRepository.UpdateStudentSignIn(studentID, studentArt, cumulativeTrainingHours, out newTotalTrainingHours);
 
             if (success)
@@ -129,16 +129,25 @@ namespace DojoStudentManagement
 
         public static void SetupLogging()
         {
-            var logDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
-            var logFilePath = Path.Combine(logDirectory, "StudentSignInLog-.log");
-            Directory.CreateDirectory(logDirectory);
+            var userLocalAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var appLogDirectory = Path.Combine(userLocalAppData, "WindsongStudentMaintenance", "Logs");
+            var logFilePath = Path.Combine(appLogDirectory, "StudentSignInLog-.log");
 
-            _signInLogger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .WriteTo.File(path: logFilePath, rollingInterval: RollingInterval.Month,
-                    rollOnFileSizeLimit: true, retainedFileCountLimit: null,
-                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
-                .CreateLogger();
+            try
+            {
+                Directory.CreateDirectory(appLogDirectory);
+
+                _signInLogger = new LoggerConfiguration()
+                    .MinimumLevel.Debug()
+                    .WriteTo.File(path: logFilePath, rollingInterval: RollingInterval.Month,
+                        rollOnFileSizeLimit: true, retainedFileCountLimit: null,
+                        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+                    .CreateLogger();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Error setting up logging for Student Sign In\n{ex.Message}\n{ex.Source}\n{ex.Data}\n{ex.StackTrace}");
+            }
         }
 
         public static void LogStudentSignIn(string message)

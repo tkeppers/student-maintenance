@@ -130,7 +130,6 @@
             this.dgvStudentList.Size = new System.Drawing.Size(466, 292);
             this.dgvStudentList.TabIndex = 9;
             this.dgvStudentList.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvStudentList_CellClick);
-            this.dgvStudentList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvStudentList_CellContentClick);
             // 
             // listboxSignInList
             // 
