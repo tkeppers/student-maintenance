@@ -26,9 +26,10 @@ namespace DojoStudentManagement
 
         static void SetupLogging()
         {
-            var logDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
-            var logFilePath = Path.Combine(logDirectory, "Logs-.log");
-            Directory.CreateDirectory(logDirectory);
+            var userLocalAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var appLogDirectory = Path.Combine(userLocalAppData, "WindsongStudentMaintenance", "Logs");
+            var logFilePath = Path.Combine(appLogDirectory, "SystemLog-.log");
+            Directory.CreateDirectory(appLogDirectory);
 
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
