@@ -194,7 +194,6 @@ namespace DojoStudentManagement
             this.Name = "PromoteStudentUI";
             this.ShowIcon = false;
             this.Text = "Promote Student";
-            this.Load += new System.EventHandler(this.PromoteStudentUI_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

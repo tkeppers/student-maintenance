@@ -35,11 +35,19 @@ namespace DojoStudentManagement
 
         private void LoadListOfRanks(DataTable promotionRequirements, string art)
         {
-            string filter = $"Art = '{art}'";
+            // Filter and order the data
+            var filteredRows = promotionRequirements.AsEnumerable()
+                .Where(row => row.Field<string>("Art") == art)
+                .OrderBy(row => row.Field<int>("MinimumTrainingHours"))
+                .CopyToDataTable();
 
             cmbNextRank.DisplayMember = "NextRank";
-            cmbNextRank.ValueMember = "NextRank"; // Optional, set if you need to get the selected value
-            cmbNextRank.DataSource = promotionRequirements.Select(filter).CopyToDataTable();
+            cmbNextRank.ValueMember = "NextRank"; 
+            cmbNextRank.DataSource = filteredRows;
+
+            //Set the default value to the next rank for this student
+            PromotionCriteria promotionCriteria = new PromotionCriteria(promotionRequirements);
+            cmbNextRank.Text = promotionCriteria.GetNextPromotionCriteria(currentArt).NextRank;
         }
 
         private void PopulatePromotionData(Student student, StudentArtsAndRank art)
@@ -55,23 +63,6 @@ namespace DojoStudentManagement
             dtPromotionDate.Value = DateTime.Now;
         }
 
-        private void PromoteStudentUI_Load(object sender, EventArgs e)
-        {
-        }
-
-        private void ValidatePromotion()
-        {
-            //TODO: Add logic to make sure there is nothing "weird" about this promotion. Possible things to 
-            //consider:
-            // - Student is being promoted multiple levels. Allow user to override, but give them a warning.
-            // - Student is being demoted (promotion to a lower level than current rank). Allow them to override, because it could 
-            //         just be a matter of correcting a mistake. 
-            // - Student is being promoted to same level. Tell the user they're being silly and don't update anything
-            // - Promoting a student in an art they are not currently taking. This might be an issue if we allow the user to select 
-            //      a different student after the screen loads. Not sure if allowing that is a good idea.
-            //
-            // Move this to a business logic class, like PromotionCriteria or Student
-        }
 
         private bool ValidateFormData()
         {
