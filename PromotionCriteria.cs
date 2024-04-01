@@ -28,7 +28,7 @@ namespace DojoStudentManagement
             NextRank = string.Empty;
         }
 
-        public PromotionCriteria(DataTable promotionRequirementsTable)
+        public PromotionCriteria(DataTable promotionRequirementsTable) 
         {
             this.promotionRequirementsTable = promotionRequirementsTable;
         }
