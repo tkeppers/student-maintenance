@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -79,8 +80,9 @@ namespace DojoStudentManagement
                 var addr = new System.Net.Mail.MailAddress(email);
                 return addr.Address == trimmedEmail;
             }
-            catch
+            catch (Exception e)
             {
+                Log.Error($"Error validating email address {email}\n{e.Message}\n{e.Source}\n{e.StackTrace}");
                 return false;
             }
         }

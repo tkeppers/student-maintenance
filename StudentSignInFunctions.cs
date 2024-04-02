@@ -122,7 +122,7 @@ namespace DojoStudentManagement
             }
             catch (Exception ex)
             {
-                Serilog.Log.Error(ex, $"Error determining promotion eligibility\n{ex.Message}\n{ex.Source}\n{ex.Data}\n{ex.StackTrace}");
+                Log.Error(ex, $"Error determining promotion eligibility\n{ex.Message}\n{ex.Source}\n{ex.Data}\n{ex.StackTrace}");
                 return false;
             }
         }

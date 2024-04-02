@@ -49,7 +49,7 @@ namespace DojoStudentManagement
                 catch (OleDbException e)
                 {
                     MessageService.ShowErrorMessage("Error connecting to database", "Database Access Error");
-                    Log.Error($"{DateTime.Now}: Error connecting to database {databasePath}\n{e.Message}\n{e.Source}\n{e.StackTrace}");
+                    Log.Error($"Error connecting to database {databasePath}\n{e.Message}\n{e.Source}\n{e.StackTrace}");
                     return false;
                 }
             }
@@ -69,7 +69,7 @@ namespace DojoStudentManagement
                 }
                 catch (OleDbException ex)
                 {
-                    Log.Error($"{DateTime.Now}: Error executing query:\n{sql}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                    Log.Error($"Error executing query:\n{sql}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
                     return new DataTable();
                 }
             }

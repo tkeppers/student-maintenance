@@ -120,7 +120,7 @@ namespace DojoStudentManagement
                     catch (OleDbException ex)
                     {
                         success = false;
-                        Log.Error($"{DateTime.Now}: Error inserting into Students table.\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        Log.Error($"Error inserting into Students table.\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
                         connection.Close();
                     }
                 }
@@ -172,7 +172,7 @@ namespace DojoStudentManagement
                     catch (OleDbException ex)
                     {
                         success = false;
-                        Log.Error($"{DateTime.Now}: Error executing update command.\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        Log.Error($"Error executing update command.\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
                         connection.Close();
                     }
                 }
@@ -212,7 +212,7 @@ namespace DojoStudentManagement
                     catch (OleDbException ex)
                     {
                         success = false;
-                        Log.Error($"{DateTime.Now}: Error executing delete command.\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        Log.Error($"Error executing delete command.\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
                         connection.Close();
                     }
                 }
@@ -440,7 +440,7 @@ namespace DojoStudentManagement
                     catch (OleDbException ex)
                     {
                         success = false;
-                        Log.Error($"{DateTime.Now}: Error connecting to database {databasePath}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        Log.Error($"Error connecting to database {databasePath}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
                         transaction.Rollback();
                     }
                 }
@@ -668,7 +668,7 @@ namespace DojoStudentManagement
                 }
                 catch (OleDbException ex)
                 {
-                    Log.Error($"{DateTime.Now}: Error retrieving student promotion requirements:\n{sql}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                    Log.Error($"Error retrieving student promotion requirements:\n{sql}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
                     return new DataTable();
                 }
             }
@@ -745,7 +745,7 @@ namespace DojoStudentManagement
                     catch (OleDbException ex)
                     {
                         success = false;
-                        Log.Error($"{DateTime.Now}: Error inserting into Promo_Requirements table.\n{command.CommandText}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        Log.Error($"Error inserting into Promo_Requirements table.\n{command.CommandText}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
                         connection.Close();
                     }
                 }
@@ -790,7 +790,7 @@ namespace DojoStudentManagement
                     catch (OleDbException ex)
                     {
                         success = false;
-                        Log.Error($"{DateTime.Now}: Error updating Promo_Requirements table.\n{command.CommandText}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        Log.Error($"Error updating Promo_Requirements table.\n{command.CommandText}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
                         connection.Close();
                     }
                 }
@@ -842,7 +842,7 @@ namespace DojoStudentManagement
                     catch (OleDbException ex)
                     {
                         success = false;
-                        Log.Error($"{DateTime.Now}: Error executing delete command.\n{command.CommandText}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        Log.Error($"Error executing delete command.\n{command.CommandText}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
                         connection.Close();
                     }
                 }
