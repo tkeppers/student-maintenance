@@ -30,6 +30,8 @@ namespace DojoStudentManagement
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StudentMaintenanceUI));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.txtFirstName = new System.Windows.Forms.TextBox();
             this.gbStudentInfo = new System.Windows.Forms.GroupBox();
             this.btnDeleteStudent = new System.Windows.Forms.Button();
@@ -107,9 +109,9 @@ namespace DojoStudentManagement
             // 
             // txtFirstName
             // 
-            this.txtFirstName.Location = new System.Drawing.Point(24, 46);
+            this.txtFirstName.Location = new System.Drawing.Point(21, 63);
             this.txtFirstName.Name = "txtFirstName";
-            this.txtFirstName.Size = new System.Drawing.Size(155, 22);
+            this.txtFirstName.Size = new System.Drawing.Size(189, 29);
             this.txtFirstName.TabIndex = 1;
             // 
             // gbStudentInfo
@@ -144,10 +146,10 @@ namespace DojoStudentManagement
             this.gbStudentInfo.Controls.Add(this.lblFirstName);
             this.gbStudentInfo.Controls.Add(this.txtLastName);
             this.gbStudentInfo.Controls.Add(this.txtFirstName);
-            this.gbStudentInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gbStudentInfo.Location = new System.Drawing.Point(412, 76);
+            this.gbStudentInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gbStudentInfo.Location = new System.Drawing.Point(471, 69);
             this.gbStudentInfo.Name = "gbStudentInfo";
-            this.gbStudentInfo.Size = new System.Drawing.Size(478, 369);
+            this.gbStudentInfo.Size = new System.Drawing.Size(610, 490);
             this.gbStudentInfo.TabIndex = 2;
             this.gbStudentInfo.TabStop = false;
             this.gbStudentInfo.Text = "Student Information";
@@ -155,9 +157,9 @@ namespace DojoStudentManagement
             // btnDeleteStudent
             // 
             this.btnDeleteStudent.Image = ((System.Drawing.Image)(resources.GetObject("btnDeleteStudent.Image")));
-            this.btnDeleteStudent.Location = new System.Drawing.Point(356, 311);
+            this.btnDeleteStudent.Location = new System.Drawing.Point(471, 419);
             this.btnDeleteStudent.Name = "btnDeleteStudent";
-            this.btnDeleteStudent.Size = new System.Drawing.Size(111, 52);
+            this.btnDeleteStudent.Size = new System.Drawing.Size(130, 65);
             this.btnDeleteStudent.TabIndex = 29;
             this.btnDeleteStudent.Text = "Delete Student";
             this.btnDeleteStudent.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -168,9 +170,9 @@ namespace DojoStudentManagement
             // 
             this.btnSaveChanges.Enabled = false;
             this.btnSaveChanges.Image = ((System.Drawing.Image)(resources.GetObject("btnSaveChanges.Image")));
-            this.btnSaveChanges.Location = new System.Drawing.Point(243, 312);
+            this.btnSaveChanges.Location = new System.Drawing.Point(330, 419);
             this.btnSaveChanges.Name = "btnSaveChanges";
-            this.btnSaveChanges.Size = new System.Drawing.Size(109, 51);
+            this.btnSaveChanges.Size = new System.Drawing.Size(135, 64);
             this.btnSaveChanges.TabIndex = 28;
             this.btnSaveChanges.Text = "Save Changes";
             this.btnSaveChanges.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -180,26 +182,26 @@ namespace DojoStudentManagement
             // lblHomeDojo
             // 
             this.lblHomeDojo.AutoSize = true;
-            this.lblHomeDojo.Location = new System.Drawing.Point(359, 27);
+            this.lblHomeDojo.Location = new System.Drawing.Point(417, 36);
             this.lblHomeDojo.Name = "lblHomeDojo";
-            this.lblHomeDojo.Size = new System.Drawing.Size(76, 16);
+            this.lblHomeDojo.Size = new System.Drawing.Size(106, 24);
             this.lblHomeDojo.TabIndex = 27;
             this.lblHomeDojo.Text = "Home Dojo";
             // 
             // txtHomeDojo
             // 
-            this.txtHomeDojo.Location = new System.Drawing.Point(349, 46);
+            this.txtHomeDojo.Location = new System.Drawing.Point(421, 63);
             this.txtHomeDojo.Name = "txtHomeDojo";
-            this.txtHomeDojo.Size = new System.Drawing.Size(124, 22);
+            this.txtHomeDojo.Size = new System.Drawing.Size(180, 29);
             this.txtHomeDojo.TabIndex = 26;
             // 
             // cbActiveStudent
             // 
             this.cbActiveStudent.AutoSize = true;
-            this.cbActiveStudent.Location = new System.Drawing.Point(349, 90);
+            this.cbActiveStudent.Location = new System.Drawing.Point(421, 124);
             this.cbActiveStudent.Name = "cbActiveStudent";
             this.cbActiveStudent.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.cbActiveStudent.Size = new System.Drawing.Size(63, 20);
+            this.cbActiveStudent.Size = new System.Drawing.Size(80, 28);
             this.cbActiveStudent.TabIndex = 25;
             this.cbActiveStudent.Text = "Active";
             this.cbActiveStudent.UseVisualStyleBackColor = true;
@@ -207,9 +209,9 @@ namespace DojoStudentManagement
             // btnSignInHistory
             // 
             this.btnSignInHistory.Image = ((System.Drawing.Image)(resources.GetObject("btnSignInHistory.Image")));
-            this.btnSignInHistory.Location = new System.Drawing.Point(144, 312);
+            this.btnSignInHistory.Location = new System.Drawing.Point(179, 419);
             this.btnSignInHistory.Name = "btnSignInHistory";
-            this.btnSignInHistory.Size = new System.Drawing.Size(92, 51);
+            this.btnSignInHistory.Size = new System.Drawing.Size(146, 64);
             this.btnSignInHistory.TabIndex = 24;
             this.btnSignInHistory.Text = "Sign-In History";
             this.btnSignInHistory.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -219,9 +221,9 @@ namespace DojoStudentManagement
             // btnPromotionHistory
             // 
             this.btnPromotionHistory.Image = ((System.Drawing.Image)(resources.GetObject("btnPromotionHistory.Image")));
-            this.btnPromotionHistory.Location = new System.Drawing.Point(24, 312);
+            this.btnPromotionHistory.Location = new System.Drawing.Point(17, 417);
             this.btnPromotionHistory.Name = "btnPromotionHistory";
-            this.btnPromotionHistory.Size = new System.Drawing.Size(114, 51);
+            this.btnPromotionHistory.Size = new System.Drawing.Size(155, 64);
             this.btnPromotionHistory.TabIndex = 7;
             this.btnPromotionHistory.Text = "Promotion History";
             this.btnPromotionHistory.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -231,66 +233,66 @@ namespace DojoStudentManagement
             // lblBirthDate
             // 
             this.lblBirthDate.AutoSize = true;
-            this.lblBirthDate.Location = new System.Drawing.Point(247, 253);
+            this.lblBirthDate.Location = new System.Drawing.Point(299, 344);
             this.lblBirthDate.Name = "lblBirthDate";
-            this.lblBirthDate.Size = new System.Drawing.Size(65, 16);
+            this.lblBirthDate.Size = new System.Drawing.Size(90, 24);
             this.lblBirthDate.TabIndex = 23;
             this.lblBirthDate.Text = "Birth Date";
             // 
             // dtBirthdate
             // 
             this.dtBirthdate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtBirthdate.Location = new System.Drawing.Point(250, 271);
+            this.dtBirthdate.Location = new System.Drawing.Point(303, 371);
             this.dtBirthdate.Name = "dtBirthdate";
-            this.dtBirthdate.Size = new System.Drawing.Size(90, 22);
+            this.dtBirthdate.Size = new System.Drawing.Size(136, 29);
             this.dtBirthdate.TabIndex = 22;
             // 
             // txtSecondaryPhone
             // 
-            this.txtSecondaryPhone.Location = new System.Drawing.Point(136, 271);
+            this.txtSecondaryPhone.Location = new System.Drawing.Point(174, 371);
             this.txtSecondaryPhone.Name = "txtSecondaryPhone";
-            this.txtSecondaryPhone.Size = new System.Drawing.Size(100, 22);
+            this.txtSecondaryPhone.Size = new System.Drawing.Size(123, 29);
             this.txtSecondaryPhone.TabIndex = 21;
             // 
             // lblSecondaryPhone
             // 
             this.lblSecondaryPhone.AutoSize = true;
-            this.lblSecondaryPhone.Location = new System.Drawing.Point(133, 252);
+            this.lblSecondaryPhone.Location = new System.Drawing.Point(171, 344);
             this.lblSecondaryPhone.Name = "lblSecondaryPhone";
-            this.lblSecondaryPhone.Size = new System.Drawing.Size(115, 16);
+            this.lblSecondaryPhone.Size = new System.Drawing.Size(91, 24);
             this.lblSecondaryPhone.TabIndex = 20;
-            this.lblSecondaryPhone.Text = "Secondary Phone";
+            this.lblSecondaryPhone.Text = "Phone #2";
             // 
             // lblPrimaryPhone
             // 
             this.lblPrimaryPhone.AutoSize = true;
-            this.lblPrimaryPhone.Location = new System.Drawing.Point(21, 252);
+            this.lblPrimaryPhone.Location = new System.Drawing.Point(15, 344);
             this.lblPrimaryPhone.Name = "lblPrimaryPhone";
-            this.lblPrimaryPhone.Size = new System.Drawing.Size(95, 16);
+            this.lblPrimaryPhone.Size = new System.Drawing.Size(134, 24);
             this.lblPrimaryPhone.TabIndex = 19;
             this.lblPrimaryPhone.Text = "Primary Phone";
             // 
             // txtPrimaryPhone
             // 
-            this.txtPrimaryPhone.Location = new System.Drawing.Point(24, 272);
+            this.txtPrimaryPhone.Location = new System.Drawing.Point(19, 371);
             this.txtPrimaryPhone.Name = "txtPrimaryPhone";
-            this.txtPrimaryPhone.Size = new System.Drawing.Size(100, 22);
+            this.txtPrimaryPhone.Size = new System.Drawing.Size(136, 29);
             this.txtPrimaryPhone.TabIndex = 18;
             // 
             // lblEmailAddress
             // 
             this.lblEmailAddress.AutoSize = true;
-            this.lblEmailAddress.Location = new System.Drawing.Point(24, 207);
+            this.lblEmailAddress.Location = new System.Drawing.Point(20, 285);
             this.lblEmailAddress.Name = "lblEmailAddress";
-            this.lblEmailAddress.Size = new System.Drawing.Size(41, 16);
+            this.lblEmailAddress.Size = new System.Drawing.Size(57, 24);
             this.lblEmailAddress.TabIndex = 17;
             this.lblEmailAddress.Text = "Email";
             // 
             // txtEmailAddress
             // 
-            this.txtEmailAddress.Location = new System.Drawing.Point(24, 223);
+            this.txtEmailAddress.Location = new System.Drawing.Point(19, 312);
             this.txtEmailAddress.Name = "txtEmailAddress";
-            this.txtEmailAddress.Size = new System.Drawing.Size(316, 22);
+            this.txtEmailAddress.Size = new System.Drawing.Size(370, 29);
             this.txtEmailAddress.TabIndex = 16;
             this.txtEmailAddress.MouseLeave += new System.EventHandler(this.txtEmailAddress_MouseLeave);
             // 
@@ -299,9 +301,9 @@ namespace DojoStudentManagement
             this.gbGender.Controls.Add(this.rbUnknown);
             this.gbGender.Controls.Add(this.rbFemale);
             this.gbGender.Controls.Add(this.rbMale);
-            this.gbGender.Location = new System.Drawing.Point(349, 116);
+            this.gbGender.Location = new System.Drawing.Point(422, 154);
             this.gbGender.Name = "gbGender";
-            this.gbGender.Size = new System.Drawing.Size(111, 100);
+            this.gbGender.Size = new System.Drawing.Size(127, 109);
             this.gbGender.TabIndex = 15;
             this.gbGender.TabStop = false;
             this.gbGender.Text = "Gender";
@@ -309,9 +311,9 @@ namespace DojoStudentManagement
             // rbUnknown
             // 
             this.rbUnknown.AutoSize = true;
-            this.rbUnknown.Location = new System.Drawing.Point(7, 69);
+            this.rbUnknown.Location = new System.Drawing.Point(6, 75);
             this.rbUnknown.Name = "rbUnknown";
-            this.rbUnknown.Size = new System.Drawing.Size(80, 20);
+            this.rbUnknown.Size = new System.Drawing.Size(108, 28);
             this.rbUnknown.TabIndex = 2;
             this.rbUnknown.TabStop = true;
             this.rbUnknown.Text = "Unknown";
@@ -320,9 +322,9 @@ namespace DojoStudentManagement
             // rbFemale
             // 
             this.rbFemale.AutoSize = true;
-            this.rbFemale.Location = new System.Drawing.Point(6, 45);
+            this.rbFemale.Location = new System.Drawing.Point(6, 50);
             this.rbFemale.Name = "rbFemale";
-            this.rbFemale.Size = new System.Drawing.Size(71, 20);
+            this.rbFemale.Size = new System.Drawing.Size(92, 28);
             this.rbFemale.TabIndex = 1;
             this.rbFemale.TabStop = true;
             this.rbFemale.Text = "Female";
@@ -331,9 +333,9 @@ namespace DojoStudentManagement
             // rbMale
             // 
             this.rbMale.AutoSize = true;
-            this.rbMale.Location = new System.Drawing.Point(7, 19);
+            this.rbMale.Location = new System.Drawing.Point(6, 26);
             this.rbMale.Name = "rbMale";
-            this.rbMale.Size = new System.Drawing.Size(55, 20);
+            this.rbMale.Size = new System.Drawing.Size(69, 28);
             this.rbMale.TabIndex = 0;
             this.rbMale.TabStop = true;
             this.rbMale.Text = "Male";
@@ -342,106 +344,106 @@ namespace DojoStudentManagement
             // lblZip
             // 
             this.lblZip.AutoSize = true;
-            this.lblZip.Location = new System.Drawing.Point(247, 157);
+            this.lblZip.Location = new System.Drawing.Point(288, 226);
             this.lblZip.Name = "lblZip";
-            this.lblZip.Size = new System.Drawing.Size(26, 16);
+            this.lblZip.Size = new System.Drawing.Size(37, 24);
             this.lblZip.TabIndex = 14;
             this.lblZip.Text = "Zip";
             // 
             // txtZipCode
             // 
-            this.txtZipCode.Location = new System.Drawing.Point(250, 173);
+            this.txtZipCode.Location = new System.Drawing.Point(283, 253);
             this.txtZipCode.Name = "txtZipCode";
-            this.txtZipCode.Size = new System.Drawing.Size(90, 22);
+            this.txtZipCode.Size = new System.Drawing.Size(106, 29);
             this.txtZipCode.TabIndex = 13;
             // 
             // lblState
             // 
             this.lblState.AutoSize = true;
-            this.lblState.Location = new System.Drawing.Point(188, 158);
+            this.lblState.Location = new System.Drawing.Point(205, 226);
             this.lblState.Name = "lblState";
-            this.lblState.Size = new System.Drawing.Size(38, 16);
+            this.lblState.Size = new System.Drawing.Size(51, 24);
             this.lblState.TabIndex = 12;
             this.lblState.Text = "State";
             // 
             // txtState
             // 
-            this.txtState.Location = new System.Drawing.Point(188, 174);
+            this.txtState.Location = new System.Drawing.Point(205, 253);
             this.txtState.Name = "txtState";
-            this.txtState.Size = new System.Drawing.Size(55, 22);
+            this.txtState.Size = new System.Drawing.Size(72, 29);
             this.txtState.TabIndex = 11;
             // 
             // txtCity
             // 
-            this.txtCity.Location = new System.Drawing.Point(24, 174);
+            this.txtCity.Location = new System.Drawing.Point(19, 253);
             this.txtCity.Name = "txtCity";
-            this.txtCity.Size = new System.Drawing.Size(155, 22);
+            this.txtCity.Size = new System.Drawing.Size(180, 29);
             this.txtCity.TabIndex = 10;
             // 
             // lblCity
             // 
             this.lblCity.AutoSize = true;
-            this.lblCity.Location = new System.Drawing.Point(24, 158);
+            this.lblCity.Location = new System.Drawing.Point(23, 226);
             this.lblCity.Name = "lblCity";
-            this.lblCity.Size = new System.Drawing.Size(29, 16);
+            this.lblCity.Size = new System.Drawing.Size(40, 24);
             this.lblCity.TabIndex = 9;
             this.lblCity.Text = "City";
             // 
             // lblAddress2
             // 
             this.lblAddress2.AutoSize = true;
-            this.lblAddress2.Location = new System.Drawing.Point(24, 112);
+            this.lblAddress2.Location = new System.Drawing.Point(20, 158);
             this.lblAddress2.Name = "lblAddress2";
-            this.lblAddress2.Size = new System.Drawing.Size(68, 16);
+            this.lblAddress2.Size = new System.Drawing.Size(95, 24);
             this.lblAddress2.TabIndex = 8;
             this.lblAddress2.Text = "Address 2";
             // 
             // lblAddress1
             // 
             this.lblAddress1.AutoSize = true;
-            this.lblAddress1.Location = new System.Drawing.Point(24, 72);
+            this.lblAddress1.Location = new System.Drawing.Point(23, 95);
             this.lblAddress1.Name = "lblAddress1";
-            this.lblAddress1.Size = new System.Drawing.Size(68, 16);
+            this.lblAddress1.Size = new System.Drawing.Size(95, 24);
             this.lblAddress1.TabIndex = 7;
             this.lblAddress1.Text = "Address 1";
             // 
             // txtAddress2
             // 
-            this.txtAddress2.Location = new System.Drawing.Point(24, 128);
+            this.txtAddress2.Location = new System.Drawing.Point(18, 185);
             this.txtAddress2.Name = "txtAddress2";
-            this.txtAddress2.Size = new System.Drawing.Size(316, 22);
+            this.txtAddress2.Size = new System.Drawing.Size(371, 29);
             this.txtAddress2.TabIndex = 6;
             // 
             // txtAddress1
             // 
-            this.txtAddress1.Location = new System.Drawing.Point(24, 88);
+            this.txtAddress1.Location = new System.Drawing.Point(17, 122);
             this.txtAddress1.Name = "txtAddress1";
-            this.txtAddress1.Size = new System.Drawing.Size(316, 22);
+            this.txtAddress1.Size = new System.Drawing.Size(372, 29);
             this.txtAddress1.TabIndex = 5;
             // 
             // lblLastName
             // 
             this.lblLastName.AutoSize = true;
-            this.lblLastName.Location = new System.Drawing.Point(185, 27);
+            this.lblLastName.Location = new System.Drawing.Point(212, 36);
             this.lblLastName.Name = "lblLastName";
-            this.lblLastName.Size = new System.Drawing.Size(72, 16);
+            this.lblLastName.Size = new System.Drawing.Size(99, 24);
             this.lblLastName.TabIndex = 4;
             this.lblLastName.Text = "Last Name";
             // 
             // lblFirstName
             // 
             this.lblFirstName.AutoSize = true;
-            this.lblFirstName.Location = new System.Drawing.Point(21, 30);
+            this.lblFirstName.Location = new System.Drawing.Point(20, 36);
             this.lblFirstName.Name = "lblFirstName";
-            this.lblFirstName.Size = new System.Drawing.Size(72, 16);
+            this.lblFirstName.Size = new System.Drawing.Size(101, 24);
             this.lblFirstName.TabIndex = 3;
             this.lblFirstName.Text = "First Name";
             // 
             // txtLastName
             // 
-            this.txtLastName.Location = new System.Drawing.Point(185, 46);
+            this.txtLastName.Location = new System.Drawing.Point(216, 63);
             this.txtLastName.Name = "txtLastName";
-            this.txtLastName.Size = new System.Drawing.Size(155, 22);
+            this.txtLastName.Size = new System.Drawing.Size(195, 29);
             this.txtLastName.TabIndex = 2;
             // 
             // lblArtsAndRank
@@ -464,13 +466,14 @@ namespace DojoStudentManagement
             this.columnPromotionHours,
             this.columnStudentArtID,
             this.columnLastSignInDate});
-            this.lvwArtsAndRanks.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lvwArtsAndRanks.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lvwArtsAndRanks.FullRowSelect = true;
             this.lvwArtsAndRanks.GridLines = true;
             this.lvwArtsAndRanks.HideSelection = false;
-            this.lvwArtsAndRanks.Location = new System.Drawing.Point(10, 19);
+            this.lvwArtsAndRanks.Location = new System.Drawing.Point(13, 33);
+            this.lvwArtsAndRanks.MultiSelect = false;
             this.lvwArtsAndRanks.Name = "lvwArtsAndRanks";
-            this.lvwArtsAndRanks.Size = new System.Drawing.Size(567, 125);
+            this.lvwArtsAndRanks.Size = new System.Drawing.Size(638, 137);
             this.lvwArtsAndRanks.TabIndex = 6;
             this.lvwArtsAndRanks.UseCompatibleStateImageBehavior = false;
             this.lvwArtsAndRanks.View = System.Windows.Forms.View.Details;
@@ -517,13 +520,29 @@ namespace DojoStudentManagement
             // 
             this.dgvStudentList.AllowUserToAddRows = false;
             this.dgvStudentList.AllowUserToDeleteRows = false;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvStudentList.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvStudentList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvStudentList.Location = new System.Drawing.Point(12, 166);
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvStudentList.DefaultCellStyle = dataGridViewCellStyle2;
+            this.dgvStudentList.Location = new System.Drawing.Point(14, 223);
             this.dgvStudentList.MultiSelect = false;
             this.dgvStudentList.Name = "dgvStudentList";
             this.dgvStudentList.ReadOnly = true;
             this.dgvStudentList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvStudentList.Size = new System.Drawing.Size(382, 279);
+            this.dgvStudentList.Size = new System.Drawing.Size(445, 309);
             this.dgvStudentList.TabIndex = 7;
             this.dgvStudentList.SelectionChanged += new System.EventHandler(this.dgvStudentList_SelectionChanged);
             // 
@@ -535,10 +554,10 @@ namespace DojoStudentManagement
             this.gbQuickFilters.Controls.Add(this.txtFirstNameFilter);
             this.gbQuickFilters.Controls.Add(this.cbNonWindsongStudents);
             this.gbQuickFilters.Controls.Add(this.cbShowInactiveStudents);
-            this.gbQuickFilters.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gbQuickFilters.Location = new System.Drawing.Point(13, 69);
+            this.gbQuickFilters.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gbQuickFilters.Location = new System.Drawing.Point(8, 69);
             this.gbQuickFilters.Name = "gbQuickFilters";
-            this.gbQuickFilters.Size = new System.Drawing.Size(371, 91);
+            this.gbQuickFilters.Size = new System.Drawing.Size(457, 129);
             this.gbQuickFilters.TabIndex = 8;
             this.gbQuickFilters.TabStop = false;
             this.gbQuickFilters.Text = "Filters";
@@ -546,43 +565,43 @@ namespace DojoStudentManagement
             // lblLastNameFilter
             // 
             this.lblLastNameFilter.AutoSize = true;
-            this.lblLastNameFilter.Location = new System.Drawing.Point(167, 16);
+            this.lblLastNameFilter.Location = new System.Drawing.Point(212, 31);
             this.lblLastNameFilter.Name = "lblLastNameFilter";
-            this.lblLastNameFilter.Size = new System.Drawing.Size(76, 17);
+            this.lblLastNameFilter.Size = new System.Drawing.Size(99, 24);
             this.lblLastNameFilter.TabIndex = 5;
             this.lblLastNameFilter.Text = "Last Name";
             // 
             // lblFirstNameFilter
             // 
             this.lblFirstNameFilter.AutoSize = true;
-            this.lblFirstNameFilter.Location = new System.Drawing.Point(6, 16);
+            this.lblFirstNameFilter.Location = new System.Drawing.Point(6, 31);
             this.lblFirstNameFilter.Name = "lblFirstNameFilter";
-            this.lblFirstNameFilter.Size = new System.Drawing.Size(76, 17);
+            this.lblFirstNameFilter.Size = new System.Drawing.Size(101, 24);
             this.lblFirstNameFilter.TabIndex = 4;
             this.lblFirstNameFilter.Text = "First Name";
             // 
             // txtLastNameFilter
             // 
-            this.txtLastNameFilter.Location = new System.Drawing.Point(170, 35);
+            this.txtLastNameFilter.Location = new System.Drawing.Point(207, 58);
             this.txtLastNameFilter.Name = "txtLastNameFilter";
-            this.txtLastNameFilter.Size = new System.Drawing.Size(181, 23);
+            this.txtLastNameFilter.Size = new System.Drawing.Size(244, 29);
             this.txtLastNameFilter.TabIndex = 3;
             this.txtLastNameFilter.TextChanged += new System.EventHandler(this.txtLastNameFilter_TextChanged);
             // 
             // txtFirstNameFilter
             // 
-            this.txtFirstNameFilter.Location = new System.Drawing.Point(6, 36);
+            this.txtFirstNameFilter.Location = new System.Drawing.Point(6, 58);
             this.txtFirstNameFilter.Name = "txtFirstNameFilter";
-            this.txtFirstNameFilter.Size = new System.Drawing.Size(150, 23);
+            this.txtFirstNameFilter.Size = new System.Drawing.Size(195, 29);
             this.txtFirstNameFilter.TabIndex = 2;
             this.txtFirstNameFilter.TextChanged += new System.EventHandler(this.txtFirstNameFilter_TextChanged);
             // 
             // cbNonWindsongStudents
             // 
             this.cbNonWindsongStudents.AutoSize = true;
-            this.cbNonWindsongStudents.Location = new System.Drawing.Point(159, 64);
+            this.cbNonWindsongStudents.Location = new System.Drawing.Point(216, 91);
             this.cbNonWindsongStudents.Name = "cbNonWindsongStudents";
-            this.cbNonWindsongStudents.Size = new System.Drawing.Size(181, 21);
+            this.cbNonWindsongStudents.Size = new System.Drawing.Size(235, 28);
             this.cbNonWindsongStudents.TabIndex = 1;
             this.cbNonWindsongStudents.Text = "Non-Windsong Students";
             this.cbNonWindsongStudents.UseVisualStyleBackColor = true;
@@ -591,9 +610,9 @@ namespace DojoStudentManagement
             // cbShowInactiveStudents
             // 
             this.cbShowInactiveStudents.AutoSize = true;
-            this.cbShowInactiveStudents.Location = new System.Drawing.Point(6, 64);
+            this.cbShowInactiveStudents.Location = new System.Drawing.Point(10, 91);
             this.cbShowInactiveStudents.Name = "cbShowInactiveStudents";
-            this.cbShowInactiveStudents.Size = new System.Drawing.Size(135, 21);
+            this.cbShowInactiveStudents.Size = new System.Drawing.Size(170, 28);
             this.cbShowInactiveStudents.TabIndex = 0;
             this.cbShowInactiveStudents.Text = "Inactive Students";
             this.cbShowInactiveStudents.UseVisualStyleBackColor = true;
@@ -609,7 +628,7 @@ namespace DojoStudentManagement
             this.toolStripButton3});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(900, 55);
+            this.toolStrip1.Size = new System.Drawing.Size(1093, 55);
             this.toolStrip1.TabIndex = 12;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -691,9 +710,10 @@ namespace DojoStudentManagement
             this.gbArtsAndRank.Controls.Add(this.btnModifyArt);
             this.gbArtsAndRank.Controls.Add(this.btnAddArt);
             this.gbArtsAndRank.Controls.Add(this.lvwArtsAndRanks);
-            this.gbArtsAndRank.Location = new System.Drawing.Point(12, 451);
+            this.gbArtsAndRank.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gbArtsAndRank.Location = new System.Drawing.Point(12, 565);
             this.gbArtsAndRank.Name = "gbArtsAndRank";
-            this.gbArtsAndRank.Size = new System.Drawing.Size(588, 183);
+            this.gbArtsAndRank.Size = new System.Drawing.Size(657, 227);
             this.gbArtsAndRank.TabIndex = 13;
             this.gbArtsAndRank.TabStop = false;
             this.gbArtsAndRank.Text = "Arts and Rank";
@@ -701,9 +721,9 @@ namespace DojoStudentManagement
             // btnRemoveArt
             // 
             this.btnRemoveArt.Image = ((System.Drawing.Image)(resources.GetObject("btnRemoveArt.Image")));
-            this.btnRemoveArt.Location = new System.Drawing.Point(178, 150);
+            this.btnRemoveArt.Location = new System.Drawing.Point(279, 182);
             this.btnRemoveArt.Name = "btnRemoveArt";
-            this.btnRemoveArt.Size = new System.Drawing.Size(94, 27);
+            this.btnRemoveArt.Size = new System.Drawing.Size(174, 39);
             this.btnRemoveArt.TabIndex = 9;
             this.btnRemoveArt.Text = "Remove Art";
             this.btnRemoveArt.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -713,9 +733,9 @@ namespace DojoStudentManagement
             // btnModifyArt
             // 
             this.btnModifyArt.Image = ((System.Drawing.Image)(resources.GetObject("btnModifyArt.Image")));
-            this.btnModifyArt.Location = new System.Drawing.Point(91, 150);
+            this.btnModifyArt.Location = new System.Drawing.Point(120, 182);
             this.btnModifyArt.Name = "btnModifyArt";
-            this.btnModifyArt.Size = new System.Drawing.Size(81, 27);
+            this.btnModifyArt.Size = new System.Drawing.Size(153, 39);
             this.btnModifyArt.TabIndex = 8;
             this.btnModifyArt.Text = "Modify Art";
             this.btnModifyArt.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -725,9 +745,9 @@ namespace DojoStudentManagement
             // btnAddArt
             // 
             this.btnAddArt.Image = ((System.Drawing.Image)(resources.GetObject("btnAddArt.Image")));
-            this.btnAddArt.Location = new System.Drawing.Point(10, 150);
+            this.btnAddArt.Location = new System.Drawing.Point(10, 182);
             this.btnAddArt.Name = "btnAddArt";
-            this.btnAddArt.Size = new System.Drawing.Size(75, 27);
+            this.btnAddArt.Size = new System.Drawing.Size(104, 39);
             this.btnAddArt.TabIndex = 7;
             this.btnAddArt.Text = "Add Art";
             this.btnAddArt.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -736,8 +756,8 @@ namespace DojoStudentManagement
             // 
             // txtMessages
             // 
-            this.txtMessages.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMessages.Location = new System.Drawing.Point(606, 483);
+            this.txtMessages.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMessages.Location = new System.Drawing.Point(689, 608);
             this.txtMessages.Multiline = true;
             this.txtMessages.Name = "txtMessages";
             this.txtMessages.Size = new System.Drawing.Size(284, 75);
@@ -746,19 +766,20 @@ namespace DojoStudentManagement
             // lblPromotionEligibility
             // 
             this.lblPromotionEligibility.AutoSize = true;
-            this.lblPromotionEligibility.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblPromotionEligibility.Location = new System.Drawing.Point(603, 464);
+            this.lblPromotionEligibility.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblPromotionEligibility.Location = new System.Drawing.Point(686, 581);
             this.lblPromotionEligibility.Name = "lblPromotionEligibility";
-            this.lblPromotionEligibility.Size = new System.Drawing.Size(124, 16);
+            this.lblPromotionEligibility.Size = new System.Drawing.Size(173, 24);
             this.lblPromotionEligibility.TabIndex = 15;
             this.lblPromotionEligibility.Text = "Promotion Eligibility";
             // 
             // btnPromoteStudent
             // 
+            this.btnPromoteStudent.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnPromoteStudent.Image = ((System.Drawing.Image)(resources.GetObject("btnPromoteStudent.Image")));
-            this.btnPromoteStudent.Location = new System.Drawing.Point(606, 565);
+            this.btnPromoteStudent.Location = new System.Drawing.Point(689, 689);
             this.btnPromoteStudent.Name = "btnPromoteStudent";
-            this.btnPromoteStudent.Size = new System.Drawing.Size(108, 42);
+            this.btnPromoteStudent.Size = new System.Drawing.Size(207, 42);
             this.btnPromoteStudent.TabIndex = 16;
             this.btnPromoteStudent.Text = "Promote Student";
             this.btnPromoteStudent.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -771,7 +792,7 @@ namespace DojoStudentManagement
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoScroll = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(900, 652);
+            this.ClientSize = new System.Drawing.Size(1093, 804);
             this.Controls.Add(this.btnPromoteStudent);
             this.Controls.Add(this.lblPromotionEligibility);
             this.Controls.Add(this.txtMessages);
