@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Configuration;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DojoStudentManagement
@@ -14,14 +7,20 @@ namespace DojoStudentManagement
     public partial class ApplicationSettingsUI : Form
     {
         string selectedDatabasePath;
+        double hoursBetweenStudentSignIns;
         bool showPromotionEligibility;
 
         public ApplicationSettingsUI()
         {
             InitializeComponent();
+            hoursBetweenStudentSignIns = 1.5;
             txtDatabaseFilePath.Text = ConfigurationManager.AppSettings["DatabasePath"];
             showPromotionEligibility = bool.Parse(ConfigurationManager.AppSettings["ShowPromotionEligibilityOnSignIn"]);
+            txtHoursBetweenSignIns.Text = ConfigurationManager.AppSettings["RepeatSignInHours"];
             cbShowPromotionEligibility.Checked = showPromotionEligibility;
+
+            selectedDatabasePath = txtDatabaseFilePath.Text;
+            hoursBetweenStudentSignIns = double.Parse(txtHoursBetweenSignIns.Text);
         }
 
         private void UpdateAppConfig(string key, string value)
@@ -56,6 +55,7 @@ namespace DojoStudentManagement
         {
             UpdateAppConfig("DatabasePath", selectedDatabasePath);
             UpdateAppConfig("ShowPromotionEligibilityOnSignIn", showPromotionEligibility.ToString());
+            UpdateAppConfig("RepeatSignInHours", hoursBetweenStudentSignIns.ToString());
             Serilog.Log.Information($"DatabaseConfigUI: Settings updated.\n Database path = {selectedDatabasePath}\n " +
                 $"Show promotion eligibility on sign-in = {showPromotionEligibility}. ");
             MessageService.ShowInformationMessage("Settings updated.\nPlease restart software for changes to take effect.");
@@ -67,9 +67,9 @@ namespace DojoStudentManagement
             this.Close();
         }
 
-        private void DatabaseConfigUI_Load(object sender, EventArgs e)
+        private void txtHoursBetweenSignIns_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-
+            hoursBetweenStudentSignIns = double.Parse(txtHoursBetweenSignIns.Text);
         }
     }
 }

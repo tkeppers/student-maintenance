@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -79,12 +80,17 @@ namespace DojoStudentManagement
         {
             DataTable studentSignInTable = dataRepository.GetStudentSignInHistory(studentID);
 
+            double hoursBetweenSignIns = double.Parse(ConfigurationManager.AppSettings["RepeatSignInHours"]);
+            DateTime timeOfEligibleSignIn = DateTime.Now.AddHours(hoursBetweenSignIns * -1); //Subtract the hours between sign-ins from the current time
+
             //Students cannot sign in more than once for the same art within an hour on the same day. Check to see if the student has signed in within the last hour.
-            DataRow[] selectedStudentSignIn = studentSignInTable.Select("sign_art = '" + studentArt + "' AND sign_date >= '" + DateTime.Now.AddHours(-1).ToString() + "'");
+            DataRow[] selectedStudentSignIn = studentSignInTable.Select("sign_art = '" + studentArt + "' AND sign_date >= '" + timeOfEligibleSignIn.ToString() + "'");
 
             if (selectedStudentSignIn.Length > 0)
             {
-                MessageService.ShowErrorMessage("The student is already signed in to the selected art.", "Student Already Signed In");
+                DateTime timeOfNextAllowedSignIn = selectedStudentSignIn[0].Field<DateTime>("sign_date").AddHours(hoursBetweenSignIns);
+                string message = $"The student is already signed in to the selected art. Eligible for sign-in again at {timeOfNextAllowedSignIn:HH:mm}.";
+                MessageService.ShowErrorMessage(message, "Student Already Signed In");
                 return false;
             }
 
