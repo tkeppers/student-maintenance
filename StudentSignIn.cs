@@ -102,6 +102,12 @@ namespace DojoStudentManagement
             var signInArt = listboxSelectArt.Text;
             var signInFunctions = new StudentSignInFunctions();
 
+            //Per request, ask if the student is sure they want to sign in
+            string messageBoxText = "Sign in " + studentInfo.StudentName + " for " + signInArt + "?";
+            DialogResult result = MessageBox.Show(messageBoxText, "Sign In" + studentInfo.StudentName, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result != DialogResult.Yes)
+                return;
+
             if (TrySignInStudent(signInFunctions, studentInfo.StudentID, signInArt, out var signInMessage))
             {
                 LogSuccessfulSignIn(studentInfo, signInArt, signInMessage);
@@ -221,6 +227,16 @@ namespace DojoStudentManagement
         }
 
         private void dgvStudentList_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            //int selectedIndex = e.RowIndex;
+
+            //if (selectedIndex < 0)
+            //    return;
+
+            //ProcessStudentSignIn(selectedIndex);
+        }
+
+        private void dgvStudentList_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             int selectedIndex = e.RowIndex;
 
