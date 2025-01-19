@@ -144,7 +144,7 @@ namespace DojoStudentManagement
 
         private void CheckAndLogPromotionEligibility(StudentSignInFunctions signInFunctions, int studentID, string signInArt)
         {
-            bool.TryParse(ConfigurationManager.AppSettings["DatabasePassword"], out bool checkPromotionEligibility);
+            bool.TryParse(ConfigurationManager.AppSettings["ShowPromotionEligibilityOnSignIn"], out bool checkPromotionEligibility);
             if (checkPromotionEligibility)
             {
                 if (signInFunctions.IsEligibleForPromotion(dataRepository, studentID, signInArt, out var promotionMessage))
