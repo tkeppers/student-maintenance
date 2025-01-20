@@ -51,22 +51,54 @@ namespace DojoStudentManagement
 
         public bool IsEligibleForPromotion(StudentArtsAndRank art, PromotionCriteria eligibility)
         { 
-            if (StudentAgeInYears < eligibility.MinimumAge)
+            if (StudentHasReachedMinimumAgeForPromotion(eligibility) == false)
                 return false;
 
-            if (art.HoursInArt < eligibility.MinimumTrainingHours)
+            if (StudentHasSufficientTrainingHoursForPromotion(art.HoursInArt, eligibility) == false)
                 return false;
 
-            if (art.TotalYearsInArt() < eligibility.YearsInArt)
+            if (StudentHasSufficientTimeInArtForPromotion(art.TotalYearsInArt(), eligibility) == false)
                 return false;
 
-            if (art.YearsAtCurrentLevel() < eligibility.YearsAtCurrentRank)
+            if (StudentHasSufficientTimeInArtForPromotion(art.YearsAtCurrentLevel(), eligibility) == false)
                 return false;
 
             //Fixes bug where the function was erroneously returning true if a match for the student's current rank 
             //could not be found in the eligibility table. This should also fix the edge case where a student has
             //achieved the maximum rank and there are no further promotions available.
             if (string.IsNullOrWhiteSpace(eligibility.NextRank))
+                return false;
+
+            return true;
+        }
+
+        public bool StudentHasReachedMinimumAgeForPromotion(PromotionCriteria eligibility)
+        {
+            if (StudentAgeInYears < eligibility.MinimumAge)
+                return false;
+
+            return true;
+        }
+
+        public bool StudentHasSufficientTrainingHoursForPromotion(double hoursInArt, PromotionCriteria eligibility)
+        {
+            if (hoursInArt < eligibility.MinimumTrainingHours)
+                return false;
+
+            return true;
+        }
+
+        public bool StudentHasSufficientTimeInArtForPromotion(double totalYearsInArt, PromotionCriteria eligibility)
+        {
+            if (totalYearsInArt < eligibility.YearsInArt)
+                return false;
+
+            return true;
+        }
+
+        public bool StudentHasSufficientTimeAtCurrentRank(double totalYearsAtCurrentRank, PromotionCriteria eligibility)
+        {
+            if (totalYearsAtCurrentRank < eligibility.YearsAtCurrentRank)
                 return false;
 
             return true;

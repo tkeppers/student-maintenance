@@ -34,8 +34,8 @@ namespace DojoStudentManagement
             currentStudent.ActiveMember = selectedStudent[0].Field<string>("StudentStatus").Equals("A");
             currentStudent.HomeDojo = selectedStudent[0].Field<string>("StudentDojo");
 
-            if (DateTime.TryParse(selectedStudent[0].Field<DateTime>("StudentBirthDate").ToString(), out DateTime birthdate))
-                currentStudent.DateOfBirth = birthdate;   
+            if (selectedStudent[0]["StudentBirthDate"] != DBNull.Value)
+                currentStudent.DateOfBirth = (DateTime)selectedStudent[0]["StudentBirthDate"];
 
             currentStudent.StudentGender = GetStudentGender(selectedStudent[0].Field<string>("StudentGender"));
 

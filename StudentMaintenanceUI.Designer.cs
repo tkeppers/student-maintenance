@@ -30,8 +30,8 @@ namespace DojoStudentManagement
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StudentMaintenanceUI));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             this.txtFirstName = new System.Windows.Forms.TextBox();
             this.gbStudentInfo = new System.Windows.Forms.GroupBox();
             this.btnDeleteStudent = new System.Windows.Forms.Button();
@@ -96,9 +96,9 @@ namespace DojoStudentManagement
             this.btnRemoveArt = new System.Windows.Forms.Button();
             this.btnModifyArt = new System.Windows.Forms.Button();
             this.btnAddArt = new System.Windows.Forms.Button();
-            this.txtMessages = new System.Windows.Forms.TextBox();
             this.lblPromotionEligibility = new System.Windows.Forms.Label();
             this.btnPromoteStudent = new System.Windows.Forms.Button();
+            this.richTextPromotionEligibility = new System.Windows.Forms.RichTextBox();
             this.gbStudentInfo.SuspendLayout();
             this.gbGender.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStudentList)).BeginInit();
@@ -149,7 +149,7 @@ namespace DojoStudentManagement
             this.gbStudentInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gbStudentInfo.Location = new System.Drawing.Point(471, 69);
             this.gbStudentInfo.Name = "gbStudentInfo";
-            this.gbStudentInfo.Size = new System.Drawing.Size(610, 490);
+            this.gbStudentInfo.Size = new System.Drawing.Size(637, 490);
             this.gbStudentInfo.TabIndex = 2;
             this.gbStudentInfo.TabStop = false;
             this.gbStudentInfo.Text = "Student Information";
@@ -520,23 +520,23 @@ namespace DojoStudentManagement
             // 
             this.dgvStudentList.AllowUserToAddRows = false;
             this.dgvStudentList.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvStudentList.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvStudentList.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
             this.dgvStudentList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvStudentList.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvStudentList.DefaultCellStyle = dataGridViewCellStyle8;
             this.dgvStudentList.Location = new System.Drawing.Point(14, 223);
             this.dgvStudentList.MultiSelect = false;
             this.dgvStudentList.Name = "dgvStudentList";
@@ -628,7 +628,7 @@ namespace DojoStudentManagement
             this.toolStripButton3});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(1093, 55);
+            this.toolStrip1.Size = new System.Drawing.Size(1120, 55);
             this.toolStrip1.TabIndex = 12;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -754,20 +754,11 @@ namespace DojoStudentManagement
             this.btnAddArt.UseVisualStyleBackColor = true;
             this.btnAddArt.Click += new System.EventHandler(this.btnAddArt_Click);
             // 
-            // txtMessages
-            // 
-            this.txtMessages.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMessages.Location = new System.Drawing.Point(689, 608);
-            this.txtMessages.Multiline = true;
-            this.txtMessages.Name = "txtMessages";
-            this.txtMessages.Size = new System.Drawing.Size(284, 75);
-            this.txtMessages.TabIndex = 14;
-            // 
             // lblPromotionEligibility
             // 
             this.lblPromotionEligibility.AutoSize = true;
             this.lblPromotionEligibility.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblPromotionEligibility.Location = new System.Drawing.Point(686, 581);
+            this.lblPromotionEligibility.Location = new System.Drawing.Point(687, 565);
             this.lblPromotionEligibility.Name = "lblPromotionEligibility";
             this.lblPromotionEligibility.Size = new System.Drawing.Size(173, 24);
             this.lblPromotionEligibility.TabIndex = 15;
@@ -777,7 +768,7 @@ namespace DojoStudentManagement
             // 
             this.btnPromoteStudent.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnPromoteStudent.Image = ((System.Drawing.Image)(resources.GetObject("btnPromoteStudent.Image")));
-            this.btnPromoteStudent.Location = new System.Drawing.Point(689, 689);
+            this.btnPromoteStudent.Location = new System.Drawing.Point(691, 744);
             this.btnPromoteStudent.Name = "btnPromoteStudent";
             this.btnPromoteStudent.Size = new System.Drawing.Size(207, 42);
             this.btnPromoteStudent.TabIndex = 16;
@@ -786,16 +777,25 @@ namespace DojoStudentManagement
             this.btnPromoteStudent.UseVisualStyleBackColor = true;
             this.btnPromoteStudent.Click += new System.EventHandler(this.btnPromoteStudent_Click);
             // 
+            // richTextPromotionEligibility
+            // 
+            this.richTextPromotionEligibility.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.richTextPromotionEligibility.Location = new System.Drawing.Point(680, 592);
+            this.richTextPromotionEligibility.Name = "richTextPromotionEligibility";
+            this.richTextPromotionEligibility.Size = new System.Drawing.Size(428, 143);
+            this.richTextPromotionEligibility.TabIndex = 17;
+            this.richTextPromotionEligibility.Text = "";
+            // 
             // StudentMaintenanceUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoScroll = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(1093, 804);
+            this.ClientSize = new System.Drawing.Size(1120, 804);
+            this.Controls.Add(this.richTextPromotionEligibility);
             this.Controls.Add(this.btnPromoteStudent);
             this.Controls.Add(this.lblPromotionEligibility);
-            this.Controls.Add(this.txtMessages);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.gbQuickFilters);
             this.Controls.Add(this.dgvStudentList);
@@ -885,10 +885,10 @@ namespace DojoStudentManagement
         private System.Windows.Forms.ToolStripMenuItem databasePathToolStripMenuItem;
         private System.Windows.Forms.ColumnHeader columnStudentArtID;
         private System.Windows.Forms.ColumnHeader columnLastSignInDate;
-        private System.Windows.Forms.TextBox txtMessages;
         private System.Windows.Forms.Label lblPromotionEligibility;
         private System.Windows.Forms.Button btnPromoteStudent;
         private System.Windows.Forms.Button btnDeleteStudent;
+        private System.Windows.Forms.RichTextBox richTextPromotionEligibility;
     }
 }
 

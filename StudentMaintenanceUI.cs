@@ -36,7 +36,7 @@ namespace DojoStudentManagement
 
         private void LoadFormInformation()
         {
-            txtMessages.Clear();
+            richTextPromotionEligibility.Clear();
 
             currentStudent = studentMaintenanceFunctions.PopulateStudentData(dataRepository, currentStudentID);
 
@@ -61,7 +61,14 @@ namespace DojoStudentManagement
             txtEmailAddress.Text = currentStudent.EmailAddress;
             cbActiveStudent.Checked = currentStudent.ActiveMember;
             txtHomeDojo.Text = currentStudent.HomeDojo;
-            dtBirthdate.Value = currentStudent.DateOfBirth;
+
+            //Fix null reference exception if there is not actually a valid date of birth for the
+            //student that is automatically selected (it happens on a few legacy students)
+            if (currentStudent.DateOfBirth > DateTimePicker.MinimumDateTime && currentStudent.DateOfBirth < DateTimePicker.MaximumDateTime)
+                dtBirthdate.Value = currentStudent.DateOfBirth;
+            else
+                dtBirthdate.Value = DateTimePicker.MinimumDateTime; // or some default value
+           
             dtBirthdate.CustomFormat = "MM/dd/yyyy";
 
             if (currentStudent.StudentGender == Gender.MALE)
@@ -111,13 +118,116 @@ namespace DojoStudentManagement
 
         private void NotifyIfEligibleForPromotion(StudentArtsAndRank currentArtRank)
         {
-            PromotionCriteria eligibility = new PromotionCriteria(promotionRequirements);
+            //PromotionCriteria eligibility = new PromotionCriteria(promotionRequirements);
             
-            eligibility.GetNextPromotionCriteria(currentArtRank);
-            currentArtRank.EligibleForPromotion = currentStudent.IsEligibleForPromotion(currentArtRank, eligibility);
+            //eligibility.GetNextPromotionCriteria(currentArtRank);
 
-            if (currentArtRank.EligibleForPromotion)
-                txtMessages.Text += "Eligible for promotion to " + eligibility.NextRank + " in " + eligibility.CurrentArt + "\n";
+            PromotionCriteria eligibility = GetPromotionEligibilityRequirements(currentArtRank);
+            eligibility.GetNextPromotionCriteria(currentArtRank);
+            
+            if (currentArtRank != null)
+                UpdateEligibilityDisplay(currentArtRank, eligibility);
+            //currentArtRank.EligibleForPromotion = currentStudent.IsEligibleForPromotion(currentArtRank, eligibility);
+
+            //if (currentArtRank.EligibleForPromotion)
+            //    txtMessages.Text += "Eligible for promotion to " + eligibility.NextRank + " in " + eligibility.CurrentArt + "\n";
+        }
+
+        private PromotionCriteria GetPromotionEligibilityRequirements(StudentArtsAndRank currentArtRank)
+        {
+            PromotionCriteria eligibility = new PromotionCriteria(promotionRequirements);
+            eligibility.GetNextPromotionCriteria(currentArtRank);
+
+            return eligibility;
+        }
+
+        private void UpdateEligibilityDisplay(StudentArtsAndRank currentArtRank, PromotionCriteria eligibility)
+        {
+            richTextPromotionEligibility.Clear();
+            bool isEligible = false;
+
+            //Edge case: we don't have eligibility data for the next rank (usually because the 
+            //student is so highly ranked that there are no further promotions available, or promotions
+            //are awarded based on other criteria)
+            if (eligibility.NextRank == null)
+            {
+                richTextPromotionEligibility.Text = $"No promotion requirements available for {currentArtRank.StudentArt} - {currentArtRank.Rank}";
+                return;
+            }
+
+            GenerateHeaderText(currentArtRank);
+            //richTextPromotionEligibility.Text = $"Promotion Eligibility for {currentStudent.FullName}: {currentArtRank.StudentArt} - {currentArtRank.NextRank}\n";
+
+            // Check and store eligibility for minimum age
+            isEligible = currentStudent.StudentHasReachedMinimumAgeForPromotion(eligibility);
+            string ageEligibilityText = isEligible
+                ? "Minimum age: ELIGIBLE\n"
+                : "Minimum age: NOT ELIGIBLE\n" +
+                  " Student Age: " + currentStudent.StudentAgeInYears + ". Min Age: " + eligibility.MinimumAge + "\n";
+            AppendColoredText(richTextPromotionEligibility, ageEligibilityText, isEligible ? Color.Green : Color.Red);
+
+            // Check and store eligibility for training hours
+            isEligible = currentStudent.StudentHasSufficientTrainingHoursForPromotion(currentArtRank.HoursInArt, eligibility);
+            string trainingHoursText = isEligible
+                ? "Total Training Hours: ELIGIBLE\n"
+                : "Total Training Hours: NOT ELIGIBLE\n" +
+                  "     Earned: " + currentArtRank.HoursInArt + " hours. Required: " + eligibility.MinimumTrainingHours + " hours\n";
+            AppendColoredText(richTextPromotionEligibility, trainingHoursText, isEligible ? Color.Green : Color.Red);
+
+            // Check and store eligibility for time in art
+            isEligible = currentStudent.StudentHasSufficientTimeInArtForPromotion(currentArtRank.TotalYearsInArt(), eligibility);
+            string timeInArtText = isEligible
+                ? "Time in Art: ELIGIBLE\n"
+                : "Time in Art: NOT ELIGIBLE\n" +
+                  "     Earned: " + currentArtRank.TotalYearsInArt() + " years. Required: " + eligibility.YearsInArt + " years\n";
+            AppendColoredText(richTextPromotionEligibility, timeInArtText, isEligible ? Color.Green : Color.Red);
+
+            //Display eligibility based on student's time at current rank
+            isEligible = currentStudent.StudentHasSufficientTimeAtCurrentRank(currentArtRank.YearsAtCurrentLevel(), eligibility);
+
+            string eligibilityText = isEligible
+                ? "Time at current rank: ELIGIBLE\n"
+                : "Time at current rank: NOT ELIGIBLE\n" +
+                  "     Earned: " + currentArtRank.YearsAtCurrentLevel() + " years. Required: " + eligibility.YearsAtCurrentRank + " years\n";
+
+            AppendColoredText(richTextPromotionEligibility, eligibilityText, isEligible ? Color.Green : Color.Red);
+        }
+
+        private void GenerateHeaderText(StudentArtsAndRank currentArtRank)
+        {
+            // Clear the RichTextBox
+            richTextPromotionEligibility.Clear();
+
+            // Set the text with bold and underlined formatting
+            richTextPromotionEligibility.SelectionStart = richTextPromotionEligibility.TextLength;
+            richTextPromotionEligibility.SelectionLength = 0;
+            richTextPromotionEligibility.SelectionFont = new Font(
+                richTextPromotionEligibility.Font,
+                FontStyle.Bold | FontStyle.Underline
+            );
+            richTextPromotionEligibility.AppendText($"{currentStudent.FullName}: {currentArtRank.StudentArt} - {currentArtRank.NextRank}\n");
+
+            // Reset the font to avoid applying bold/underline to subsequent text
+            richTextPromotionEligibility.SelectionFont = new Font(
+                richTextPromotionEligibility.Font,
+                FontStyle.Regular
+            );
+        }
+
+        private void AppendColoredText(RichTextBox richTextBox, string text, Color color)
+        {
+            // Set the selection to the end of the current text
+            richTextBox.SelectionStart = richTextBox.TextLength;
+            richTextBox.SelectionLength = 0;
+
+            // Set the color for the appended text
+            richTextBox.SelectionColor = color;
+
+            // Append the text
+            richTextBox.AppendText(text);
+
+            // Reset the selection color to the default
+            richTextBox.SelectionColor = richTextBox.ForeColor;
         }
 
 
@@ -199,6 +309,9 @@ namespace DojoStudentManagement
                 selectedArt.DateOfLatestSignIn = DateTime.TryParse(selecteditem.SubItems[7].Text, out DateTime dateOfLatestSignin) ? dateOfLatestSignin : (DateTime?)null;
                 selectedArt.EligibleForPromotion = selecteditem.SubItems[8].Text.Contains("Y");
                 selectedArt.NextRank = selecteditem.SubItems[9].Text;
+
+                PromotionCriteria eligibility = GetPromotionEligibilityRequirements(selectedArt);
+                UpdateEligibilityDisplay(selectedArt, eligibility);
             }
         }
 
