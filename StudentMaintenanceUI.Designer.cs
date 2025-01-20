@@ -30,8 +30,8 @@ namespace DojoStudentManagement
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StudentMaintenanceUI));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.txtFirstName = new System.Windows.Forms.TextBox();
             this.gbStudentInfo = new System.Windows.Forms.GroupBox();
             this.btnDeleteStudent = new System.Windows.Forms.Button();
@@ -147,9 +147,9 @@ namespace DojoStudentManagement
             this.gbStudentInfo.Controls.Add(this.txtLastName);
             this.gbStudentInfo.Controls.Add(this.txtFirstName);
             this.gbStudentInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gbStudentInfo.Location = new System.Drawing.Point(471, 69);
+            this.gbStudentInfo.Location = new System.Drawing.Point(498, 72);
             this.gbStudentInfo.Name = "gbStudentInfo";
-            this.gbStudentInfo.Size = new System.Drawing.Size(637, 490);
+            this.gbStudentInfo.Size = new System.Drawing.Size(610, 490);
             this.gbStudentInfo.TabIndex = 2;
             this.gbStudentInfo.TabStop = false;
             this.gbStudentInfo.Text = "Student Information";
@@ -520,29 +520,29 @@ namespace DojoStudentManagement
             // 
             this.dgvStudentList.AllowUserToAddRows = false;
             this.dgvStudentList.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle7.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvStudentList.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvStudentList.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvStudentList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvStudentList.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvStudentList.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgvStudentList.Location = new System.Drawing.Point(14, 223);
             this.dgvStudentList.MultiSelect = false;
             this.dgvStudentList.Name = "dgvStudentList";
             this.dgvStudentList.ReadOnly = true;
             this.dgvStudentList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvStudentList.Size = new System.Drawing.Size(445, 309);
+            this.dgvStudentList.Size = new System.Drawing.Size(478, 309);
             this.dgvStudentList.TabIndex = 7;
             this.dgvStudentList.SelectionChanged += new System.EventHandler(this.dgvStudentList_SelectionChanged);
             // 
@@ -557,7 +557,7 @@ namespace DojoStudentManagement
             this.gbQuickFilters.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gbQuickFilters.Location = new System.Drawing.Point(8, 69);
             this.gbQuickFilters.Name = "gbQuickFilters";
-            this.gbQuickFilters.Size = new System.Drawing.Size(457, 129);
+            this.gbQuickFilters.Size = new System.Drawing.Size(484, 129);
             this.gbQuickFilters.TabIndex = 8;
             this.gbQuickFilters.TabStop = false;
             this.gbQuickFilters.Text = "Filters";
@@ -584,7 +584,7 @@ namespace DojoStudentManagement
             // 
             this.txtLastNameFilter.Location = new System.Drawing.Point(207, 58);
             this.txtLastNameFilter.Name = "txtLastNameFilter";
-            this.txtLastNameFilter.Size = new System.Drawing.Size(244, 29);
+            this.txtLastNameFilter.Size = new System.Drawing.Size(257, 29);
             this.txtLastNameFilter.TabIndex = 3;
             this.txtLastNameFilter.TextChanged += new System.EventHandler(this.txtLastNameFilter_TextChanged);
             // 
@@ -782,7 +782,7 @@ namespace DojoStudentManagement
             this.richTextPromotionEligibility.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.richTextPromotionEligibility.Location = new System.Drawing.Point(680, 592);
             this.richTextPromotionEligibility.Name = "richTextPromotionEligibility";
-            this.richTextPromotionEligibility.Size = new System.Drawing.Size(428, 143);
+            this.richTextPromotionEligibility.Size = new System.Drawing.Size(401, 143);
             this.richTextPromotionEligibility.TabIndex = 17;
             this.richTextPromotionEligibility.Text = "";
             // 

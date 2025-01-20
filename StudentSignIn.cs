@@ -71,6 +71,10 @@ namespace DojoStudentManagement
             dgvStudentList.Columns["FirstName"].DataPropertyName = "StudentFirstName";
             dgvStudentList.Columns["LastName"].DataPropertyName = "StudentLastName";
 
+            dgvStudentList.Columns["StudentID"].Width = 100;
+            dgvStudentList.Columns["FirstName"].Width = 200;
+            dgvStudentList.Columns["LastName"].Width = 200;
+
             dgvStudentList.DataSource = studentDataView;
 
             //Display only the active students initially
