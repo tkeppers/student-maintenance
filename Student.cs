@@ -60,7 +60,7 @@ namespace DojoStudentManagement
             if (StudentHasSufficientTimeInArtForPromotion(art.TotalYearsInArt(), eligibility) == false)
                 return false;
 
-            if (StudentHasSufficientTimeInArtForPromotion(art.YearsAtCurrentLevel(), eligibility) == false)
+            if (StudentHasSufficientTimeAtCurrentRank(art.YearsAtCurrentLevel(), eligibility) == false)
                 return false;
 
             //Fixes bug where the function was erroneously returning true if a match for the student's current rank 
