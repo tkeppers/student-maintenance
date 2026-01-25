@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace DojoStudentManagement
 {
@@ -49,42 +50,49 @@ namespace DojoStudentManagement
 
         private bool ValidateStudentIsEnrolledInArt(IDataRepository dataRepository, int studentID, string studentArt, out double cumulativeTrainingHours, out string currentRank)
         {
+            cumulativeTrainingHours = 0.0;
+            currentRank = string.Empty;
+
+            if (dataRepository is null) return false;
+            if (studentID <= 0) return false;
+            if (string.IsNullOrWhiteSpace(studentArt)) return false;
 
             DataTable studentArtsTable = dataRepository.GetStudentArtsAndRanks(studentID);
+            if (studentArtsTable is null) return false;
+
             DataRow[] selectedStudentArt = studentArtsTable.Select("studArt_art = '" + studentArt + "'");
+
 
             if (selectedStudentArt.Length == 0)
             {
                 MessageService.ShowErrorMessage("The student is not enrolled in the selected art.", "Student Not Enrolled");
-                cumulativeTrainingHours = 0.0;
-                currentRank = string.Empty;
                 return false;
             }
-            else
-            {
-                //Get the student's current rank in the selected art
-                currentRank = selectedStudentArt[0].Field<string>("studArt_rank");
 
-                //Note: The cumulative training hours are stored as a decimal in the database, but the field is defined as a double
-                //in the StudentArtsAndRank class. There is no need to have decimal precision for the cumulative training hours, and 
-                //the data in the database can be adequately represented as a double, with better performance.
-                if (selectedStudentArt[0].IsNull("studArt_cumm"))
-                    cumulativeTrainingHours = 0;
-                else
-                    cumulativeTrainingHours = Convert.ToDouble(selectedStudentArt[0].Field<decimal>("studArt_cumm"));
-                return true;
-            }
+            currentRank = selectedStudentArt[0].Field<string>("studArt_rank");
+
+            if (selectedStudentArt[0].IsNull("studArt_cumm"))
+                cumulativeTrainingHours = 0;
+            else
+                cumulativeTrainingHours = Convert.ToDouble(selectedStudentArt[0].Field<decimal>("studArt_cumm"));
+
+            return true;
         }
 
         private bool ValidateStudentIsNotAlreadySignedIn(IDataRepository dataRepository, int studentID, string studentArt)
         {
+            if (dataRepository is null) return false;
+            if (studentID <= 0) return false;
+            if (string.IsNullOrWhiteSpace(studentArt)) return false;
+
             DataTable studentSignInTable = dataRepository.GetStudentSignInHistory(studentID);
+            if (studentSignInTable is null) return false;
 
             double hoursBetweenSignIns = double.Parse(ConfigurationManager.AppSettings["RepeatSignInHours"]);
-            DateTime timeOfEligibleSignIn = DateTime.Now.AddHours(hoursBetweenSignIns * -1); //Subtract the hours between sign-ins from the current time
+            DateTime timeOfEligibleSignIn = DateTime.Now.AddHours(hoursBetweenSignIns * -1);
 
-            //Students cannot sign in more than once for the same art within an hour on the same day. Check to see if the student has signed in within the last hour.
-            DataRow[] selectedStudentSignIn = studentSignInTable.Select("sign_art = '" + studentArt + "' AND sign_date >= '" + timeOfEligibleSignIn.ToString() + "'");
+            DataRow[] selectedStudentSignIn =
+                studentSignInTable.Select("sign_art = '" + studentArt + "' AND sign_date >= '" + timeOfEligibleSignIn.ToString() + "'");
 
             if (selectedStudentSignIn.Length > 0)
             {
