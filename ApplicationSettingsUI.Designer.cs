@@ -40,6 +40,9 @@ namespace DojoStudentManagement
             this.txtHoursBetweenSignIns = new System.Windows.Forms.TextBox();
             this.lblHoursBetweenSignIns = new System.Windows.Forms.Label();
             this.toolTipSignIn = new System.Windows.Forms.ToolTip(this.components);
+            this.btnLogFileLocation = new System.Windows.Forms.Button();
+            this.txtLogFileLocation = new System.Windows.Forms.TextBox();
+            this.lblLogFileLocation = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lblDatabasePath
@@ -62,7 +65,7 @@ namespace DojoStudentManagement
             // btnBrowse
             // 
             this.btnBrowse.Image = ((System.Drawing.Image)(resources.GetObject("btnBrowse.Image")));
-            this.btnBrowse.Location = new System.Drawing.Point(317, 81);
+            this.btnBrowse.Location = new System.Drawing.Point(410, 51);
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(87, 26);
             this.btnBrowse.TabIndex = 2;
@@ -74,7 +77,7 @@ namespace DojoStudentManagement
             // btnOK
             // 
             this.btnOK.Image = ((System.Drawing.Image)(resources.GetObject("btnOK.Image")));
-            this.btnOK.Location = new System.Drawing.Point(105, 211);
+            this.btnOK.Location = new System.Drawing.Point(87, 269);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(82, 23);
             this.btnOK.TabIndex = 3;
@@ -86,7 +89,7 @@ namespace DojoStudentManagement
             // btnCancel
             // 
             this.btnCancel.Image = ((System.Drawing.Image)(resources.GetObject("btnCancel.Image")));
-            this.btnCancel.Location = new System.Drawing.Point(193, 211);
+            this.btnCancel.Location = new System.Drawing.Point(175, 269);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 4;
@@ -98,7 +101,7 @@ namespace DojoStudentManagement
             // cbShowPromotionEligibility
             // 
             this.cbShowPromotionEligibility.AutoSize = true;
-            this.cbShowPromotionEligibility.Location = new System.Drawing.Point(15, 165);
+            this.cbShowPromotionEligibility.Location = new System.Drawing.Point(12, 226);
             this.cbShowPromotionEligibility.Name = "cbShowPromotionEligibility";
             this.cbShowPromotionEligibility.Size = new System.Drawing.Size(247, 17);
             this.cbShowPromotionEligibility.TabIndex = 5;
@@ -109,9 +112,9 @@ namespace DojoStudentManagement
             // 
             // txtHoursBetweenSignIns
             // 
-            this.txtHoursBetweenSignIns.Location = new System.Drawing.Point(15, 120);
+            this.txtHoursBetweenSignIns.Location = new System.Drawing.Point(12, 179);
             this.txtHoursBetweenSignIns.Name = "txtHoursBetweenSignIns";
-            this.txtHoursBetweenSignIns.Size = new System.Drawing.Size(172, 20);
+            this.txtHoursBetweenSignIns.Size = new System.Drawing.Size(142, 20);
             this.txtHoursBetweenSignIns.TabIndex = 6;
             this.toolTipSignIn.SetToolTip(this.txtHoursBetweenSignIns, "Time (in hours) before a student can sign in again for the same art.");
             this.txtHoursBetweenSignIns.Validating += new System.ComponentModel.CancelEventHandler(this.txtHoursBetweenSignIns_Validating);
@@ -119,7 +122,7 @@ namespace DojoStudentManagement
             // lblHoursBetweenSignIns
             // 
             this.lblHoursBetweenSignIns.AutoSize = true;
-            this.lblHoursBetweenSignIns.Location = new System.Drawing.Point(15, 101);
+            this.lblHoursBetweenSignIns.Location = new System.Drawing.Point(12, 163);
             this.lblHoursBetweenSignIns.Name = "lblHoursBetweenSignIns";
             this.lblHoursBetweenSignIns.Size = new System.Drawing.Size(161, 13);
             this.lblHoursBetweenSignIns.TabIndex = 7;
@@ -130,11 +133,43 @@ namespace DojoStudentManagement
             // 
             this.toolTipSignIn.ToolTipTitle = "Time limit between sign-ins";
             // 
+            // btnLogFileLocation
+            // 
+            this.btnLogFileLocation.Image = ((System.Drawing.Image)(resources.GetObject("btnLogFileLocation.Image")));
+            this.btnLogFileLocation.Location = new System.Drawing.Point(413, 117);
+            this.btnLogFileLocation.Name = "btnLogFileLocation";
+            this.btnLogFileLocation.Size = new System.Drawing.Size(87, 26);
+            this.btnLogFileLocation.TabIndex = 10;
+            this.btnLogFileLocation.Text = "Browse";
+            this.btnLogFileLocation.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnLogFileLocation.UseVisualStyleBackColor = true;
+            this.btnLogFileLocation.Click += new System.EventHandler(this.btnLogFileLocation_Click);
+            // 
+            // txtLogFileLocation
+            // 
+            this.txtLogFileLocation.Location = new System.Drawing.Point(15, 121);
+            this.txtLogFileLocation.Name = "txtLogFileLocation";
+            this.txtLogFileLocation.ReadOnly = true;
+            this.txtLogFileLocation.Size = new System.Drawing.Size(392, 20);
+            this.txtLogFileLocation.TabIndex = 9;
+            // 
+            // lblLogFileLocation
+            // 
+            this.lblLogFileLocation.AutoSize = true;
+            this.lblLogFileLocation.Location = new System.Drawing.Point(12, 105);
+            this.lblLogFileLocation.Name = "lblLogFileLocation";
+            this.lblLogFileLocation.Size = new System.Drawing.Size(88, 13);
+            this.lblLogFileLocation.TabIndex = 8;
+            this.lblLogFileLocation.Text = "Log File Location";
+            // 
             // ApplicationSettingsUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(415, 246);
+            this.ClientSize = new System.Drawing.Size(520, 315);
+            this.Controls.Add(this.btnLogFileLocation);
+            this.Controls.Add(this.txtLogFileLocation);
+            this.Controls.Add(this.lblLogFileLocation);
             this.Controls.Add(this.lblHoursBetweenSignIns);
             this.Controls.Add(this.txtHoursBetweenSignIns);
             this.Controls.Add(this.cbShowPromotionEligibility);
@@ -162,5 +197,8 @@ namespace DojoStudentManagement
         private System.Windows.Forms.TextBox txtHoursBetweenSignIns;
         private System.Windows.Forms.Label lblHoursBetweenSignIns;
         private System.Windows.Forms.ToolTip toolTipSignIn;
+        private System.Windows.Forms.Button btnLogFileLocation;
+        private System.Windows.Forms.TextBox txtLogFileLocation;
+        private System.Windows.Forms.Label lblLogFileLocation;
     }
 }

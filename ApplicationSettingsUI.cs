@@ -7,6 +7,7 @@ namespace DojoStudentManagement
     public partial class ApplicationSettingsUI : Form
     {
         string selectedDatabasePath;
+        string logFileLocation;
         double hoursBetweenStudentSignIns;
         bool showPromotionEligibility;
 
@@ -15,11 +16,13 @@ namespace DojoStudentManagement
             InitializeComponent();
             hoursBetweenStudentSignIns = 1.5;
             txtDatabaseFilePath.Text = ConfigurationManager.AppSettings["DatabasePath"];
+            txtLogFileLocation.Text = ConfigurationManager.AppSettings["LogFileLocation"];
             showPromotionEligibility = bool.Parse(ConfigurationManager.AppSettings["ShowPromotionEligibilityOnSignIn"]);
             txtHoursBetweenSignIns.Text = ConfigurationManager.AppSettings["RepeatSignInHours"];
             cbShowPromotionEligibility.Checked = showPromotionEligibility;
 
             selectedDatabasePath = txtDatabaseFilePath.Text;
+            logFileLocation = txtLogFileLocation.Text;
             hoursBetweenStudentSignIns = double.Parse(txtHoursBetweenSignIns.Text);
         }
 
@@ -53,7 +56,8 @@ namespace DojoStudentManagement
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            UpdateAppConfig("DatabasePath", selectedDatabasePath);
+            UpdateAppConfig("DatabasePath", selectedDatabasePath); 
+            UpdateAppConfig("LogFileLocation", logFileLocation);
             UpdateAppConfig("ShowPromotionEligibilityOnSignIn", showPromotionEligibility.ToString());
             UpdateAppConfig("RepeatSignInHours", hoursBetweenStudentSignIns.ToString());
             Serilog.Log.Information($"DatabaseConfigUI: Settings updated.\n Database path = {selectedDatabasePath}\n " +
@@ -70,6 +74,20 @@ namespace DojoStudentManagement
         private void txtHoursBetweenSignIns_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
             hoursBetweenStudentSignIns = double.Parse(txtHoursBetweenSignIns.Text);
+        }
+
+        private void btnLogFileLocation_Click(object sender, EventArgs e)
+        {
+            using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+            {
+                folderBrowserDialog.Description = "Select Log File Location";
+
+                if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+                {
+                    logFileLocation = folderBrowserDialog.SelectedPath;
+                    txtLogFileLocation.Text = logFileLocation;
+                }
+            }
         }
     }
 }
