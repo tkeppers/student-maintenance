@@ -12,32 +12,33 @@ namespace DojoStudentManagement
     {
         public Student PopulateStudentData(IDataRepository dataRepository, int studentID)
         {
-            //TODO: Remove database implementation logic to a lower-level class
-            //TODO: Considerations: A lot can go wrong here. What if the student doesn't exist? What if the database is down?
             Student currentStudent = new Student();
 
             DataTable studentDataTable = dataRepository.GetStudentTable();
             DataRow[] selectedStudent = studentDataTable.Select("StudentID = " + studentID);
 
+            var row = selectedStudent[0];
+
             currentStudent.StudentID = studentID;
-            currentStudent.FirstName = selectedStudent[0].Field<string>("StudentFirstName");
-            currentStudent.LastName = selectedStudent[0].Field<string>("StudentLastName");
-            currentStudent.Address1 = selectedStudent[0].Field<string>("StudentAddress1");
-            currentStudent.Address2 = selectedStudent[0].Field<string>("StudentAddress2");
-            currentStudent.AddressCity = selectedStudent[0].Field<string>("StudentCity");
-            currentStudent.AddressState = selectedStudent[0].Field<string>("StudentState");
-            currentStudent.AddressZip = selectedStudent[0].Field<string>("StudentPostalCode");
-            currentStudent.PrimaryPhoneNumber = selectedStudent[0].Field<string>("StudentPrimaryPhone");
-            currentStudent.SecondaryPhoneNumber = selectedStudent[0].Field<string>("StudentSecondaryPhone");
-            currentStudent.EmailAddress = selectedStudent[0].Field<string>("StudentEmailAddress");
-            currentStudent.HomeDojo = selectedStudent[0].Field<string>("StudentDojo");
-            currentStudent.ActiveMember = selectedStudent[0].Field<string>("StudentStatus").Equals("A");
-            currentStudent.HomeDojo = selectedStudent[0].Field<string>("StudentDojo");
+            currentStudent.FirstName = row.Field<string>("StudentFirstName");
+            currentStudent.LastName = row.Field<string>("StudentLastName");
+            currentStudent.Address1 = row.Field<string>("StudentAddress1");
+            currentStudent.Address2 = row.Field<string>("StudentAddress2");
+            currentStudent.AddressCity = row.Field<string>("StudentCity");
+            currentStudent.AddressState = row.Field<string>("StudentState");
+            currentStudent.AddressZip = row.Field<string>("StudentPostalCode");
+            currentStudent.PrimaryPhoneNumber = row.Field<string>("StudentPrimaryPhone");
+            currentStudent.SecondaryPhoneNumber = row.Field<string>("StudentSecondaryPhone");
+            currentStudent.EmailAddress = row.Field<string>("StudentEmailAddress");
+            currentStudent.HomeDojo = row.Field<string>("StudentDojo");
 
-            if (selectedStudent[0]["StudentBirthDate"] != DBNull.Value)
-                currentStudent.DateOfBirth = (DateTime)selectedStudent[0]["StudentBirthDate"];
+            currentStudent.ActiveMember =
+                string.Equals(row.Field<string>("StudentStatus"), "A", StringComparison.Ordinal);
 
-            currentStudent.StudentGender = GetStudentGender(selectedStudent[0].Field<string>("StudentGender"));
+            if (row["StudentBirthDate"] != DBNull.Value)
+                currentStudent.DateOfBirth = (DateTime)row["StudentBirthDate"];
+
+            currentStudent.StudentGender = GetStudentGender(row.Field<string>("StudentGender"));
 
             PopulateArtsAndRanks(dataRepository, currentStudent);
 
