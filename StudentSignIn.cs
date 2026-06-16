@@ -86,10 +86,10 @@ namespace DojoStudentManagement
             string filterExpression = $"StudentID is not null and StudentStatus = 'A' and StudentDojo = 'Windsong'";  
 
             if (!string.IsNullOrWhiteSpace(txtFirstNameFilter.Text))
-                filterExpression += " and StudentFirstName LIKE '" + txtFirstNameFilter.Text + "%'";
+                filterExpression += " and StudentFirstName LIKE '" + txtFirstNameFilter.Text.Replace("'", "''") + "%'";
 
             if (!string.IsNullOrWhiteSpace(txtLastNameFilter.Text))
-                filterExpression += " and StudentLastName LIKE '" + txtLastNameFilter.Text + "%'";
+                filterExpression += " and StudentLastName LIKE '" + txtLastNameFilter.Text.Replace("'", "''") + "%'";
 
             DataView dv = (DataView)dgvStudentList.DataSource;
             dv.RowFilter = filterExpression;

@@ -293,7 +293,7 @@ namespace DojoStudentManagement
                         {
                             command.Parameters.Add("@StudentID", OleDbType.Integer).Value = artsAndRank.StudentArtID;
                             command.Parameters.Add("@StudentArt", OleDbType.VarChar).Value = artsAndRank.StudentArt;
-                            command.Parameters.Add("@Rank", OleDbType.VarChar).Value = artsAndRank.Rank;
+                            command.Parameters.Add("@StudentRank", OleDbType.VarChar).Value = artsAndRank.Rank;
                             command.Parameters.Add("@CumulativeHours", OleDbType.Numeric).Value = artsAndRank.HoursInArt;
                             command.Parameters.Add("@DateStarted", OleDbType.DBDate).Value = artsAndRank.DateStarted;
                             command.Parameters.Add("@DatePromoted", OleDbType.DBDate).Value = artsAndRank.DateStarted;  //Since this is a brand-new art, the promotion date is the start date
@@ -528,11 +528,12 @@ namespace DojoStudentManagement
         private float GetTrainingHoursPerClassForArt(string artName)
         {
             float hours = 0;
+            const string sql = "SELECT art_hours FROM Arts WHERE art_id = ?";
 
             using (OleDbConnection connection = new OleDbConnection(connectionString))
             {
-                string sql = $"SELECT art_hours FROM Arts WHERE art_id = '{artName}'";
                 OleDbCommand command = new OleDbCommand(sql, connection);
+                command.Parameters.Add("@ArtName", OleDbType.VarChar).Value = artName;
 
                 try
                 {

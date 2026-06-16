@@ -43,7 +43,7 @@ namespace DojoStudentManagement
         public double YearsAtCurrentLevel()
         {
             if (DatePromoted == null)
-                return 0;
+                return TotalYearsInArt();
 
             TimeSpan span = DateTime.Now - (DateTime)DatePromoted;
             double yearsAtCurrentLevel = Math.Round(span.TotalDays / 365.25, 2); // Using 365.25 to account for leap years

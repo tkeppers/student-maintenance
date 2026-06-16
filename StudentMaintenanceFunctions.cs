@@ -17,6 +17,12 @@ namespace DojoStudentManagement
             DataTable studentDataTable = dataRepository.GetStudentTable();
             DataRow[] selectedStudent = studentDataTable.Select("StudentID = " + studentID);
 
+            if (selectedStudent.Length == 0)
+            {
+                Log.Error($"PopulateStudentData: No student found with ID {studentID}");
+                return currentStudent;
+            }
+
             var row = selectedStudent[0];
 
             currentStudent.StudentID = studentID;
