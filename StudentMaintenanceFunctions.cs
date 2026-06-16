@@ -75,7 +75,7 @@ namespace DojoStudentManagement
             return true;
         }
 
-        internal bool IsValidEmail(string email)
+        public bool IsValidEmail(string email)
         {
             var trimmedEmail = email.Trim();
 
