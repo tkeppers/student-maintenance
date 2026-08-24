@@ -12,6 +12,7 @@ namespace DojoStudentManagement
         DataTable GetListOfArts();
 
         DataTable GetStudentTable();
+        DataTable GetStudentTable(string dojoFilter);
 
         bool AddNewStudent(Student student);
         bool UpdateStudent(Student student);
@@ -25,7 +26,7 @@ namespace DojoStudentManagement
         bool UpdateStudentArt(StudentArtsAndRank artsAndRank);
         bool DeleteStudentArt(int studentArtID, string studentArtName);
 
-        bool UpdateStudentPromotion(int studentID, StudentArtsAndRank artsAndRank);
+        bool UpdateStudentPromotion(int studentID, StudentArtsAndRank artsAndRank, string recommendedBy = null);
 
         bool UpdateStudentSignIn(int studentID, string studentArtName, double cumulativeTrainingHours, out double newCumulativeHours);
 
@@ -34,5 +35,17 @@ namespace DojoStudentManagement
         //bool DeletePromotionCriteria(string artName, string rankName);
         DataTable GetStudentPromotionRequirements();
 
+        // KUBK organization tracking (dojo management, multi-dojo roster, dues, rank verification)
+        List<Dojo> GetDojos();
+        bool AddDojo(Dojo dojo);
+        bool UpdateDojo(Dojo dojo);
+
+        DataTable GetKubkRoster(string clubId, int duesYear);
+
+        bool RecordDuesPayment(StudentDuesRecord dues);
+        bool RemoveDuesPayment(int studentID, int year);
+        List<StudentDuesRecord> GetDuesHistory(int studentID);
+
+        bool VerifyStudentRank(int studentID, string artName, DateTime verifiedDate);
     }
 }

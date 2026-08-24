@@ -115,7 +115,9 @@
     <Compile Include="ApplicationSettingsUI.Designer.cs">
       <DependentUpon>ApplicationSettingsUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dojo.cs" />
     <Compile Include="IDataRepository.cs" />
+    <Compile Include="KubkManagementFunctions.cs" />
     <Compile Include="MessageService.cs" />
     <Compile Include="PromoteStudentUI.cs">
       <SubType>Form</SubType>
@@ -144,6 +146,7 @@
       <DependentUpon>StudentAddUI.cs</DependentUpon>
     </Compile>
     <Compile Include="StudentArtsAndRank.cs" />
+    <Compile Include="StudentDuesRecord.cs" />
     <Compile Include="StudentMaintenanceUI.cs">
       <SubType>Form</SubType>
     </Compile>

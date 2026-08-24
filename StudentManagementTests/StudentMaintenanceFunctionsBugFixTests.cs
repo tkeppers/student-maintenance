@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using DojoStudentManagement;
 using System;
+using System.Collections.Generic;
 using System.Data;
 
 namespace DojoStudentManagementTests
@@ -162,6 +163,7 @@ namespace DojoStudentManagementTests
         }
 
         // Unused by the tests in this file — throw to catch accidental calls
+        public DataTable GetStudentTable(string dojoFilter) => throw new NotImplementedException();
         public DataTable GetListOfArts() => throw new NotImplementedException();
         public bool AddNewStudent(Student student) => throw new NotImplementedException();
         public bool UpdateStudent(Student student) => throw new NotImplementedException();
@@ -171,7 +173,7 @@ namespace DojoStudentManagementTests
         public bool AddNewStudentArt(StudentArtsAndRank artsAndRank) => throw new NotImplementedException();
         public bool UpdateStudentArt(StudentArtsAndRank artsAndRank) => throw new NotImplementedException();
         public bool DeleteStudentArt(int studentArtID, string studentArtName) => throw new NotImplementedException();
-        public bool UpdateStudentPromotion(int studentID, StudentArtsAndRank artsAndRank) => throw new NotImplementedException();
+        public bool UpdateStudentPromotion(int studentID, StudentArtsAndRank artsAndRank, string recommendedBy = null) => throw new NotImplementedException();
         public bool UpdateStudentSignIn(int studentID, string studentArtName, double cumulativeTrainingHours, out double newCumulativeHours)
         {
             newCumulativeHours = 0;
@@ -179,5 +181,13 @@ namespace DojoStudentManagementTests
         }
         public void UpdatePromotionCriteria(DataTable promotionCriteriaTable) => throw new NotImplementedException();
         public DataTable GetStudentPromotionRequirements() => throw new NotImplementedException();
+        public List<Dojo> GetDojos() => throw new NotImplementedException();
+        public bool AddDojo(Dojo dojo) => throw new NotImplementedException();
+        public bool UpdateDojo(Dojo dojo) => throw new NotImplementedException();
+        public DataTable GetKubkRoster(string clubId, int duesYear) => throw new NotImplementedException();
+        public bool RecordDuesPayment(StudentDuesRecord dues) => throw new NotImplementedException();
+        public bool RemoveDuesPayment(int studentID, int year) => throw new NotImplementedException();
+        public List<StudentDuesRecord> GetDuesHistory(int studentID) => throw new NotImplementedException();
+        public bool VerifyStudentRank(int studentID, string artName, DateTime verifiedDate) => throw new NotImplementedException();
     }
 }

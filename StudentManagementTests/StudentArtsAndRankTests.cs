@@ -135,5 +135,21 @@ namespace DojoStudentManagementTests
             Assert.IsTrue(eligible,
                 "A student who has trained long enough should not be blocked by a null DatePromoted");
         }
+
+        [Test]
+        public void RankIsVerified_WhenRankVerifiedDateIsSet_ReturnsTrue()
+        {
+            var art = new StudentArtsAndRank { RankVerifiedDate = DateTime.Now };
+
+            Assert.IsTrue(art.RankIsVerified);
+        }
+
+        [Test]
+        public void RankIsVerified_WhenRankVerifiedDateIsNull_ReturnsFalse()
+        {
+            var art = new StudentArtsAndRank { RankVerifiedDate = null };
+
+            Assert.IsFalse(art.RankIsVerified);
+        }
     }
 }

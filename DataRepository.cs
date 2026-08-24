@@ -22,15 +22,52 @@ namespace DojoStudentManagement
         }
 
         /// <summary>
-        /// Retrieves the student table from the database.
+        /// Retrieves the Windsong student table from the database (kiosk sign-in and the
+        /// current maintenance UI only ever deal with Windsong, so this overload is kept for
+        /// every existing call site to stay untouched).
         /// </summary>
         /// <returns>The DataTable containing the student records.</returns>
         public DataTable GetStudentTable()
         {
+            return GetStudentTable("Windsong");
+        }
+
+        /// <summary>
+        /// Retrieves the student table from the database, optionally filtered to one dojo.
+        /// </summary>
+        /// <param name="dojoFilter">Club id to filter by. Null or empty returns students from every dojo.</param>
+        /// <returns>The DataTable containing the student records.</returns>
+        public DataTable GetStudentTable(string dojoFilter)
+        {
             if (DatabaseExistsAndIsValid() == false)
                 return new DataTable();
 
-            DataTable studentTable = ExecuteQuery("select * from Students where stud_club='Windsong'");
+            DataTable studentTable = new DataTable();
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                string sql = string.IsNullOrEmpty(dojoFilter)
+                    ? "select * from Students"
+                    : "select * from Students where stud_club = @Dojo";
+
+                OleDbCommand command = new OleDbCommand(sql, connection);
+
+                if (!string.IsNullOrEmpty(dojoFilter))
+                    command.Parameters.Add("@Dojo", OleDbType.VarChar).Value = dojoFilter;
+
+                OleDbDataAdapter dataAdapter = new OleDbDataAdapter(command);
+
+                try
+                {
+                    connection.Open();
+                    dataAdapter.Fill(studentTable);
+                }
+                catch (OleDbException ex)
+                {
+                    Log.Error($"Error retrieving student table for dojo filter '{dojoFilter}':\n{sql}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                    return new DataTable();
+                }
+            }
 
             // Rename columns from database schema to something more generic and readable
             studentTable.Columns["stud_id"].ColumnName = "StudentID";
@@ -418,10 +455,12 @@ namespace DojoStudentManagement
         #region StudentPromotion
 
         /// <summary>
-        /// After a student is promoted, update the main arts/rank data with the new information, then 
+        /// After a student is promoted, update the main arts/rank data with the new information, then
         /// add a new record in the promotion history table.
         /// </summary>
-        public bool UpdateStudentPromotion(int studentID, StudentArtsAndRank artsAndRank)
+        /// <param name="recommendedBy">Optional instructor who recommended the promotion; written to
+        /// Promo_History.promo_recommended_by when provided.</param>
+        public bool UpdateStudentPromotion(int studentID, StudentArtsAndRank artsAndRank, string recommendedBy = null)
         {
             bool success = true;
 
@@ -433,7 +472,7 @@ namespace DojoStudentManagement
                     try
                     {
                         UpdateStudentArts(connection, transaction, artsAndRank);
-                        InsertPromotionHistory(connection, transaction, studentID, artsAndRank);
+                        InsertPromotionHistory(connection, transaction, studentID, artsAndRank, recommendedBy);
 
                         transaction.Commit();
                     }
@@ -451,15 +490,19 @@ namespace DojoStudentManagement
 
         private void UpdateStudentArts(OleDbConnection connection, OleDbTransaction transaction, StudentArtsAndRank artsAndRank)
         {
-            using (OleDbCommand command = new OleDbCommand(@"UPDATE StudArts SET 
+            // A promotion just recorded here is by definition a verified rank, so stamp
+            // studArt_rank_verified with the promotion date in the same statement.
+            using (OleDbCommand command = new OleDbCommand(@"UPDATE StudArts SET
                 studArt_rank = @NewRank,
                 studArt_prodate = @PromotionDate,
-                studArt_prohrs = @PromotionHours
+                studArt_prohrs = @PromotionHours,
+                studArt_rank_verified = @RankVerifiedDate
                 WHERE StudArt_ID = @ArtID AND studArt_art = @Art", connection, transaction))
             {
                 command.Parameters.Add("@NewRank", OleDbType.VarChar).Value = artsAndRank.NextRank;
                 command.Parameters.Add("@PromotionDate", OleDbType.DBDate).Value = artsAndRank.DatePromoted;
                 command.Parameters.Add("@PromotionHours", OleDbType.Numeric).Value = artsAndRank.PromotionHours;
+                command.Parameters.Add("@RankVerifiedDate", OleDbType.DBDate).Value = artsAndRank.DatePromoted;
                 command.Parameters.Add("@ArtID", OleDbType.Integer).Value = artsAndRank.StudentArtID;
                 command.Parameters.Add("@Art", OleDbType.VarChar).Value = artsAndRank.StudentArt;
 
@@ -469,26 +512,29 @@ namespace DojoStudentManagement
             }
         }
 
-        private void InsertPromotionHistory(OleDbConnection connection, OleDbTransaction transaction, int studentID, StudentArtsAndRank artsAndRank)
+        private void InsertPromotionHistory(OleDbConnection connection, OleDbTransaction transaction, int studentID, StudentArtsAndRank artsAndRank, string recommendedBy)
         {
             using (OleDbCommand command = new OleDbCommand(@"INSERT INTO Promo_History (
-                promo_student, 
+                promo_student,
                 promo_art,
                 promo_date,
                 promo_rank,
-                promo_hours)
+                promo_hours,
+                promo_recommended_by)
                VALUES (
                 @StudentID,
                 @PromotionArt,
                 @PromotionDate,
                 @PromotionRank,
-                @PromotionHours)", connection, transaction))
+                @PromotionHours,
+                @RecommendedBy)", connection, transaction))
             {
                 command.Parameters.Add("@StudentID", OleDbType.Integer).Value = studentID;
                 command.Parameters.Add("@PromotionArt", OleDbType.VarChar).Value = artsAndRank.StudentArt;
                 command.Parameters.Add("@PromotionDate", OleDbType.DBDate).Value = artsAndRank.DatePromoted;
                 command.Parameters.Add("@PromotionRank", OleDbType.VarChar).Value = artsAndRank.NextRank.ToUpper();
                 command.Parameters.Add("@PromotionHours", OleDbType.Double).Value = artsAndRank.HoursInArt;
+                command.Parameters.Add("@RecommendedBy", OleDbType.VarChar).Value = (object)recommendedBy ?? DBNull.Value;
 
                 command.ExecuteNonQuery();
 
@@ -858,6 +904,439 @@ namespace DojoStudentManagement
         }
 
         #endregion PromotionCriteria
+
+        #region KUBK
+
+        public List<Dojo> GetDojos()
+        {
+            List<Dojo> dojos = new List<Dojo>();
+            const string sql = @"SELECT club_id, club_name, club_instructor, club_instructor_email,
+                club_phone, club_addr1, club_addr2, club_addr3, club_active, club_notes, annual_dues
+                FROM Club_Parameters ORDER BY club_name";
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                OleDbCommand command = new OleDbCommand(sql, connection);
+
+                try
+                {
+                    connection.Open();
+                    using (OleDbDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            dojos.Add(new Dojo
+                            {
+                                ClubID = reader["club_id"] == DBNull.Value ? string.Empty : (string)reader["club_id"],
+                                Name = reader["club_name"] == DBNull.Value ? string.Empty : (string)reader["club_name"],
+                                Instructor = reader["club_instructor"] == DBNull.Value ? null : (string)reader["club_instructor"],
+                                InstructorEmail = reader["club_instructor_email"] == DBNull.Value ? null : (string)reader["club_instructor_email"],
+                                Phone = reader["club_phone"] == DBNull.Value ? null : (string)reader["club_phone"],
+                                Address1 = reader["club_addr1"] == DBNull.Value ? null : (string)reader["club_addr1"],
+                                Address2 = reader["club_addr2"] == DBNull.Value ? null : (string)reader["club_addr2"],
+                                Address3 = reader["club_addr3"] == DBNull.Value ? null : (string)reader["club_addr3"],
+                                Active = reader["club_active"] != DBNull.Value && Convert.ToBoolean(reader["club_active"]),
+                                Notes = reader["club_notes"] == DBNull.Value ? null : (string)reader["club_notes"],
+                                AnnualDues = reader["annual_dues"] == DBNull.Value ? 0m : Convert.ToDecimal(reader["annual_dues"])
+                            });
+                        }
+                    }
+
+                    Log.Information($"Retrieved {dojos.Count} dojos from Club_Parameters");
+                }
+                catch (OleDbException ex)
+                {
+                    Log.Error($"Error retrieving dojos:\n{sql}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                }
+            }
+
+            return dojos;
+        }
+
+        public bool AddDojo(Dojo dojo)
+        {
+            bool success = true;
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                connection.Open();
+                OleDbCommand command = new OleDbCommand(@"INSERT INTO Club_Parameters (
+                    club_id, club_name, club_instructor, club_instructor_email, club_phone,
+                    club_addr1, club_addr2, club_addr3, club_active, club_notes, annual_dues)
+                    VALUES (
+                    @ClubID, @Name, @Instructor, @InstructorEmail, @Phone,
+                    @Address1, @Address2, @Address3, @Active, @Notes, @AnnualDues)", connection);
+
+                if (connection.State == ConnectionState.Open)
+                {
+                    SetDojoCommandParameters(command, dojo, isUpdate: false);
+
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                        Log.Information($"Added new dojo {dojo.ClubID}");
+                    }
+                    catch (OleDbException ex)
+                    {
+                        success = false;
+                        Log.Error($"Error inserting into Club_Parameters table.\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        connection.Close();
+                    }
+                }
+                else
+                {
+                    success = false;
+                    Log.Error($"{DateTime.Now}: Connection failed when adding new dojo.\n");
+                }
+            }
+
+            return success;
+        }
+
+        public bool UpdateDojo(Dojo dojo)
+        {
+            bool success = true;
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                connection.Open();
+                OleDbCommand command = new OleDbCommand(@"UPDATE Club_Parameters SET
+                    club_name = @Name,
+                    club_instructor = @Instructor,
+                    club_instructor_email = @InstructorEmail,
+                    club_phone = @Phone,
+                    club_addr1 = @Address1,
+                    club_addr2 = @Address2,
+                    club_addr3 = @Address3,
+                    club_active = @Active,
+                    club_notes = @Notes,
+                    annual_dues = @AnnualDues
+                    WHERE club_id = @ClubID", connection);
+
+                if (connection.State == ConnectionState.Open)
+                {
+                    SetDojoCommandParameters(command, dojo, isUpdate: true);
+
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                        Log.Information($"Updated dojo {dojo.ClubID}");
+                    }
+                    catch (OleDbException ex)
+                    {
+                        success = false;
+                        Log.Error($"Error updating Club_Parameters table.\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        connection.Close();
+                    }
+                }
+                else
+                {
+                    success = false;
+                    Log.Error($"{DateTime.Now}: Connection failed when updating dojo.\n");
+                }
+            }
+
+            return success;
+        }
+
+        /// <summary>
+        /// Adds parameters in the exact order their placeholders appear in the AddDojo/UpdateDojo
+        /// SQL text above (OleDbCommand parameters are positional, not named).
+        /// </summary>
+        private void SetDojoCommandParameters(OleDbCommand command, Dojo dojo, bool isUpdate)
+        {
+            if (!isUpdate)
+                command.Parameters.Add("@ClubID", OleDbType.VarChar).Value = dojo.ClubID;
+
+            command.Parameters.Add("@Name", OleDbType.VarChar).Value = dojo.Name;
+            command.Parameters.Add("@Instructor", OleDbType.VarChar).Value = (object)dojo.Instructor ?? DBNull.Value;
+            command.Parameters.Add("@InstructorEmail", OleDbType.VarChar).Value = (object)dojo.InstructorEmail ?? DBNull.Value;
+            command.Parameters.Add("@Phone", OleDbType.VarChar).Value = (object)dojo.Phone ?? DBNull.Value;
+            command.Parameters.Add("@Address1", OleDbType.VarChar).Value = (object)dojo.Address1 ?? DBNull.Value;
+            command.Parameters.Add("@Address2", OleDbType.VarChar).Value = (object)dojo.Address2 ?? DBNull.Value;
+            command.Parameters.Add("@Address3", OleDbType.VarChar).Value = (object)dojo.Address3 ?? DBNull.Value;
+            command.Parameters.Add("@Active", OleDbType.Boolean).Value = dojo.Active;
+            command.Parameters.Add("@Notes", OleDbType.LongVarChar).Value = (object)dojo.Notes ?? DBNull.Value;
+            command.Parameters.Add("@AnnualDues", OleDbType.Currency).Value = dojo.AnnualDues;
+
+            if (isUpdate)
+                command.Parameters.Add("@ClubID", OleDbType.VarChar).Value = dojo.ClubID;
+        }
+
+        /// <summary>
+        /// One row per (student, art) for the given club, or every non-Windsong club when
+        /// clubId is null/empty. Jet cannot LEFT JOIN on a compound (student, year) condition
+        /// with a parameter, so the dues-paid date for duesYear is fetched in a second query
+        /// and merged into the roster in memory - simpler than fighting Jet's join syntax for
+        /// a lookup this small (at most one dues row per student per year).
+        /// </summary>
+        public DataTable GetKubkRoster(string clubId, int duesYear)
+        {
+            if (DatabaseExistsAndIsValid() == false)
+                return new DataTable();
+
+            string sql = @"SELECT s.stud_id, s.stud_firstname, s.stud_lastname, s.stud_status, s.stud_club,
+                sa.studArt_art, sa.studArt_rank, sa.studArt_prodate, sa.studArt_rank_verified
+                FROM Students AS s INNER JOIN StudArts AS sa ON s.stud_id = sa.StudArt_ID
+                WHERE " + (string.IsNullOrEmpty(clubId) ? "s.stud_club <> 'Windsong'" : "s.stud_club = @ClubID") + @"
+                ORDER BY s.stud_lastname, s.stud_firstname, sa.studArt_art";
+
+            DataTable rosterTable = new DataTable();
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                OleDbCommand command = new OleDbCommand(sql, connection);
+
+                if (!string.IsNullOrEmpty(clubId))
+                    command.Parameters.Add("@ClubID", OleDbType.VarChar).Value = clubId;
+
+                OleDbDataAdapter dataAdapter = new OleDbDataAdapter(command);
+
+                try
+                {
+                    connection.Open();
+                    dataAdapter.Fill(rosterTable);
+                }
+                catch (OleDbException ex)
+                {
+                    Log.Error($"Error retrieving KUBK roster for club '{clubId}':\n{sql}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                    return new DataTable();
+                }
+            }
+
+            rosterTable.Columns["stud_id"].ColumnName = "StudentID";
+            rosterTable.Columns["stud_firstname"].ColumnName = "StudentFirstName";
+            rosterTable.Columns["stud_lastname"].ColumnName = "StudentLastName";
+            rosterTable.Columns["stud_status"].ColumnName = "StudentStatus";
+            rosterTable.Columns["stud_club"].ColumnName = "StudentDojo";
+            rosterTable.Columns["studArt_art"].ColumnName = "Art";
+            rosterTable.Columns["studArt_rank"].ColumnName = "Rank";
+            rosterTable.Columns["studArt_prodate"].ColumnName = "LastPromotionDate";
+            rosterTable.Columns["studArt_rank_verified"].ColumnName = "RankVerifiedDate";
+
+            rosterTable.Columns.Add("DuesPaidDate", typeof(DateTime));
+
+            Dictionary<int, DateTime?> duesByStudent = GetDuesPaidDatesForYear(duesYear);
+
+            foreach (DataRow row in rosterTable.Rows)
+            {
+                int studentID = Convert.ToInt32(row["StudentID"]);
+                row["DuesPaidDate"] = duesByStudent.TryGetValue(studentID, out DateTime? paidDate) && paidDate.HasValue
+                    ? (object)paidDate.Value
+                    : DBNull.Value;
+            }
+
+            return rosterTable;
+        }
+
+        private Dictionary<int, DateTime?> GetDuesPaidDatesForYear(int duesYear)
+        {
+            Dictionary<int, DateTime?> result = new Dictionary<int, DateTime?>();
+            const string sql = "SELECT dues_student, dues_paid_date FROM KUBK_Dues WHERE dues_year = @DuesYear";
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                OleDbCommand command = new OleDbCommand(sql, connection);
+                command.Parameters.Add("@DuesYear", OleDbType.Integer).Value = duesYear;
+
+                try
+                {
+                    connection.Open();
+                    using (OleDbDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int studentID = Convert.ToInt32(reader["dues_student"]);
+                            DateTime? paidDate = reader["dues_paid_date"] == DBNull.Value
+                                ? (DateTime?)null
+                                : Convert.ToDateTime(reader["dues_paid_date"]);
+                            result[studentID] = paidDate;
+                        }
+                    }
+                }
+                catch (OleDbException ex)
+                {
+                    Log.Error($"Error retrieving KUBK dues for year {duesYear}:\n{sql}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Inserts a KUBK_Dues row for (student, year), or updates the existing one if a payment
+        /// was already recorded for that student/year. This check-then-write is not atomic against
+        /// a concurrent insert, but the unique index on (dues_student, dues_year) is the backstop.
+        /// </summary>
+        public bool RecordDuesPayment(StudentDuesRecord dues)
+        {
+            bool success = true;
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                connection.Open();
+
+                if (connection.State != ConnectionState.Open)
+                {
+                    Log.Error($"{DateTime.Now}: Connection failed when recording dues payment.\n");
+                    return false;
+                }
+
+                bool existingRecord = DuesRecordExists(connection, dues.StudentID, dues.Year);
+
+                OleDbCommand command = existingRecord
+                    ? new OleDbCommand(@"UPDATE KUBK_Dues SET dues_paid_date = @PaidDate, dues_amount = @Amount
+                        WHERE dues_student = @StudentID AND dues_year = @Year", connection)
+                    : new OleDbCommand(@"INSERT INTO KUBK_Dues (dues_paid_date, dues_amount, dues_student, dues_year)
+                        VALUES (@PaidDate, @Amount, @StudentID, @Year)", connection);
+
+                command.Parameters.Add("@PaidDate", OleDbType.DBDate).Value = (object)dues.PaidDate ?? DBNull.Value;
+                command.Parameters.Add("@Amount", OleDbType.Currency).Value = dues.Amount;
+                command.Parameters.Add("@StudentID", OleDbType.Integer).Value = dues.StudentID;
+                command.Parameters.Add("@Year", OleDbType.Integer).Value = dues.Year;
+
+                try
+                {
+                    command.ExecuteNonQuery();
+                    Log.Information($"Recorded dues payment for student {dues.StudentID}, year {dues.Year}");
+                }
+                catch (OleDbException ex)
+                {
+                    success = false;
+                    Log.Error($"Error recording dues payment.\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                }
+            }
+
+            return success;
+        }
+
+        private bool DuesRecordExists(OleDbConnection connection, int studentID, int year)
+        {
+            OleDbCommand command = new OleDbCommand(
+                "SELECT COUNT(*) FROM KUBK_Dues WHERE dues_student = @StudentID AND dues_year = @Year", connection);
+            command.Parameters.Add("@StudentID", OleDbType.Integer).Value = studentID;
+            command.Parameters.Add("@Year", OleDbType.Integer).Value = year;
+
+            return Convert.ToInt32(command.ExecuteScalar()) > 0;
+        }
+
+        public bool RemoveDuesPayment(int studentID, int year)
+        {
+            bool success = true;
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                connection.Open();
+                OleDbCommand command = new OleDbCommand(
+                    "DELETE FROM KUBK_Dues WHERE dues_student = @StudentID AND dues_year = @Year", connection);
+
+                if (connection.State == ConnectionState.Open)
+                {
+                    command.Parameters.Add("@StudentID", OleDbType.Integer).Value = studentID;
+                    command.Parameters.Add("@Year", OleDbType.Integer).Value = year;
+
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                        Log.Information($"Removed dues payment for student {studentID}, year {year}");
+                    }
+                    catch (OleDbException ex)
+                    {
+                        success = false;
+                        Log.Error($"Error removing dues payment.\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        connection.Close();
+                    }
+                }
+                else
+                {
+                    success = false;
+                    Log.Error($"{DateTime.Now}: Connection failed when removing dues payment.\n");
+                }
+            }
+
+            return success;
+        }
+
+        public List<StudentDuesRecord> GetDuesHistory(int studentID)
+        {
+            List<StudentDuesRecord> history = new List<StudentDuesRecord>();
+            const string sql = @"SELECT dues_year, dues_paid_date, dues_amount FROM KUBK_Dues
+                WHERE dues_student = @StudentID ORDER BY dues_year DESC";
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                OleDbCommand command = new OleDbCommand(sql, connection);
+                command.Parameters.Add("@StudentID", OleDbType.Integer).Value = studentID;
+
+                try
+                {
+                    connection.Open();
+                    using (OleDbDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            history.Add(new StudentDuesRecord
+                            {
+                                StudentID = studentID,
+                                Year = Convert.ToInt32(reader["dues_year"]),
+                                PaidDate = reader["dues_paid_date"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["dues_paid_date"]),
+                                Amount = reader["dues_amount"] == DBNull.Value ? 0m : Convert.ToDecimal(reader["dues_amount"])
+                            });
+                        }
+                    }
+                }
+                catch (OleDbException ex)
+                {
+                    Log.Error($"Error retrieving dues history for student {studentID}:\n{sql}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                }
+            }
+
+            return history;
+        }
+
+        public bool VerifyStudentRank(int studentID, string artName, DateTime verifiedDate)
+        {
+            bool success = true;
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                connection.Open();
+                OleDbCommand command = new OleDbCommand(
+                    "UPDATE StudArts SET studArt_rank_verified = @VerifiedDate WHERE StudArt_ID = @StudentID AND studArt_art = @Art", connection);
+
+                if (connection.State == ConnectionState.Open)
+                {
+                    command.Parameters.Add("@VerifiedDate", OleDbType.DBDate).Value = verifiedDate;
+                    command.Parameters.Add("@StudentID", OleDbType.Integer).Value = studentID;
+                    command.Parameters.Add("@Art", OleDbType.VarChar).Value = artName;
+
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                        Log.Information($"Verified rank for student {studentID} in {artName} as of {verifiedDate}");
+                    }
+                    catch (OleDbException ex)
+                    {
+                        success = false;
+                        Log.Error($"Error verifying student rank.\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        connection.Close();
+                    }
+                }
+                else
+                {
+                    success = false;
+                    Log.Error($"{DateTime.Now}: Connection failed when verifying student rank.\n");
+                }
+            }
+
+            return success;
+        }
+
+        #endregion KUBK
 
     }
 }

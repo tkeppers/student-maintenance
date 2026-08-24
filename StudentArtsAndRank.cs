@@ -19,6 +19,8 @@ namespace DojoStudentManagement
         public double PromotionHours { get; set; }
         public string NextRank { get; set; }
         public bool EligibleForPromotion { get; internal set; }
+        public DateTime? RankVerifiedDate { get; set; }
+        public bool RankIsVerified => RankVerifiedDate.HasValue;
 
         /// <summary>
         /// Returns the amount of time in years since the student first began taking the martial art.
