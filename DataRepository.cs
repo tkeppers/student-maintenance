@@ -1042,6 +1042,83 @@ namespace DojoStudentManagement
         }
 
         /// <summary>
+        /// Removes a dojo outright. Only safe for a dojo no student points at - callers must
+        /// check GetStudentCountsByDojo first, because Students.stud_club stores the club_id as
+        /// text with no enforced relationship, so deleting a dojo in use silently orphans its
+        /// students.
+        /// </summary>
+        public bool DeleteDojo(string clubId)
+        {
+            bool success = true;
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                connection.Open();
+                OleDbCommand command = new OleDbCommand("DELETE FROM Club_Parameters WHERE club_id = @ClubID", connection);
+
+                if (connection.State == ConnectionState.Open)
+                {
+                    command.Parameters.Add("@ClubID", OleDbType.VarChar).Value = clubId;
+
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                        Log.Information($"Deleted dojo {clubId}");
+                    }
+                    catch (OleDbException ex)
+                    {
+                        success = false;
+                        Log.Error($"Error deleting dojo {clubId}.\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        connection.Close();
+                    }
+                }
+                else
+                {
+                    success = false;
+                    Log.Error($"{DateTime.Now}: Connection failed when deleting dojo.\n");
+                }
+            }
+
+            return success;
+        }
+
+        /// <summary>
+        /// Student headcount per dojo in a single grouped query, so the dojo screen can decide
+        /// which dojos are safe to delete without a round trip per selection.
+        /// </summary>
+        public Dictionary<string, int> GetStudentCountsByDojo()
+        {
+            // Keyed case-insensitively to match how Jet compares stud_club to club_id.
+            var counts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            const string sql = "SELECT stud_club, COUNT(*) AS student_count FROM Students WHERE stud_club IS NOT NULL GROUP BY stud_club";
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                OleDbCommand command = new OleDbCommand(sql, connection);
+
+                try
+                {
+                    connection.Open();
+                    using (OleDbDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string club = reader["stud_club"].ToString().Trim();
+                            counts[club] = Convert.ToInt32(reader["student_count"]);
+                        }
+                    }
+                }
+                catch (OleDbException ex)
+                {
+                    Log.Error($"Error retrieving student counts by dojo:\n{sql}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                }
+            }
+
+            return counts;
+        }
+
+        /// <summary>
         /// Adds parameters in the exact order their placeholders appear in the AddDojo/UpdateDojo
         /// SQL text above (OleDbCommand parameters are positional, not named).
         /// </summary>
@@ -1066,11 +1143,11 @@ namespace DojoStudentManagement
         }
 
         /// <summary>
-        /// One row per (student, art) for the given club, or every non-Windsong club when
-        /// clubId is null/empty. Jet cannot LEFT JOIN on a compound (student, year) condition
-        /// with a parameter, so the dues-paid date for duesYear is fetched in a second query
-        /// and merged into the roster in memory - simpler than fighting Jet's join syntax for
-        /// a lookup this small (at most one dues row per student per year).
+        /// One row per (student, art) for the given club, or every dojo (Windsong included)
+        /// when clubId is null/empty. Jet cannot LEFT JOIN on a compound (student, year)
+        /// condition with a parameter, so the dues-paid date for duesYear is fetched in a
+        /// second query and merged into the roster in memory - simpler than fighting Jet's
+        /// join syntax for a lookup this small (at most one dues row per student per year).
         /// </summary>
         public DataTable GetKubkRoster(string clubId, int duesYear)
         {
@@ -1079,8 +1156,8 @@ namespace DojoStudentManagement
 
             string sql = @"SELECT s.stud_id, s.stud_firstname, s.stud_lastname, s.stud_status, s.stud_club,
                 sa.studArt_art, sa.studArt_rank, sa.studArt_prodate, sa.studArt_rank_verified
-                FROM Students AS s INNER JOIN StudArts AS sa ON s.stud_id = sa.StudArt_ID
-                WHERE " + (string.IsNullOrEmpty(clubId) ? "s.stud_club <> 'Windsong'" : "s.stud_club = @ClubID") + @"
+                FROM Students AS s INNER JOIN StudArts AS sa ON s.stud_id = sa.StudArt_ID"
+                + (string.IsNullOrEmpty(clubId) ? string.Empty : " WHERE s.stud_club = @ClubID") + @"
                 ORDER BY s.stud_lastname, s.stud_firstname, sa.studArt_art";
 
             DataTable rosterTable = new DataTable();

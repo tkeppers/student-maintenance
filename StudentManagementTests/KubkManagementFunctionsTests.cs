@@ -138,6 +138,140 @@ namespace DojoStudentManagementTests
         }
 
         #endregion
+
+        #region SetDuesPaid
+
+        [Test]
+        public void SetDuesPaid_WhenMarkingPaid_RecordsAPaymentDatedToday()
+        {
+            var repo = new FakeKubkDataRepository();
+            var functions = new KubkManagementFunctions(repo);
+
+            Assert.IsTrue(functions.SetDuesPaid(7, 2026, true));
+
+            Assert.AreEqual(1, repo.RecordedPayments.Count, "Marking paid should write one dues row");
+            Assert.AreEqual(0, repo.RemovedPayments.Count);
+            StudentDuesRecord recorded = repo.RecordedPayments[0];
+            Assert.AreEqual(7, recorded.StudentID);
+            Assert.AreEqual(2026, recorded.Year);
+            Assert.AreEqual(DateTime.Today, recorded.PaidDate);
+            Assert.IsTrue(recorded.IsPaid);
+        }
+
+        [Test]
+        public void SetDuesPaid_WhenMarkingPaid_DoesNotRecordAnAmount()
+        {
+            // The dojo tracks money in its own accounting system; the row is only a confirmation
+            // marker, so it must not imply an amount that was never collected here.
+            var repo = new FakeKubkDataRepository();
+            var functions = new KubkManagementFunctions(repo);
+
+            functions.SetDuesPaid(7, 2026, true);
+
+            Assert.AreEqual(0m, repo.RecordedPayments[0].Amount);
+        }
+
+        [Test]
+        public void SetDuesPaid_WhenClearing_RemovesThePayment()
+        {
+            var repo = new FakeKubkDataRepository();
+            var functions = new KubkManagementFunctions(repo);
+
+            Assert.IsTrue(functions.SetDuesPaid(7, 2026, false));
+
+            Assert.AreEqual(0, repo.RecordedPayments.Count);
+            Assert.AreEqual(1, repo.RemovedPayments.Count);
+            Assert.AreEqual(Tuple.Create(7, 2026), repo.RemovedPayments[0]);
+        }
+
+        [Test]
+        public void SetDuesPaid_PropagatesRepositoryFailure()
+        {
+            var repo = new FakeKubkDataRepository { WritesSucceed = false };
+            var functions = new KubkManagementFunctions(repo);
+
+            Assert.IsFalse(functions.SetDuesPaid(7, 2026, true));
+            Assert.IsFalse(functions.SetDuesPaid(7, 2026, false));
+        }
+
+        #endregion
+
+        #region Deleting dojos
+
+        [Test]
+        public void CanDeleteDojo_WhenDojoHasNoStudents_ReturnsTrue()
+        {
+            var dojo = new Dojo { ClubID = "EMPTY", Name = "Empty Dojo" };
+
+            Assert.IsTrue(KubkManagementFunctions.CanDeleteDojo(dojo, 0, out string reason));
+            Assert.IsEmpty(reason);
+        }
+
+        [Test]
+        public void CanDeleteDojo_WhenDojoHasStudents_ReturnsFalseAndExplainsWhy()
+        {
+            var dojo = new Dojo { ClubID = "DENTON", Name = "Denton" };
+
+            Assert.IsFalse(KubkManagementFunctions.CanDeleteDojo(dojo, 12, out string reason));
+            StringAssert.Contains("12", reason, "The reason should say how many students block the delete");
+            StringAssert.Contains("Active", reason, "The reason should point the user at deactivating instead");
+        }
+
+        [Test]
+        public void CanDeleteDojo_WithNoDojoSelected_ReturnsFalse()
+        {
+            Assert.IsFalse(KubkManagementFunctions.CanDeleteDojo(null, 0, out _));
+            Assert.IsFalse(KubkManagementFunctions.CanDeleteDojo(new Dojo { ClubID = "  " }, 0, out _));
+        }
+
+        [Test]
+        public void GetStudentCountForDojo_MatchesCaseInsensitivelyAndDefaultsToZero()
+        {
+            var counts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase) { { "DENTON", 7 } };
+
+            Assert.AreEqual(7, KubkManagementFunctions.GetStudentCountForDojo(counts, "denton"));
+            Assert.AreEqual(7, KubkManagementFunctions.GetStudentCountForDojo(counts, "  DENTON "));
+            Assert.AreEqual(0, KubkManagementFunctions.GetStudentCountForDojo(counts, "NOBODY"));
+            Assert.AreEqual(0, KubkManagementFunctions.GetStudentCountForDojo(null, "DENTON"));
+        }
+
+        [Test]
+        public void DeleteDojo_WhenDojoIsEmpty_DeletesIt()
+        {
+            var repo = new FakeKubkDataRepository();
+            var dojo = new Dojo { ClubID = "EMPTY", Name = "Empty Dojo" };
+            var functions = new KubkManagementFunctions(repo);
+
+            Assert.IsTrue(functions.DeleteDojo(dojo, out string error));
+            Assert.IsEmpty(error);
+            CollectionAssert.AreEqual(new[] { "EMPTY" }, repo.DeletedDojos);
+        }
+
+        [Test]
+        public void DeleteDojo_RefusesWhenTheDatabaseStillShowsStudents()
+        {
+            // Guards against a stale screen: the button may have been enabled when the form
+            // loaded, but the headcount is re-checked against the database before deleting.
+            var repo = new FakeKubkDataRepository();
+            repo.StudentCounts["DENTON"] = 3;
+            var functions = new KubkManagementFunctions(repo);
+
+            Assert.IsFalse(functions.DeleteDojo(new Dojo { ClubID = "DENTON", Name = "Denton" }, out string error));
+            Assert.IsNotEmpty(error);
+            CollectionAssert.IsEmpty(repo.DeletedDojos, "Nothing should be deleted when students still reference the dojo");
+        }
+
+        [Test]
+        public void DeleteDojo_PropagatesRepositoryFailure()
+        {
+            var repo = new FakeKubkDataRepository { WritesSucceed = false };
+            var functions = new KubkManagementFunctions(repo);
+
+            Assert.IsFalse(functions.DeleteDojo(new Dojo { ClubID = "EMPTY", Name = "Empty" }, out string error));
+            Assert.IsNotEmpty(error);
+        }
+
+        #endregion
     }
 
     /// <summary>
@@ -147,15 +281,40 @@ namespace DojoStudentManagementTests
     internal class FakeKubkDataRepository : IDataRepository
     {
         public List<StudentDuesRecord> DuesHistory = new List<StudentDuesRecord>();
+        public List<StudentDuesRecord> RecordedPayments = new List<StudentDuesRecord>();
+        public List<Tuple<int, int>> RemovedPayments = new List<Tuple<int, int>>();
+        public bool WritesSucceed = true;
 
         public List<StudentDuesRecord> GetDuesHistory(int studentID) => DuesHistory;
 
         public bool VerifyStudentRank(int studentID, string artName, DateTime verifiedDate) => true;
-        public bool RecordDuesPayment(StudentDuesRecord dues) => true;
-        public bool RemoveDuesPayment(int studentID, int year) => true;
-        public List<Dojo> GetDojos() => new List<Dojo>();
+
+        public bool RecordDuesPayment(StudentDuesRecord dues)
+        {
+            RecordedPayments.Add(dues);
+            return WritesSucceed;
+        }
+
+        public bool RemoveDuesPayment(int studentID, int year)
+        {
+            RemovedPayments.Add(Tuple.Create(studentID, year));
+            return WritesSucceed;
+        }
+        public List<Dojo> Dojos = new List<Dojo>();
+        public Dictionary<string, int> StudentCounts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        public List<string> DeletedDojos = new List<string>();
+
+        public List<Dojo> GetDojos() => Dojos;
         public bool AddDojo(Dojo dojo) => true;
         public bool UpdateDojo(Dojo dojo) => true;
+        public Dictionary<string, int> GetStudentCountsByDojo() => StudentCounts;
+
+        public bool DeleteDojo(string clubId)
+        {
+            DeletedDojos.Add(clubId);
+            return WritesSucceed;
+        }
+
         public DataTable GetKubkRoster(string clubId, int duesYear) => new DataTable();
 
         // Unused by the tests in this file — throw to catch accidental calls

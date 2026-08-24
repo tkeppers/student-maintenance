@@ -184,6 +184,8 @@ namespace DojoStudentManagementTests
         public List<Dojo> GetDojos() => throw new NotImplementedException();
         public bool AddDojo(Dojo dojo) => throw new NotImplementedException();
         public bool UpdateDojo(Dojo dojo) => throw new NotImplementedException();
+        public bool DeleteDojo(string clubId) => throw new NotImplementedException();
+        public Dictionary<string, int> GetStudentCountsByDojo() => throw new NotImplementedException();
         public DataTable GetKubkRoster(string clubId, int duesYear) => throw new NotImplementedException();
         public bool RecordDuesPayment(StudentDuesRecord dues) => throw new NotImplementedException();
         public bool RemoveDuesPayment(int studentID, int year) => throw new NotImplementedException();

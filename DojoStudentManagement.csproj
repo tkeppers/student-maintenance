@@ -116,8 +116,21 @@
       <DependentUpon>ApplicationSettingsUI.cs</DependentUpon>
     </Compile>
     <Compile Include="Dojo.cs" />
+    <Compile Include="DojoManagementUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DojoManagementUI.Designer.cs">
+      <DependentUpon>DojoManagementUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="IDataRepository.cs" />
     <Compile Include="KubkManagementFunctions.cs" />
+    <Compile Include="KubkRosterEntry.cs" />
+    <Compile Include="KubkRosterUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KubkRosterUI.Designer.cs">
+      <DependentUpon>KubkRosterUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="MessageService.cs" />
     <Compile Include="PromoteStudentUI.cs">
       <SubType>Form</SubType>

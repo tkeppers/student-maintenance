@@ -39,6 +39,10 @@ namespace DojoStudentManagement
         List<Dojo> GetDojos();
         bool AddDojo(Dojo dojo);
         bool UpdateDojo(Dojo dojo);
+        bool DeleteDojo(string clubId);
+
+        /// <summary>Student headcount per dojo, keyed by the Students.stud_club value.</summary>
+        Dictionary<string, int> GetStudentCountsByDojo();
 
         DataTable GetKubkRoster(string clubId, int duesYear);
 

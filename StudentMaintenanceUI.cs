@@ -586,5 +586,21 @@ namespace DojoStudentManagement
         {
             DeleteSelectedStudent();
         }
+
+        private void memberDojosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (DojoManagementUI dojoManagement = new DojoManagementUI(dataRepository))
+            {
+                dojoManagement.ShowDialog();
+            }
+        }
+
+        private void studentRosterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (KubkRosterUI kubkRoster = new KubkRosterUI(dataRepository))
+            {
+                kubkRoster.ShowDialog();
+            }
+        }
     }
 }
