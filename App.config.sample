@@ -9,6 +9,7 @@
     <add key="RepeatSignInHours" value="1.5" />
     <add key="LogFileLocation" value="C:\Logs" />
     <add key="ShowPromotionEligibilityOnSignIn" value="false"/>
+    <add key="KubkAnnualDuesAmount" value="70" />
     <add key="ClientSettingsProvider.ServiceUri" value="" />
   </appSettings>
   <system.web>
