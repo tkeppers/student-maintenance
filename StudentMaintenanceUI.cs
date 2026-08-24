@@ -322,7 +322,7 @@ namespace DojoStudentManagement
         private void UpdateStudentInformation()
         {
             //TODO: Refactor this method and give it a better name
-            if (!studentMaintenanceFunctions.IsValidStudent(currentStudentID))
+            if (!IsSelectedStudentValid())
                 return;
 
             DialogResult result = MessageService.ShowAreYouSureMessage($"Update database for student {currentStudent.FullName}", "Save Student?");
@@ -368,7 +368,7 @@ namespace DojoStudentManagement
 
         private void DeleteSelectedStudent()
         {
-            if (!studentMaintenanceFunctions.IsValidStudent(currentStudentID))
+            if (!IsSelectedStudentValid())
                 return;
 
             DialogResult result = MessageService.ShowAreYouSureMessage($"Are you sure you want to delete student {currentStudent.FullName}", "Delete Student?");

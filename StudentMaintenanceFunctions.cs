@@ -64,15 +64,15 @@ namespace DojoStudentManagement
                 return Gender.UNKNOWN;
         }
 
+        /// <summary>
+        /// Pure check with no UI of its own - callers decide whether and how to tell the user.
+        /// This deliberately does not show a message box: it is business logic reached from the
+        /// unit tests, and a modal dialog here blocks the whole test run until a human dismisses
+        /// it. The caller that needs a prompt is StudentMaintenanceUI.IsSelectedStudentValid().
+        /// </summary>
         public bool IsValidStudent(int studentID)
-        {   
-            if (studentID <= 0)
-            {
-                MessageService.ShowErrorMessage("Please select a valid student", "Student Not Selected");
-                return false;
-            }
-
-            return true;
+        {
+            return studentID > 0;
         }
 
         public bool IsValidEmail(string email)
