@@ -13,7 +13,7 @@ namespace DojoStudentManagement
     /// </summary>
     public partial class KubkRosterUI : Form
     {
-        /// <summary>Sentinel club id meaning "every member dojo" in the dojo selector.</summary>
+        /// <summary>Sentinel club id meaning "every member dojo except Windsong" in the selector.</summary>
         private const string AllDojosClubId = "";
 
         private static readonly Color UnverifiedRowColor = Color.FromArgb(255, 243, 205);
@@ -60,7 +60,7 @@ namespace DojoStudentManagement
 
             var options = new List<DojoOption>
             {
-                new DojoOption { ClubID = AllDojosClubId, Display = "All dojos" }
+                new DojoOption { ClubID = AllDojosClubId, Display = "All member dojos" }
             };
 
             options.AddRange(selectableDojos.Select(d => new DojoOption

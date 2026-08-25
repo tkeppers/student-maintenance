@@ -244,9 +244,9 @@ namespace DojoStudentManagement
         }
 
         /// <summary>
-        /// Dojos offered in the roster screen's selector: every active member dojo. Windsong is
-        /// included because annual dues are owed per student at every dojo, so Windsong students
-        /// need somewhere to be marked paid too.
+        /// Dojos offered in the roster screen's selector: the active, non-Windsong member dojos.
+        /// Windsong is excluded because its students are managed through the main maintenance
+        /// screen; annual dues for Windsong students are not tracked here.
         /// </summary>
         public static List<Dojo> GetSelectableRosterDojos(IEnumerable<Dojo> allDojos)
         {
@@ -255,6 +255,7 @@ namespace DojoStudentManagement
 
             return allDojos
                 .Where(d => d.Active)
+                .Where(d => !string.Equals(d.ClubID?.Trim(), "Windsong", StringComparison.OrdinalIgnoreCase))
                 .OrderBy(d => d.Name)
                 .ToList();
         }

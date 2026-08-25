@@ -254,7 +254,7 @@ namespace DojoStudentManagementTests
         #region GetSelectableRosterDojos
 
         [Test]
-        public void GetSelectableRosterDojos_ExcludesInactiveAndSortsByName()
+        public void GetSelectableRosterDojos_ExcludesInactiveAndWindsongAndSortsByName()
         {
             var dojos = new List<Dojo>
             {
@@ -266,18 +266,21 @@ namespace DojoStudentManagementTests
 
             List<Dojo> selectable = KubkManagementFunctions.GetSelectableRosterDojos(dojos);
 
-            Assert.AreEqual(3, selectable.Count);
-            CollectionAssert.AreEqual(new[] { "Denton", "Stillwater", "Windsong" }, selectable.Select(d => d.Name).ToArray());
+            Assert.AreEqual(2, selectable.Count);
+            CollectionAssert.AreEqual(new[] { "Denton", "Stillwater" }, selectable.Select(d => d.Name).ToArray());
         }
 
+        [TestCase("Windsong")]
+        [TestCase("windsong")]
+        [TestCase("  Windsong  ")]
         [Test]
-        public void GetSelectableRosterDojos_IncludesWindsong()
+        public void GetSelectableRosterDojos_ExcludesWindsongRegardlessOfCasingOrPadding(string clubId)
         {
-            // Annual dues are owed per student at every dojo, Windsong included, so Windsong
-            // students must be reachable from the roster screen to be marked paid.
-            var dojos = new List<Dojo> { new Dojo { ClubID = "Windsong", Name = "Windsong", Active = true } };
+            // This screen covers the other KUBK dojos; Windsong students are managed through the
+            // main maintenance screen.
+            var dojos = new List<Dojo> { new Dojo { ClubID = clubId, Name = "Windsong", Active = true } };
 
-            Assert.AreEqual(1, KubkManagementFunctions.GetSelectableRosterDojos(dojos).Count);
+            Assert.IsEmpty(KubkManagementFunctions.GetSelectableRosterDojos(dojos));
         }
 
         [Test]

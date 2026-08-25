@@ -1248,11 +1248,15 @@ namespace DojoStudentManagement
         }
 
         /// <summary>
-        /// One row per (student, art) for the given club, or every dojo (Windsong included)
-        /// when clubId is null/empty. Jet cannot LEFT JOIN on a compound (student, year)
-        /// condition with a parameter, so the dues-paid date for duesYear is fetched in a
-        /// second query and merged into the roster in memory - simpler than fighting Jet's
-        /// join syntax for a lookup this small (at most one dues row per student per year).
+        /// One row per (student, art) for the given club, or every member dojo when clubId is
+        /// null/empty. Windsong is excluded from the all-dojos case: this screen is for the
+        /// other KUBK dojos, and Windsong's own students are managed through the main
+        /// maintenance screen. Passing "Windsong" explicitly still returns its students.
+        ///
+        /// Jet cannot LEFT JOIN on a compound (student, year) condition with a parameter, so the
+        /// dues-paid date for duesYear is fetched in a second query and merged into the roster in
+        /// memory - simpler than fighting Jet's join syntax for a lookup this small (at most one
+        /// dues row per student per year).
         /// </summary>
         public DataTable GetKubkRoster(string clubId, int duesYear)
         {
@@ -1261,8 +1265,8 @@ namespace DojoStudentManagement
 
             string sql = @"SELECT s.stud_id, s.stud_firstname, s.stud_lastname, s.stud_status, s.stud_club,
                 sa.studArt_art, sa.studArt_rank, sa.studArt_prodate, sa.studArt_rank_verified
-                FROM Students AS s INNER JOIN StudArts AS sa ON s.stud_id = sa.StudArt_ID"
-                + (string.IsNullOrEmpty(clubId) ? string.Empty : " WHERE s.stud_club = @ClubID") + @"
+                FROM Students AS s INNER JOIN StudArts AS sa ON s.stud_id = sa.StudArt_ID
+                WHERE " + (string.IsNullOrEmpty(clubId) ? "s.stud_club <> 'Windsong'" : "s.stud_club = @ClubID") + @"
                 ORDER BY s.stud_lastname, s.stud_firstname, sa.studArt_art";
 
             DataTable rosterTable = new DataTable();
