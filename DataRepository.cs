@@ -491,18 +491,29 @@ namespace DojoStudentManagement
         private void UpdateStudentArts(OleDbConnection connection, OleDbTransaction transaction, StudentArtsAndRank artsAndRank)
         {
             // A promotion just recorded here is by definition a verified rank, so stamp
-            // studArt_rank_verified with the promotion date in the same statement.
-            using (OleDbCommand command = new OleDbCommand(@"UPDATE StudArts SET
+            // studArt_rank_verified with the promotion date in the same statement - but only
+            // when that column exists. Promotion is core Windsong functionality that predates
+            // the KUBK work, and it must keep working against a database that has not had the
+            // Phase 1 migration applied (a restored backup, for instance).
+            string verifiedAssignment = SupportsRankVerifiedColumn
+                ? "," + Environment.NewLine + "                studArt_rank_verified = @RankVerifiedDate"
+                : string.Empty;
+
+            using (OleDbCommand command = new OleDbCommand($@"UPDATE StudArts SET
                 studArt_rank = @NewRank,
                 studArt_prodate = @PromotionDate,
-                studArt_prohrs = @PromotionHours,
-                studArt_rank_verified = @RankVerifiedDate
+                studArt_prohrs = @PromotionHours{verifiedAssignment}
                 WHERE StudArt_ID = @ArtID AND studArt_art = @Art", connection, transaction))
             {
+                // OleDb parameters are positional, so these must be added in exactly the order
+                // their placeholders appear above - including the conditional one.
                 command.Parameters.Add("@NewRank", OleDbType.VarChar).Value = artsAndRank.NextRank;
                 command.Parameters.Add("@PromotionDate", OleDbType.DBDate).Value = artsAndRank.DatePromoted;
                 command.Parameters.Add("@PromotionHours", OleDbType.Numeric).Value = artsAndRank.PromotionHours;
-                command.Parameters.Add("@RankVerifiedDate", OleDbType.DBDate).Value = artsAndRank.DatePromoted;
+
+                if (SupportsRankVerifiedColumn)
+                    command.Parameters.Add("@RankVerifiedDate", OleDbType.DBDate).Value = artsAndRank.DatePromoted;
+
                 command.Parameters.Add("@ArtID", OleDbType.Integer).Value = artsAndRank.StudentArtID;
                 command.Parameters.Add("@Art", OleDbType.VarChar).Value = artsAndRank.StudentArt;
 
@@ -514,33 +525,93 @@ namespace DojoStudentManagement
 
         private void InsertPromotionHistory(OleDbConnection connection, OleDbTransaction transaction, int studentID, StudentArtsAndRank artsAndRank, string recommendedBy)
         {
-            using (OleDbCommand command = new OleDbCommand(@"INSERT INTO Promo_History (
+            bool includeRecommender = SupportsRecommendedByColumn;
+
+            if (!includeRecommender && !string.IsNullOrWhiteSpace(recommendedBy))
+            {
+                Log.Warning($"Promo_History has no promo_recommended_by column, so the recommender " +
+                    $"'{recommendedBy}' was not recorded for student {studentID}. Run the KUBK schema migration to enable it.");
+            }
+
+            string recommenderColumn = includeRecommender ? "," + Environment.NewLine + "                promo_recommended_by" : string.Empty;
+            string recommenderValue = includeRecommender ? "," + Environment.NewLine + "                @RecommendedBy" : string.Empty;
+
+            using (OleDbCommand command = new OleDbCommand($@"INSERT INTO Promo_History (
                 promo_student,
                 promo_art,
                 promo_date,
                 promo_rank,
-                promo_hours,
-                promo_recommended_by)
+                promo_hours{recommenderColumn})
                VALUES (
                 @StudentID,
                 @PromotionArt,
                 @PromotionDate,
                 @PromotionRank,
-                @PromotionHours,
-                @RecommendedBy)", connection, transaction))
+                @PromotionHours{recommenderValue})", connection, transaction))
             {
                 command.Parameters.Add("@StudentID", OleDbType.Integer).Value = studentID;
                 command.Parameters.Add("@PromotionArt", OleDbType.VarChar).Value = artsAndRank.StudentArt;
                 command.Parameters.Add("@PromotionDate", OleDbType.DBDate).Value = artsAndRank.DatePromoted;
                 command.Parameters.Add("@PromotionRank", OleDbType.VarChar).Value = artsAndRank.NextRank.ToUpper();
                 command.Parameters.Add("@PromotionHours", OleDbType.Double).Value = artsAndRank.HoursInArt;
-                command.Parameters.Add("@RecommendedBy", OleDbType.VarChar).Value = (object)recommendedBy ?? DBNull.Value;
+
+                if (includeRecommender)
+                    command.Parameters.Add("@RecommendedBy", OleDbType.VarChar).Value = (object)recommendedBy ?? DBNull.Value;
 
                 command.ExecuteNonQuery();
 
                 Log.Information($"Updated promotion history in {artsAndRank.StudentArt} for student ID {artsAndRank.StudentArtID}");
             }
         }
+
+        #region Schema capability checks
+
+        private bool? supportsRankVerifiedColumn;
+        private bool? supportsRecommendedByColumn;
+
+        /// <summary>
+        /// Whether the Phase 1 KUBK columns are present. Cached per repository instance: the
+        /// schema cannot change while the app is running, and the promotion path would otherwise
+        /// pay for a schema lookup on every promotion.
+        /// </summary>
+        private bool SupportsRankVerifiedColumn =>
+            (supportsRankVerifiedColumn ?? (supportsRankVerifiedColumn = ColumnExists("StudArts", "studArt_rank_verified"))).Value;
+
+        private bool SupportsRecommendedByColumn =>
+            (supportsRecommendedByColumn ?? (supportsRecommendedByColumn = ColumnExists("Promo_History", "promo_recommended_by"))).Value;
+
+        private bool ColumnExists(string tableName, string columnName)
+        {
+            try
+            {
+                using (OleDbConnection connection = new OleDbConnection(connectionString))
+                {
+                    connection.Open();
+
+                    // Fetch the whole column schema and filter here: the restricted overload of
+                    // GetSchema is not reliably supported across the OLE DB providers this app
+                    // and its migration scripts run against.
+                    DataTable schema = connection.GetSchema("Columns");
+
+                    foreach (DataRow row in schema.Rows)
+                    {
+                        if (string.Equals(row["TABLE_NAME"].ToString(), tableName, StringComparison.OrdinalIgnoreCase) &&
+                            string.Equals(row["COLUMN_NAME"].ToString(), columnName, StringComparison.OrdinalIgnoreCase))
+                            return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Assume absent on failure: that path writes the legacy SQL, which works on both
+                // schemas, so a bad guess here degrades rather than breaks.
+                Log.Error($"Error checking whether {tableName}.{columnName} exists.\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+            }
+
+            return false;
+        }
+
+        #endregion Schema capability checks
 
         #endregion StudentPromotion
 
@@ -1295,21 +1366,24 @@ namespace DojoStudentManagement
                     return false;
                 }
 
-                bool existingRecord = DuesRecordExists(connection, dues.StudentID, dues.Year);
-
-                OleDbCommand command = existingRecord
-                    ? new OleDbCommand(@"UPDATE KUBK_Dues SET dues_paid_date = @PaidDate, dues_amount = @Amount
-                        WHERE dues_student = @StudentID AND dues_year = @Year", connection)
-                    : new OleDbCommand(@"INSERT INTO KUBK_Dues (dues_paid_date, dues_amount, dues_student, dues_year)
-                        VALUES (@PaidDate, @Amount, @StudentID, @Year)", connection);
-
-                command.Parameters.Add("@PaidDate", OleDbType.DBDate).Value = (object)dues.PaidDate ?? DBNull.Value;
-                command.Parameters.Add("@Amount", OleDbType.Currency).Value = dues.Amount;
-                command.Parameters.Add("@StudentID", OleDbType.Integer).Value = dues.StudentID;
-                command.Parameters.Add("@Year", OleDbType.Integer).Value = dues.Year;
-
+                // The existence probe has to be inside the try as well: it is a query in its own
+                // right, and letting it throw would escape this method and reach the UI, unlike
+                // every other failure here which is reported by returning false.
                 try
                 {
+                    bool existingRecord = DuesRecordExists(connection, dues.StudentID, dues.Year);
+
+                    OleDbCommand command = existingRecord
+                        ? new OleDbCommand(@"UPDATE KUBK_Dues SET dues_paid_date = @PaidDate, dues_amount = @Amount
+                            WHERE dues_student = @StudentID AND dues_year = @Year", connection)
+                        : new OleDbCommand(@"INSERT INTO KUBK_Dues (dues_paid_date, dues_amount, dues_student, dues_year)
+                            VALUES (@PaidDate, @Amount, @StudentID, @Year)", connection);
+
+                    command.Parameters.Add("@PaidDate", OleDbType.DBDate).Value = (object)dues.PaidDate ?? DBNull.Value;
+                    command.Parameters.Add("@Amount", OleDbType.Currency).Value = dues.Amount;
+                    command.Parameters.Add("@StudentID", OleDbType.Integer).Value = dues.StudentID;
+                    command.Parameters.Add("@Year", OleDbType.Integer).Value = dues.Year;
+
                     command.ExecuteNonQuery();
                     Log.Information($"Recorded dues payment for student {dues.StudentID}, year {dues.Year}");
                 }
