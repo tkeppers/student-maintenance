@@ -47,6 +47,7 @@ namespace DojoStudentManagement
             this.colYearsAtRank = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colDuesPaid = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.btnVerifyRank = new System.Windows.Forms.Button();
+            this.btnPromoteStudent = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.lblStatus = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numDuesYear)).BeginInit();
@@ -232,6 +233,19 @@ namespace DojoStudentManagement
             this.btnVerifyRank.UseVisualStyleBackColor = true;
             this.btnVerifyRank.Click += new System.EventHandler(this.btnVerifyRank_Click);
             //
+            // btnPromoteStudent
+            //
+            this.btnPromoteStudent.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnPromoteStudent.Enabled = false;
+            this.btnPromoteStudent.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnPromoteStudent.Location = new System.Drawing.Point(162, 588);
+            this.btnPromoteStudent.Name = "btnPromoteStudent";
+            this.btnPromoteStudent.Size = new System.Drawing.Size(180, 38);
+            this.btnPromoteStudent.TabIndex = 8;
+            this.btnPromoteStudent.Text = "Promote Student...";
+            this.btnPromoteStudent.UseVisualStyleBackColor = true;
+            this.btnPromoteStudent.Click += new System.EventHandler(this.btnPromoteStudent_Click);
+            //
             // btnClose
             //
             this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -239,7 +253,7 @@ namespace DojoStudentManagement
             this.btnClose.Location = new System.Drawing.Point(1077, 588);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(95, 38);
-            this.btnClose.TabIndex = 8;
+            this.btnClose.TabIndex = 9;
             this.btnClose.Text = "Close";
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
@@ -252,7 +266,7 @@ namespace DojoStudentManagement
             this.lblStatus.Location = new System.Drawing.Point(12, 638);
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(0, 18);
-            this.lblStatus.TabIndex = 9;
+            this.lblStatus.TabIndex = 10;
             //
             // KubkRosterUI
             //
@@ -261,6 +275,7 @@ namespace DojoStudentManagement
             this.ClientSize = new System.Drawing.Size(1184, 668);
             this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.btnClose);
+            this.Controls.Add(this.btnPromoteStudent);
             this.Controls.Add(this.btnVerifyRank);
             this.Controls.Add(this.dgvRoster);
             this.Controls.Add(this.cbUnpaidOnly);
@@ -299,6 +314,7 @@ namespace DojoStudentManagement
         private System.Windows.Forms.DataGridViewTextBoxColumn colYearsAtRank;
         private System.Windows.Forms.DataGridViewCheckBoxColumn colDuesPaid;
         private System.Windows.Forms.Button btnVerifyRank;
+        private System.Windows.Forms.Button btnPromoteStudent;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Label lblStatus;
     }

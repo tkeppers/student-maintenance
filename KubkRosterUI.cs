@@ -25,6 +25,7 @@ namespace DojoStudentManagement
         private readonly DataGridViewCellStyle unverifiedRowStyle =
             new DataGridViewCellStyle { BackColor = UnverifiedRowColor };
 
+        private readonly IDataRepository dataRepository;
         private readonly KubkManagementFunctions kubkFunctions;
 
         private List<KubkRosterEntry> loadedEntries = new List<KubkRosterEntry>();
@@ -37,6 +38,7 @@ namespace DojoStudentManagement
         {
             InitializeComponent();
 
+            this.dataRepository = dataRepository;
             kubkFunctions = new KubkManagementFunctions(dataRepository);
         }
 
@@ -186,7 +188,24 @@ namespace DojoStudentManagement
 
         private void UpdateActionButtonState()
         {
-            btnVerifyRank.Enabled = SelectedEntry != null;
+            bool hasSelection = SelectedEntry != null;
+
+            btnVerifyRank.Enabled = hasSelection;
+            btnPromoteStudent.Enabled = hasSelection;
+        }
+
+        private void btnPromoteStudent_Click(object sender, EventArgs e)
+        {
+            KubkRosterEntry entry = SelectedEntry;
+
+            if (entry == null)
+                return;
+
+            using (var promoteDialog = new KubkPromoteStudentUI(dataRepository, entry))
+            {
+                promoteDialog.StudentPromoted += (s, args) => RefreshRoster();
+                promoteDialog.ShowDialog(this);
+            }
         }
 
         private void dgvRoster_SelectionChanged(object sender, EventArgs e)

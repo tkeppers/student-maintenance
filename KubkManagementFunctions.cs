@@ -335,5 +335,165 @@ namespace DojoStudentManagement
         {
             return dataRepository.VerifyStudentRank(studentID, artName, verifiedDate);
         }
+
+        #region KUBK promotions
+
+        public List<Rank> GetRankLadder()
+        {
+            return dataRepository.GetRankLadder();
+        }
+
+        /// <summary>
+        /// The rank the promotion dialog pre-selects: whatever Ranks.rank_next says follows the
+        /// student's current rank. Empty when the student is at the top of the ladder or holds a
+        /// rank the ladder does not know about. This is only a default - KUBK promotions are
+        /// granted on instructor recommendation, and hombu may pick any rank, since transfers
+        /// and corrections do skip rungs.
+        /// </summary>
+        public static string GetDefaultNextRank(IEnumerable<Rank> rankLadder, string currentRank)
+        {
+            if (rankLadder == null || string.IsNullOrWhiteSpace(currentRank))
+                return string.Empty;
+
+            Rank current = rankLadder.FirstOrDefault(r =>
+                string.Equals(r.RankID?.Trim(), currentRank.Trim(), StringComparison.OrdinalIgnoreCase));
+
+            if (current == null || !current.HasNextRank)
+                return string.Empty;
+
+            return current.RankNext.Trim();
+        }
+
+        public string GetDefaultNextRank(StudentArtsAndRank currentArt)
+        {
+            return GetDefaultNextRank(dataRepository.GetRankLadder(), currentArt?.Rank);
+        }
+
+        /// <summary>
+        /// Loads a student's enrollment in one art, or null when they are not enrolled in it.
+        /// Deliberately reads StudArts directly rather than going through
+        /// StudentMaintenanceFunctions.PopulateStudentData, because that path calls the
+        /// parameterless GetStudentTable() and so only ever sees Windsong students.
+        /// </summary>
+        public StudentArtsAndRank GetStudentArtEnrollment(int studentID, string artName)
+        {
+            if (string.IsNullOrWhiteSpace(artName))
+                return null;
+
+            DataTable artsTable = dataRepository.GetStudentArtsAndRanks(studentID);
+
+            if (artsTable == null || artsTable.Columns.Count == 0)
+                return null;
+
+            foreach (DataRow row in artsTable.Rows)
+            {
+                if (!string.Equals(row["studArt_art"].ToString().Trim(), artName.Trim(), StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                return new StudentArtsAndRank
+                {
+                    StudentArtID = int.TryParse(row["StudArt_ID"].ToString(), out int id) ? id : 0,
+                    StudentArt = row["studArt_art"].ToString(),
+                    Rank = row["studArt_rank"].ToString(),
+                    HoursInArt = double.TryParse(row["studArt_cumm"].ToString(), out double hours) ? hours : 0.0,
+                    DateStarted = DateTime.TryParse(row["studArt_begin"].ToString(), out DateTime started) ? started : (DateTime?)null,
+                    DateOfLatestSignIn = DateTime.TryParse(row["studArt_signin"].ToString(), out DateTime signIn) ? signIn : (DateTime?)null,
+                    DatePromoted = DateTime.TryParse(row["studArt_prodate"].ToString(), out DateTime promoted) ? promoted : (DateTime?)null,
+                    PromotionHours = double.TryParse(row["studArt_prohrs"].ToString(), out double promoHours) ? promoHours : 0.0,
+                    RankVerifiedDate = artsTable.Columns.Contains("studArt_rank_verified") &&
+                        DateTime.TryParse(row["studArt_rank_verified"].ToString(), out DateTime verified) ? verified : (DateTime?)null
+                };
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Validation for a KUBK promotion. Unlike the Windsong flow there are no eligibility
+        /// gates - hours, age and time in grade are informational only - so this checks just
+        /// that the entry itself is coherent.
+        /// </summary>
+        public static bool ValidateKubkPromotion(string newRank, DateTime promotionDate, string recommendedBy, out string error)
+        {
+            error = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(newRank))
+            {
+                error = "Please select the rank the student is being promoted to.";
+                return false;
+            }
+
+            // A day of slack keeps time-zone and clock skew from rejecting a same-day entry.
+            if (promotionDate.Date > DateTime.Today.AddDays(1))
+            {
+                error = "The promotion date cannot be in the future.";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(recommendedBy))
+            {
+                error = "Please enter the instructor who recommended this promotion.";
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Records a KUBK promotion. The write itself is the Phase 2 transaction, which updates
+        /// the StudArts rank, promotion date and verified stamp and inserts the Promo_History
+        /// row with the recommender, all atomically.
+        /// </summary>
+        public bool RecordKubkPromotion(StudentArtsAndRank art, string newRank, DateTime promotionDate,
+            string recommendedBy, out string error)
+        {
+            if (art == null)
+            {
+                error = "No martial art was selected for this promotion.";
+                return false;
+            }
+
+            if (!ValidateKubkPromotion(newRank, promotionDate, recommendedBy, out error))
+                return false;
+
+            // UpdateStudentPromotion reads the new rank and date off the art object.
+            art.NextRank = newRank.Trim();
+            art.DatePromoted = promotionDate.Date;
+
+            bool success = dataRepository.UpdateStudentPromotion(art.StudentArtID, art, recommendedBy.Trim());
+
+            if (!success)
+                error = "Error saving the promotion. The change may not have been saved.";
+            else
+                Log.Information($"Recorded KUBK promotion to {newRank} in {art.StudentArt} for student {art.StudentArtID}");
+
+            return success;
+        }
+
+        /// <summary>
+        /// Enrolls a student in an art they have no StudArts row for yet, so they can then be
+        /// promoted in it. The enrollment starts at the promotion date with the rank they are
+        /// coming from.
+        /// </summary>
+        public bool EnrollStudentInArt(int studentID, string artName, string startingRank, DateTime startDate)
+        {
+            var enrollment = new StudentArtsAndRank
+            {
+                StudentArtID = studentID,
+                StudentArt = artName,
+                Rank = startingRank,
+                HoursInArt = 0,
+                DateStarted = startDate.Date
+            };
+
+            bool success = dataRepository.AddNewStudentArt(enrollment);
+
+            if (success)
+                Log.Information($"Enrolled student {studentID} in {artName} at rank {startingRank}");
+
+            return success;
+        }
+
+        #endregion KUBK promotions
     }
 }

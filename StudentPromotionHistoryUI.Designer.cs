@@ -36,6 +36,7 @@ namespace DojoStudentManagement
             this.Rank = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PromoDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PromoHours = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.RecommendedBy = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPromotionHistory)).BeginInit();
             this.SuspendLayout();
             // 
@@ -48,7 +49,8 @@ namespace DojoStudentManagement
             this.Art,
             this.Rank,
             this.PromoDate,
-            this.PromoHours});
+            this.PromoHours,
+            this.RecommendedBy});
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -87,9 +89,16 @@ namespace DojoStudentManagement
             this.PromoHours.HeaderText = "Promo. Hours";
             this.PromoHours.Name = "PromoHours";
             this.PromoHours.ReadOnly = true;
-            // 
+            //
+            // RecommendedBy
+            //
+            this.RecommendedBy.HeaderText = "Recommended By";
+            this.RecommendedBy.Name = "RecommendedBy";
+            this.RecommendedBy.ReadOnly = true;
+            this.RecommendedBy.Width = 180;
+            //
             // StudentPromotionHistoryUI
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(802, 481);
@@ -110,5 +119,6 @@ namespace DojoStudentManagement
         private System.Windows.Forms.DataGridViewTextBoxColumn Rank;
         private System.Windows.Forms.DataGridViewTextBoxColumn PromoDate;
         private System.Windows.Forms.DataGridViewTextBoxColumn PromoHours;
+        private System.Windows.Forms.DataGridViewTextBoxColumn RecommendedBy;
     }
 }

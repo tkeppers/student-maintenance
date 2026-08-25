@@ -116,7 +116,10 @@ namespace DojoStudentManagement
                     DateTime.TryParse(row["studArt_prodate"].ToString(), out DateTime promotionDate)
                         ? promotionDate : (DateTime?)null,
                     PromotionHours = double.TryParse(row["studArt_prohrs"].ToString(), out double promotionHours)
-                        ? promotionHours : 0.0
+                        ? promotionHours : 0.0,
+                    RankVerifiedDate = artsAndRanks.Columns.Contains("studArt_rank_verified") &&
+                        DateTime.TryParse(row["studArt_rank_verified"].ToString(), out DateTime rankVerifiedDate)
+                        ? rankVerifiedDate : (DateTime?)null
                 };
 
                 student.StudentArtsAndRanks.Add(artsAndRank);

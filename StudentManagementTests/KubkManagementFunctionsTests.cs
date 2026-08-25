@@ -317,6 +317,27 @@ namespace DojoStudentManagementTests
 
         public DataTable GetKubkRoster(string clubId, int duesYear) => new DataTable();
 
+        public List<Rank> RankLadder = new List<Rank>();
+        public DataTable StudentArts;
+        public List<Tuple<int, StudentArtsAndRank, string>> Promotions = new List<Tuple<int, StudentArtsAndRank, string>>();
+        public List<StudentArtsAndRank> AddedArts = new List<StudentArtsAndRank>();
+
+        public List<Rank> GetRankLadder() => RankLadder;
+
+        public DataTable GetStudentArtsAndRanks(int studentID) => StudentArts ?? new DataTable();
+
+        public bool UpdateStudentPromotion(int studentID, StudentArtsAndRank artsAndRank, string recommendedBy = null)
+        {
+            Promotions.Add(Tuple.Create(studentID, artsAndRank, recommendedBy));
+            return WritesSucceed;
+        }
+
+        public bool AddNewStudentArt(StudentArtsAndRank artsAndRank)
+        {
+            AddedArts.Add(artsAndRank);
+            return WritesSucceed;
+        }
+
         // Unused by the tests in this file — throw to catch accidental calls
         public DataTable GetStudentTable() => throw new NotImplementedException();
         public DataTable GetStudentTable(string dojoFilter) => throw new NotImplementedException();
@@ -326,11 +347,8 @@ namespace DojoStudentManagementTests
         public bool DeleteStudent(int studentID) => throw new NotImplementedException();
         public DataTable GetStudentPromotionHistory(int studentID) => throw new NotImplementedException();
         public DataTable GetStudentSignInHistory(int studentID) => throw new NotImplementedException();
-        public DataTable GetStudentArtsAndRanks(int studentID) => throw new NotImplementedException();
-        public bool AddNewStudentArt(StudentArtsAndRank artsAndRank) => throw new NotImplementedException();
         public bool UpdateStudentArt(StudentArtsAndRank artsAndRank) => throw new NotImplementedException();
         public bool DeleteStudentArt(int studentArtID, string studentArtName) => throw new NotImplementedException();
-        public bool UpdateStudentPromotion(int studentID, StudentArtsAndRank artsAndRank, string recommendedBy = null) => throw new NotImplementedException();
         public bool UpdateStudentSignIn(int studentID, string studentArtName, double cumulativeTrainingHours, out double newCumulativeHours)
         {
             newCumulativeHours = 0;

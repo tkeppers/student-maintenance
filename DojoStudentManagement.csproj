@@ -124,6 +124,12 @@
     </Compile>
     <Compile Include="IDataRepository.cs" />
     <Compile Include="KubkManagementFunctions.cs" />
+    <Compile Include="KubkPromoteStudentUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KubkPromoteStudentUI.Designer.cs">
+      <DependentUpon>KubkPromoteStudentUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="KubkRosterEntry.cs" />
     <Compile Include="KubkRosterUI.cs">
       <SubType>Form</SubType>
@@ -139,6 +145,7 @@
       <DependentUpon>PromoteStudentUI.cs</DependentUpon>
     </Compile>
     <Compile Include="PromotionCriteria.cs" />
+    <Compile Include="Rank.cs" />
     <Compile Include="PromotionCriteriaUI.cs">
       <SubType>Form</SubType>
     </Compile>

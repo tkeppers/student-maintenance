@@ -46,6 +46,9 @@ namespace DojoStudentManagement
 
         DataTable GetKubkRoster(string clubId, int duesYear);
 
+        /// <summary>The rank ladder from the Ranks table, ordered from lowest rank to highest.</summary>
+        List<Rank> GetRankLadder();
+
         bool RecordDuesPayment(StudentDuesRecord dues);
         bool RemoveDuesPayment(int studentID, int year);
         List<StudentDuesRecord> GetDuesHistory(int studentID);

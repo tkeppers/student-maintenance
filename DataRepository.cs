@@ -1041,6 +1041,40 @@ namespace DojoStudentManagement
             return success;
         }
 
+        public List<Rank> GetRankLadder()
+        {
+            var ladder = new List<Rank>();
+            const string sql = "SELECT rank_id, rank_order, rank_next FROM Ranks ORDER BY rank_order";
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                OleDbCommand command = new OleDbCommand(sql, connection);
+
+                try
+                {
+                    connection.Open();
+                    using (OleDbDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            ladder.Add(new Rank
+                            {
+                                RankID = reader["rank_id"] == DBNull.Value ? string.Empty : reader["rank_id"].ToString().Trim(),
+                                RankOrder = reader["rank_order"] == DBNull.Value ? 0 : Convert.ToInt32(reader["rank_order"]),
+                                RankNext = reader["rank_next"] == DBNull.Value ? null : reader["rank_next"].ToString().Trim()
+                            });
+                        }
+                    }
+                }
+                catch (OleDbException ex)
+                {
+                    Log.Error($"Error retrieving rank ladder:\n{sql}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                }
+            }
+
+            return ladder;
+        }
+
         /// <summary>
         /// Removes a dojo outright. Only safe for a dojo no student points at - callers must
         /// check GetStudentCountsByDojo first, because Students.stud_club stores the club_id as
