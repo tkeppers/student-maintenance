@@ -204,6 +204,9 @@
     <EmbeddedResource Include="ApplicationSettingsUI.resx">
       <DependentUpon>ApplicationSettingsUI.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="DojoManagementUI.resx">
+      <DependentUpon>DojoManagementUI.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PromoteStudentUI.resx">
       <DependentUpon>PromoteStudentUI.cs</DependentUpon>
     </EmbeddedResource>

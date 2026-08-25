@@ -88,11 +88,11 @@ namespace DojoStudentManagement
             this.tsbSettings = new System.Windows.Forms.ToolStripDropDownButton();
             this.databasePathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsbAddNewStudent = new System.Windows.Forms.ToolStripButton();
+            this.tsbPromotionSettings = new System.Windows.Forms.ToolStripButton();
             this.tsbKubkOrganization = new System.Windows.Forms.ToolStripDropDownButton();
             this.memberDojosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.studentRosterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsbAddNewStudent = new System.Windows.Forms.ToolStripButton();
-            this.tsbPromotionSettings = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
             this.gbArtsAndRank = new System.Windows.Forms.GroupBox();
@@ -685,35 +685,36 @@ namespace DojoStudentManagement
             this.tsbPromotionSettings.Text = "Promotion Settings";
             this.tsbPromotionSettings.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.tsbPromotionSettings.Click += new System.EventHandler(this.tsbPromotionSettings_Click);
-            //
+            // 
             // tsbKubkOrganization
-            //
+            // 
             this.tsbKubkOrganization.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.memberDojosToolStripMenuItem,
             this.studentRosterToolStripMenuItem});
+            this.tsbKubkOrganization.Image = ((System.Drawing.Image)(resources.GetObject("tsbKubkOrganization.Image")));
             this.tsbKubkOrganization.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbKubkOrganization.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbKubkOrganization.Name = "tsbKubkOrganization";
-            this.tsbKubkOrganization.Size = new System.Drawing.Size(126, 52);
-            this.tsbKubkOrganization.Text = "KUBK Organization";
+            this.tsbKubkOrganization.Size = new System.Drawing.Size(49, 52);
+            this.tsbKubkOrganization.Text = "KUBK";
             this.tsbKubkOrganization.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            //
+            // 
             // memberDojosToolStripMenuItem
-            //
+            // 
             this.memberDojosToolStripMenuItem.Name = "memberDojosToolStripMenuItem";
             this.memberDojosToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.memberDojosToolStripMenuItem.Text = "Member Dojos...";
             this.memberDojosToolStripMenuItem.Click += new System.EventHandler(this.memberDojosToolStripMenuItem_Click);
-            //
+            // 
             // studentRosterToolStripMenuItem
-            //
+            // 
             this.studentRosterToolStripMenuItem.Name = "studentRosterToolStripMenuItem";
             this.studentRosterToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.studentRosterToolStripMenuItem.Text = "Student Roster...";
             this.studentRosterToolStripMenuItem.Click += new System.EventHandler(this.studentRosterToolStripMenuItem_Click);
-            //
+            // 
             // toolStripButton2
-            //
+            // 
             this.toolStripButton2.Enabled = false;
             this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
             this.toolStripButton2.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
