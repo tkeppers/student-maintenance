@@ -162,13 +162,27 @@ namespace DojoStudentManagementTests
         public void SetDuesPaid_WhenMarkingPaid_DoesNotRecordAnAmount()
         {
             // The dojo tracks money in its own accounting system; the row is only a confirmation
-            // marker, so it must not imply an amount that was never collected here.
+            // marker. The amount must be null - "not tracked" - rather than 0, which would read
+            // back as the student having paid nothing.
             var repo = new FakeKubkDataRepository();
             var functions = new KubkManagementFunctions(repo);
 
             functions.SetDuesPaid(7, 2026, true);
 
-            Assert.AreEqual(0m, repo.RecordedPayments[0].Amount);
+            Assert.IsNull(repo.RecordedPayments[0].Amount);
+        }
+
+        [Test]
+        public void RecordDuesPayment_WithAnExplicitAmount_StoresThatAmount()
+        {
+            // The amount-tracking entry point still records what it is given, so a fuller dues
+            // workflow can use it without the null-means-untracked convention getting in the way.
+            var repo = new FakeKubkDataRepository();
+            var functions = new KubkManagementFunctions(repo);
+
+            functions.RecordDuesPayment(7, 2026, DateTime.Today, 85.50m);
+
+            Assert.AreEqual(85.50m, repo.RecordedPayments[0].Amount);
         }
 
         [Test]

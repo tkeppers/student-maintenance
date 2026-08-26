@@ -282,6 +282,12 @@ namespace DojoStudentManagement
             return DefaultAnnualDuesFallback;
         }
 
+        /// <summary>
+        /// Records a dues payment together with the amount paid, falling back to the configured
+        /// annual dues when no amount is given. Unlike SetDuesPaid this always stores an amount,
+        /// so it is the entry point for a dues workflow that tracks money; the roster screen does
+        /// not use it today.
+        /// </summary>
         public bool RecordDuesPayment(int studentID, int year, DateTime paidDate, decimal? amount = null)
         {
             var dues = new StudentDuesRecord
@@ -304,7 +310,8 @@ namespace DojoStudentManagement
         /// Marks a student's annual dues paid or unpaid for a year - the only dues operation the
         /// roster screen offers. The dojo tracks the money itself in its accounting system, so no
         /// amount is recorded here: the stored row is purely a "confirmed paid" marker, stamped
-        /// with the date the box was ticked.
+        /// with the date the box was ticked. The amount is left null rather than zero so the data
+        /// says "not tracked" instead of "paid nothing".
         /// </summary>
         public bool SetDuesPaid(int studentID, int year, bool isPaid)
         {
@@ -316,7 +323,7 @@ namespace DojoStudentManagement
                 StudentID = studentID,
                 Year = year,
                 PaidDate = DateTime.Today,
-                Amount = 0m
+                Amount = null
             };
 
             return dataRepository.RecordDuesPayment(dues);

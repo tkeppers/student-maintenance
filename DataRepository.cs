@@ -1384,7 +1384,7 @@ namespace DojoStudentManagement
                             VALUES (@PaidDate, @Amount, @StudentID, @Year)", connection);
 
                     command.Parameters.Add("@PaidDate", OleDbType.DBDate).Value = (object)dues.PaidDate ?? DBNull.Value;
-                    command.Parameters.Add("@Amount", OleDbType.Currency).Value = dues.Amount;
+                    command.Parameters.Add("@Amount", OleDbType.Currency).Value = (object)dues.Amount ?? DBNull.Value;
                     command.Parameters.Add("@StudentID", OleDbType.Integer).Value = dues.StudentID;
                     command.Parameters.Add("@Year", OleDbType.Integer).Value = dues.Year;
 
@@ -1472,7 +1472,7 @@ namespace DojoStudentManagement
                                 StudentID = studentID,
                                 Year = Convert.ToInt32(reader["dues_year"]),
                                 PaidDate = reader["dues_paid_date"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["dues_paid_date"]),
-                                Amount = reader["dues_amount"] == DBNull.Value ? 0m : Convert.ToDecimal(reader["dues_amount"])
+                                Amount = reader["dues_amount"] == DBNull.Value ? (decimal?)null : Convert.ToDecimal(reader["dues_amount"])
                             });
                         }
                     }
