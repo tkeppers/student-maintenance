@@ -338,6 +338,28 @@ namespace DojoStudentManagementTests
 
         public List<Rank> GetRankLadder() => RankLadder;
 
+        public DataTable RankRegister;
+        public DataTable PromotionRecommenders;
+        public Dictionary<int, DateTime?> DuesPaidByYear = new Dictionary<int, DateTime?>();
+        public List<Tuple<int, string, string, DateTime>> RankCorrections = new List<Tuple<int, string, string, DateTime>>();
+        public List<Tuple<int, bool>> ActiveStatusChanges = new List<Tuple<int, bool>>();
+
+        public DataTable GetRankRegister(string clubId, bool includeWindsong) => RankRegister ?? new DataTable();
+        public DataTable GetPromotionRecommenders() => PromotionRecommenders ?? new DataTable();
+        public Dictionary<int, DateTime?> GetDuesPaidDatesForYear(int duesYear) => DuesPaidByYear;
+
+        public bool CorrectStudentRank(int studentID, string artName, string newRank, DateTime verifiedDate)
+        {
+            RankCorrections.Add(Tuple.Create(studentID, artName, newRank, verifiedDate));
+            return WritesSucceed;
+        }
+
+        public bool SetStudentActiveStatus(int studentID, bool active)
+        {
+            ActiveStatusChanges.Add(Tuple.Create(studentID, active));
+            return WritesSucceed;
+        }
+
         public DataTable GetStudentArtsAndRanks(int studentID) => StudentArts ?? new DataTable();
 
         public bool UpdateStudentPromotion(int studentID, StudentArtsAndRank artsAndRank, string recommendedBy = null)

@@ -187,6 +187,11 @@ namespace DojoStudentManagementTests
         public bool DeleteDojo(string clubId) => throw new NotImplementedException();
         public Dictionary<string, int> GetStudentCountsByDojo() => throw new NotImplementedException();
         public List<Rank> GetRankLadder() => throw new NotImplementedException();
+        public bool CorrectStudentRank(int studentID, string artName, string newRank, DateTime verifiedDate) => throw new NotImplementedException();
+        public bool SetStudentActiveStatus(int studentID, bool active) => throw new NotImplementedException();
+        public DataTable GetRankRegister(string clubId, bool includeWindsong) => throw new NotImplementedException();
+        public DataTable GetPromotionRecommenders() => throw new NotImplementedException();
+        public Dictionary<int, DateTime?> GetDuesPaidDatesForYear(int duesYear) => throw new NotImplementedException();
         public DataTable GetKubkRoster(string clubId, int duesYear) => throw new NotImplementedException();
         public bool RecordDuesPayment(StudentDuesRecord dues) => throw new NotImplementedException();
         public bool RemoveDuesPayment(int studentID, int year) => throw new NotImplementedException();

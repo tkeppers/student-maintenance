@@ -165,8 +165,10 @@ namespace DojoStudentManagement
         {
             KubkRosterSummary summary = KubkManagementFunctions.SummarizeRoster(displayedEntries);
 
+            string dojoLabel = string.IsNullOrEmpty(SelectedClubId) ? "All member dojos" : SelectedClubId;
+
             lblStatus.Text = $"Students shown: {summary.StudentsShown}     " +
-                $"Unverified ranks: {summary.UnverifiedRanks}     " +
+                $"{KubkManagementFunctions.BuildVerificationProgressText(dojoLabel, summary)}     " +
                 $"Unpaid for {SelectedDuesYear}: {summary.StudentsUnpaid}";
         }
 
@@ -188,10 +190,75 @@ namespace DojoStudentManagement
 
         private void UpdateActionButtonState()
         {
-            bool hasSelection = SelectedEntry != null;
+            KubkRosterEntry entry = SelectedEntry;
+            bool hasSelection = entry != null;
 
             btnVerifyRank.Enabled = hasSelection;
+            btnCorrectRank.Enabled = hasSelection;
             btnPromoteStudent.Enabled = hasSelection;
+            btnToggleActive.Enabled = hasSelection;
+
+            // The button offers the opposite of the student's current state.
+            btnToggleActive.Text = hasSelection && !entry.IsActive ? "Mark Active" : "Mark Inactive";
+        }
+
+        /// <summary>
+        /// Administrative correction of a rank the dojo has re-reported differently. Distinct
+        /// from Promote Student: this writes no promotion history.
+        /// </summary>
+        private void btnCorrectRank_Click(object sender, EventArgs e)
+        {
+            KubkRosterEntry entry = SelectedEntry;
+
+            if (entry == null)
+                return;
+
+            using (var correctionDialog = new RankCorrectionUI(entry.FullName, entry.Art, entry.Rank, kubkFunctions.GetRankLadder()))
+            {
+                if (correctionDialog.ShowDialog(this) != DialogResult.OK)
+                    return;
+
+                if (kubkFunctions.CorrectStudentRank(entry.StudentID, entry.Art, entry.Rank, correctionDialog.CorrectedRank, out string error))
+                {
+                    Log.Information($"Corrected {entry.Art} rank for student {entry.StudentID} to {correctionDialog.CorrectedRank}");
+                    RefreshRoster();
+                }
+                else
+                {
+                    MessageService.ShowErrorMessage(error, "Error Correcting Rank");
+                }
+            }
+        }
+
+        private void btnToggleActive_Click(object sender, EventArgs e)
+        {
+            KubkRosterEntry entry = SelectedEntry;
+
+            if (entry == null)
+                return;
+
+            bool makeActive = !entry.IsActive;
+            string action = makeActive ? "active" : "inactive";
+
+            DialogResult confirmation = MessageService.ShowAreYouSureMessage(
+                $"Mark {entry.FullName} as {action}?" +
+                (makeActive ? string.Empty : $"{Environment.NewLine}{Environment.NewLine}They will drop off this roster while \"Active students only\" is checked."),
+                $"Mark Student {char.ToUpper(action[0]) + action.Substring(1)}?");
+
+            if (confirmation != DialogResult.Yes)
+                return;
+
+            if (kubkFunctions.SetStudentActiveStatus(entry.StudentID, makeActive))
+            {
+                Log.Information($"Marked student {entry.StudentID} {action}");
+                RefreshRoster();
+            }
+            else
+            {
+                MessageService.ShowErrorMessage(
+                    $"Error updating the status for {entry.FullName}. The change may not have been saved.",
+                    "Error Updating Student");
+            }
         }
 
         private void btnPromoteStudent_Click(object sender, EventArgs e)

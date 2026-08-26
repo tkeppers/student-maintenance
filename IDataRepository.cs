@@ -54,5 +54,22 @@ namespace DojoStudentManagement
         List<StudentDuesRecord> GetDuesHistory(int studentID);
 
         bool VerifyStudentRank(int studentID, string artName, DateTime verifiedDate);
+
+        /// <summary>
+        /// Administrative rank correction: updates the recorded rank and stamps it verified.
+        /// Deliberately writes no Promo_History row - this fixes a record, it is not a promotion.
+        /// </summary>
+        bool CorrectStudentRank(int studentID, string artName, string newRank, DateTime verifiedDate);
+
+        bool SetStudentActiveStatus(int studentID, bool active);
+
+        /// <summary>Student/art rows for the rank register, with student contact details.</summary>
+        DataTable GetRankRegister(string clubId, bool includeWindsong);
+
+        /// <summary>Every promotion history row carrying a recommender, for the rank register.</summary>
+        DataTable GetPromotionRecommenders();
+
+        /// <summary>Dues-paid dates for one year, keyed by student id.</summary>
+        Dictionary<int, DateTime?> GetDuesPaidDatesForYear(int duesYear);
     }
 }

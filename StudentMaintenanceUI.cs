@@ -602,5 +602,23 @@ namespace DojoStudentManagement
                 kubkRoster.ShowDialog();
             }
         }
+
+        private void rankRegisterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowKubkReport(KubkReportKind.RankRegister);
+        }
+
+        private void unpaidDuesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowKubkReport(KubkReportKind.UnpaidDues);
+        }
+
+        private void ShowKubkReport(KubkReportKind reportKind)
+        {
+            using (KubkReportsUI report = new KubkReportsUI(dataRepository, reportKind))
+            {
+                report.ShowDialog();
+            }
+        }
     }
 }

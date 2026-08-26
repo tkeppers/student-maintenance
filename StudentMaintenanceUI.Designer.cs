@@ -93,6 +93,9 @@ namespace DojoStudentManagement
             this.tsbKubkOrganization = new System.Windows.Forms.ToolStripDropDownButton();
             this.memberDojosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.studentRosterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reportsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rankRegisterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.unpaidDuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
             this.gbArtsAndRank = new System.Windows.Forms.GroupBox();
@@ -690,7 +693,8 @@ namespace DojoStudentManagement
             // 
             this.tsbKubkOrganization.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.memberDojosToolStripMenuItem,
-            this.studentRosterToolStripMenuItem});
+            this.studentRosterToolStripMenuItem,
+            this.reportsToolStripMenuItem});
             this.tsbKubkOrganization.Image = ((System.Drawing.Image)(resources.GetObject("tsbKubkOrganization.Image")));
             this.tsbKubkOrganization.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.tsbKubkOrganization.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -712,6 +716,29 @@ namespace DojoStudentManagement
             this.studentRosterToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.studentRosterToolStripMenuItem.Text = "Student Roster...";
             this.studentRosterToolStripMenuItem.Click += new System.EventHandler(this.studentRosterToolStripMenuItem_Click);
+            //
+            // reportsToolStripMenuItem
+            //
+            this.reportsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.rankRegisterToolStripMenuItem,
+            this.unpaidDuesToolStripMenuItem});
+            this.reportsToolStripMenuItem.Name = "reportsToolStripMenuItem";
+            this.reportsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.reportsToolStripMenuItem.Text = "Reports";
+            //
+            // rankRegisterToolStripMenuItem
+            //
+            this.rankRegisterToolStripMenuItem.Name = "rankRegisterToolStripMenuItem";
+            this.rankRegisterToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            this.rankRegisterToolStripMenuItem.Text = "Rank Register...";
+            this.rankRegisterToolStripMenuItem.Click += new System.EventHandler(this.rankRegisterToolStripMenuItem_Click);
+            //
+            // unpaidDuesToolStripMenuItem
+            //
+            this.unpaidDuesToolStripMenuItem.Name = "unpaidDuesToolStripMenuItem";
+            this.unpaidDuesToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            this.unpaidDuesToolStripMenuItem.Text = "Unpaid Dues...";
+            this.unpaidDuesToolStripMenuItem.Click += new System.EventHandler(this.unpaidDuesToolStripMenuItem_Click);
             // 
             // toolStripButton2
             // 
@@ -917,6 +944,9 @@ namespace DojoStudentManagement
         private System.Windows.Forms.ToolStripDropDownButton tsbKubkOrganization;
         private System.Windows.Forms.ToolStripMenuItem memberDojosToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem studentRosterToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem reportsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem rankRegisterToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem unpaidDuesToolStripMenuItem;
         private System.Windows.Forms.ColumnHeader columnStudentArtID;
         private System.Windows.Forms.ColumnHeader columnLastSignInDate;
         private System.Windows.Forms.Label lblPromotionEligibility;

@@ -1317,7 +1317,7 @@ namespace DojoStudentManagement
             return rosterTable;
         }
 
-        private Dictionary<int, DateTime?> GetDuesPaidDatesForYear(int duesYear)
+        public Dictionary<int, DateTime?> GetDuesPaidDatesForYear(int duesYear)
         {
             Dictionary<int, DateTime?> result = new Dictionary<int, DateTime?>();
             const string sql = "SELECT dues_student, dues_paid_date FROM KUBK_Dues WHERE dues_year = @DuesYear";
@@ -1523,6 +1523,194 @@ namespace DojoStudentManagement
             }
 
             return success;
+        }
+
+        /// <summary>
+        /// Administrative rank correction, in one transaction: set the rank and stamp it
+        /// verified. No Promo_History row is written - inventing a promotion event for what is a
+        /// data fix would corrupt the promotion record. The old and new rank go to the log, which
+        /// is the audit trail for corrections.
+        /// </summary>
+        public bool CorrectStudentRank(int studentID, string artName, string newRank, DateTime verifiedDate)
+        {
+            bool success = true;
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                connection.Open();
+                using (OleDbTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        string previousRank = ReadCurrentRank(connection, transaction, studentID, artName);
+
+                        string sql = SupportsRankVerifiedColumn
+                            ? @"UPDATE StudArts SET studArt_rank = @NewRank, studArt_rank_verified = @VerifiedDate
+                                WHERE StudArt_ID = @StudentID AND studArt_art = @Art"
+                            : @"UPDATE StudArts SET studArt_rank = @NewRank
+                                WHERE StudArt_ID = @StudentID AND studArt_art = @Art";
+
+                        using (OleDbCommand command = new OleDbCommand(sql, connection, transaction))
+                        {
+                            command.Parameters.Add("@NewRank", OleDbType.VarChar).Value = newRank;
+
+                            if (SupportsRankVerifiedColumn)
+                                command.Parameters.Add("@VerifiedDate", OleDbType.DBDate).Value = verifiedDate;
+
+                            command.Parameters.Add("@StudentID", OleDbType.Integer).Value = studentID;
+                            command.Parameters.Add("@Art", OleDbType.VarChar).Value = artName;
+
+                            command.ExecuteNonQuery();
+                        }
+
+                        transaction.Commit();
+
+                        Log.Information($"Rank correction for student {studentID} in {artName}: " +
+                            $"'{previousRank}' -> '{newRank}', verified {verifiedDate:MM/dd/yyyy}. No promotion recorded.");
+                    }
+                    catch (OleDbException ex)
+                    {
+                        success = false;
+                        Log.Error($"Error correcting rank for student {studentID} in {artName}.\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        transaction.Rollback();
+                    }
+                }
+            }
+
+            return success;
+        }
+
+        private string ReadCurrentRank(OleDbConnection connection, OleDbTransaction transaction, int studentID, string artName)
+        {
+            using (OleDbCommand command = new OleDbCommand(
+                "SELECT studArt_rank FROM StudArts WHERE StudArt_ID = @StudentID AND studArt_art = @Art", connection, transaction))
+            {
+                command.Parameters.Add("@StudentID", OleDbType.Integer).Value = studentID;
+                command.Parameters.Add("@Art", OleDbType.VarChar).Value = artName;
+
+                object result = command.ExecuteScalar();
+                return result == null || result == DBNull.Value ? string.Empty : result.ToString();
+            }
+        }
+
+        public bool SetStudentActiveStatus(int studentID, bool active)
+        {
+            bool success = true;
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                connection.Open();
+                OleDbCommand command = new OleDbCommand(
+                    "UPDATE Students SET stud_status = @Status WHERE stud_id = @StudentID", connection);
+
+                if (connection.State == ConnectionState.Open)
+                {
+                    command.Parameters.Add("@Status", OleDbType.VarChar).Value = active ? "A" : "I";
+                    command.Parameters.Add("@StudentID", OleDbType.Integer).Value = studentID;
+
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                        Log.Information($"Set student {studentID} to {(active ? "active" : "inactive")}");
+                    }
+                    catch (OleDbException ex)
+                    {
+                        success = false;
+                        Log.Error($"Error setting active status for student {studentID}.\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                        connection.Close();
+                    }
+                }
+                else
+                {
+                    success = false;
+                    Log.Error($"{DateTime.Now}: Connection failed when setting student active status.\n");
+                }
+            }
+
+            return success;
+        }
+
+        /// <summary>
+        /// Student/art rows for the rank register. Scope is one club, every member dojo, or every
+        /// dojo including Windsong. Carries student contact details so the same query can back
+        /// the unpaid-dues report's chase-up columns.
+        /// </summary>
+        public DataTable GetRankRegister(string clubId, bool includeWindsong)
+        {
+            if (DatabaseExistsAndIsValid() == false)
+                return new DataTable();
+
+            string scope;
+
+            if (!string.IsNullOrEmpty(clubId))
+                scope = " WHERE s.stud_club = @ClubID";
+            else if (includeWindsong)
+                scope = string.Empty;
+            else
+                scope = " WHERE s.stud_club <> 'Windsong'";
+
+            string verifiedColumn = SupportsRankVerifiedColumn ? ", sa.studArt_rank_verified" : string.Empty;
+
+            string sql = $@"SELECT s.stud_id, s.stud_firstname, s.stud_lastname, s.stud_status, s.stud_club,
+                s.stud_email, s.stud_homephone,
+                sa.studArt_art, sa.studArt_rank, sa.studArt_prodate{verifiedColumn}
+                FROM Students AS s INNER JOIN StudArts AS sa ON s.stud_id = sa.StudArt_ID{scope}
+                ORDER BY s.stud_club, s.stud_lastname, s.stud_firstname, sa.studArt_art";
+
+            DataTable registerTable = new DataTable();
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                OleDbCommand command = new OleDbCommand(sql, connection);
+
+                if (!string.IsNullOrEmpty(clubId))
+                    command.Parameters.Add("@ClubID", OleDbType.VarChar).Value = clubId;
+
+                try
+                {
+                    connection.Open();
+                    new OleDbDataAdapter(command).Fill(registerTable);
+                }
+                catch (OleDbException ex)
+                {
+                    Log.Error($"Error retrieving rank register for club '{clubId}':\n{sql}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                    return new DataTable();
+                }
+            }
+
+            registerTable.Columns["stud_id"].ColumnName = "StudentID";
+            registerTable.Columns["stud_firstname"].ColumnName = "StudentFirstName";
+            registerTable.Columns["stud_lastname"].ColumnName = "StudentLastName";
+            registerTable.Columns["stud_status"].ColumnName = "StudentStatus";
+            registerTable.Columns["stud_club"].ColumnName = "StudentDojo";
+            registerTable.Columns["stud_email"].ColumnName = "StudentEmailAddress";
+            registerTable.Columns["stud_homephone"].ColumnName = "StudentPrimaryPhone";
+            registerTable.Columns["studArt_art"].ColumnName = "Art";
+            registerTable.Columns["studArt_rank"].ColumnName = "Rank";
+            registerTable.Columns["studArt_prodate"].ColumnName = "LastPromotionDate";
+
+            if (registerTable.Columns.Contains("studArt_rank_verified"))
+                registerTable.Columns["studArt_rank_verified"].ColumnName = "RankVerifiedDate";
+            else
+                registerTable.Columns.Add("RankVerifiedDate", typeof(DateTime));
+
+            return registerTable;
+        }
+
+        /// <summary>
+        /// Promotion rows that name a recommender. Returns an empty table when the database
+        /// predates the KUBK migration and has no promo_recommended_by column.
+        /// </summary>
+        public DataTable GetPromotionRecommenders()
+        {
+            if (!SupportsRecommendedByColumn)
+                return new DataTable();
+
+            const string sql = @"SELECT promo_student, promo_art, promo_date, promo_recommended_by
+                FROM Promo_History WHERE promo_recommended_by IS NOT NULL";
+
+            return ExecuteQuery(sql);
         }
 
         #endregion KUBK

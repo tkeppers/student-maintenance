@@ -20,6 +20,15 @@ namespace DojoStudentManagement
         public DateTime? RankVerifiedDate { get; set; }
         public DateTime? DuesPaidDate { get; set; }
 
+        /// <summary>
+        /// Instructor who recommended the most recent promotion, when one is recorded. Populated
+        /// for the rank register; the roster screen leaves it null.
+        /// </summary>
+        public string RecommendedBy { get; set; }
+
+        public string EmailAddress { get; set; }
+        public string PhoneNumber { get; set; }
+
         public string FullName => $"{FirstName} {LastName}";
 
         public bool RankIsVerified => RankVerifiedDate.HasValue;
@@ -53,5 +62,9 @@ namespace DojoStudentManagement
         public int StudentsShown { get; set; }
         public int UnverifiedRanks { get; set; }
         public int StudentsUnpaid { get; set; }
+
+        /// <summary>Rank rows already verified, out of TotalRanks - re-verification progress.</summary>
+        public int VerifiedRanks { get; set; }
+        public int TotalRanks { get; set; }
     }
 }

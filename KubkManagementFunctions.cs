@@ -226,8 +226,27 @@ namespace DojoStudentManagement
             {
                 StudentsShown = entryList.Select(e => e.StudentID).Distinct().Count(),
                 UnverifiedRanks = entryList.Count(e => !e.RankIsVerified),
-                StudentsUnpaid = entryList.Where(e => !e.DuesArePaid).Select(e => e.StudentID).Distinct().Count()
+                StudentsUnpaid = entryList.Where(e => !e.DuesArePaid).Select(e => e.StudentID).Distinct().Count(),
+                VerifiedRanks = entryList.Count(e => e.RankIsVerified),
+                TotalRanks = entryList.Count
             };
+        }
+
+        /// <summary>
+        /// Progress text for the roster status line, e.g. "DENTON: 12 of 19 ranks verified".
+        /// Re-verification is per (student, art), so the counts are rank rows, not students.
+        /// </summary>
+        public static string BuildVerificationProgressText(string dojoLabel, KubkRosterSummary summary)
+        {
+            if (summary == null || summary.TotalRanks == 0)
+                return $"{dojoLabel}: no ranks to verify";
+
+            string progress = $"{dojoLabel}: {summary.VerifiedRanks} of {summary.TotalRanks} ranks verified";
+
+            if (summary.VerifiedRanks == summary.TotalRanks)
+                progress += " - complete";
+
+            return progress;
         }
 
         /// <summary>
@@ -512,5 +531,236 @@ namespace DojoStudentManagement
         }
 
         #endregion KUBK promotions
+
+        #region Rank verification
+
+        /// <summary>
+        /// Validates an administrative rank correction. Correcting a rank to the value it already
+        /// holds is refused with a friendly message rather than writing a pointless update.
+        /// </summary>
+        public static bool ValidateRankCorrection(string currentRank, string newRank, out string error)
+        {
+            error = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(newRank))
+            {
+                error = "Please select the rank the student actually holds.";
+                return false;
+            }
+
+            if (string.Equals(currentRank?.Trim(), newRank.Trim(), StringComparison.OrdinalIgnoreCase))
+            {
+                error = $"The recorded rank is already {newRank.Trim()}. " +
+                    "Use Verify Rank to confirm it without changing it.";
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Applies a rank correction. This is a data fix, not a promotion: the repository updates
+        /// the rank and the verified stamp but writes no promotion history.
+        /// </summary>
+        public bool CorrectStudentRank(int studentID, string artName, string currentRank, string newRank, out string error)
+        {
+            if (!ValidateRankCorrection(currentRank, newRank, out error))
+                return false;
+
+            bool success = dataRepository.CorrectStudentRank(studentID, artName, newRank.Trim(), DateTime.Today);
+
+            if (!success)
+                error = "Error saving the rank correction. The change may not have been saved.";
+
+            return success;
+        }
+
+        public bool SetStudentActiveStatus(int studentID, bool active)
+        {
+            return dataRepository.SetStudentActiveStatus(studentID, active);
+        }
+
+        #endregion Rank verification
+
+        #region Reports
+
+        /// <summary>
+        /// Rank register rows for the chosen scope, each carrying the recommender of the
+        /// student's most recent promotion in that art where one is recorded.
+        /// </summary>
+        public List<KubkRosterEntry> GetRankRegister(string clubId, bool includeWindsong)
+        {
+            List<KubkRosterEntry> entries = MapRegister(dataRepository.GetRankRegister(clubId, includeWindsong));
+            Dictionary<string, string> recommenders = BuildLatestRecommenderLookup(dataRepository.GetPromotionRecommenders());
+
+            foreach (KubkRosterEntry entry in entries)
+            {
+                if (recommenders.TryGetValue(BuildRecommenderKey(entry.StudentID, entry.Art), out string recommendedBy))
+                    entry.RecommendedBy = recommendedBy;
+            }
+
+            return entries;
+        }
+
+        public static List<KubkRosterEntry> MapRegister(DataTable registerTable)
+        {
+            var entries = new List<KubkRosterEntry>();
+
+            if (registerTable == null || registerTable.Columns.Count == 0)
+                return entries;
+
+            foreach (DataRow row in registerTable.Rows)
+            {
+                entries.Add(new KubkRosterEntry
+                {
+                    StudentID = row["StudentID"] == DBNull.Value ? 0 : Convert.ToInt32(row["StudentID"]),
+                    FirstName = row["StudentFirstName"] == DBNull.Value ? string.Empty : row["StudentFirstName"].ToString(),
+                    LastName = row["StudentLastName"] == DBNull.Value ? string.Empty : row["StudentLastName"].ToString(),
+                    IsActive = row["StudentStatus"] != DBNull.Value &&
+                        string.Equals(row["StudentStatus"].ToString(), "A", StringComparison.OrdinalIgnoreCase),
+                    Dojo = row["StudentDojo"] == DBNull.Value ? string.Empty : row["StudentDojo"].ToString(),
+                    Art = row["Art"] == DBNull.Value ? string.Empty : row["Art"].ToString(),
+                    Rank = row["Rank"] == DBNull.Value ? string.Empty : row["Rank"].ToString(),
+                    LastPromotionDate = row["LastPromotionDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(row["LastPromotionDate"]),
+                    RankVerifiedDate = row["RankVerifiedDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(row["RankVerifiedDate"]),
+                    EmailAddress = row["StudentEmailAddress"] == DBNull.Value ? string.Empty : row["StudentEmailAddress"].ToString(),
+                    PhoneNumber = row["StudentPrimaryPhone"] == DBNull.Value ? string.Empty : row["StudentPrimaryPhone"].ToString()
+                });
+            }
+
+            return entries;
+        }
+
+        /// <summary>
+        /// Reduces promotion history to the most recent recommender per (student, art). Done in
+        /// memory because Jet has no clean way to express "latest row per group".
+        /// </summary>
+        public static Dictionary<string, string> BuildLatestRecommenderLookup(DataTable promotionRows)
+        {
+            var latestDates = new Dictionary<string, DateTime>();
+            var recommenders = new Dictionary<string, string>();
+
+            if (promotionRows == null || promotionRows.Columns.Count == 0)
+                return recommenders;
+
+            foreach (DataRow row in promotionRows.Rows)
+            {
+                if (row["promo_recommended_by"] == DBNull.Value)
+                    continue;
+
+                string recommendedBy = row["promo_recommended_by"].ToString().Trim();
+
+                if (string.IsNullOrEmpty(recommendedBy))
+                    continue;
+
+                int studentID = row["promo_student"] == DBNull.Value ? 0 : Convert.ToInt32(row["promo_student"]);
+                string art = row["promo_art"] == DBNull.Value ? string.Empty : row["promo_art"].ToString();
+                DateTime promoDate = row["promo_date"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(row["promo_date"]);
+
+                string key = BuildRecommenderKey(studentID, art);
+
+                if (latestDates.TryGetValue(key, out DateTime existing) && existing >= promoDate)
+                    continue;
+
+                latestDates[key] = promoDate;
+                recommenders[key] = recommendedBy;
+            }
+
+            return recommenders;
+        }
+
+        private static string BuildRecommenderKey(int studentID, string art)
+        {
+            return studentID + "|" + (art ?? string.Empty).Trim().ToUpperInvariant();
+        }
+
+        /// <summary>
+        /// Member-dojo students with no dues recorded for the year. One row per student, not per
+        /// art, and ordered by dojo then name so the report reads as a chase-up list.
+        /// </summary>
+        public List<UnpaidDuesEntry> GetUnpaidDues(int duesYear, bool activeStudentsOnly)
+        {
+            List<KubkRosterEntry> register = MapRegister(dataRepository.GetRankRegister(null, includeWindsong: false));
+            Dictionary<int, DateTime?> duesPaid = dataRepository.GetDuesPaidDatesForYear(duesYear);
+            Dictionary<string, string> instructors = BuildInstructorLookup(dataRepository.GetDojos());
+
+            return BuildUnpaidDuesEntries(register, duesPaid, instructors, activeStudentsOnly);
+        }
+
+        public static Dictionary<string, string> BuildInstructorLookup(IEnumerable<Dojo> dojos)
+        {
+            var instructors = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+            if (dojos == null)
+                return instructors;
+
+            foreach (Dojo dojo in dojos)
+            {
+                if (!string.IsNullOrWhiteSpace(dojo.ClubID))
+                    instructors[dojo.ClubID.Trim()] = dojo.Instructor ?? string.Empty;
+            }
+
+            return instructors;
+        }
+
+        public static List<UnpaidDuesEntry> BuildUnpaidDuesEntries(IEnumerable<KubkRosterEntry> register,
+            Dictionary<int, DateTime?> duesPaidByStudent, Dictionary<string, string> instructorsByDojo,
+            bool activeStudentsOnly)
+        {
+            if (register == null)
+                return new List<UnpaidDuesEntry>();
+
+            return register
+                .Where(e => !activeStudentsOnly || e.IsActive)
+                .Where(e => !HasPaidDues(duesPaidByStudent, e.StudentID))
+                // The register is per (student, art); dues are per student, so collapse first.
+                .GroupBy(e => e.StudentID)
+                .Select(group => group.First())
+                .Select(e => new UnpaidDuesEntry
+                {
+                    StudentID = e.StudentID,
+                    FirstName = e.FirstName,
+                    LastName = e.LastName,
+                    IsActive = e.IsActive,
+                    Dojo = e.Dojo,
+                    Instructor = LookupInstructor(instructorsByDojo, e.Dojo),
+                    EmailAddress = e.EmailAddress,
+                    PhoneNumber = e.PhoneNumber
+                })
+                .OrderBy(e => e.Dojo)
+                .ThenBy(e => e.LastName)
+                .ThenBy(e => e.FirstName)
+                .ToList();
+        }
+
+        private static bool HasPaidDues(Dictionary<int, DateTime?> duesPaidByStudent, int studentID)
+        {
+            return duesPaidByStudent != null &&
+                duesPaidByStudent.TryGetValue(studentID, out DateTime? paidDate) &&
+                paidDate.HasValue;
+        }
+
+        private static string LookupInstructor(Dictionary<string, string> instructorsByDojo, string dojo)
+        {
+            if (instructorsByDojo == null || string.IsNullOrWhiteSpace(dojo))
+                return string.Empty;
+
+            return instructorsByDojo.TryGetValue(dojo.Trim(), out string instructor) ? instructor : string.Empty;
+        }
+
+        /// <summary>Per-dojo subtotals for the unpaid dues report, in the report's own order.</summary>
+        public static List<KeyValuePair<string, int>> BuildUnpaidDuesSubtotals(IEnumerable<UnpaidDuesEntry> entries)
+        {
+            if (entries == null)
+                return new List<KeyValuePair<string, int>>();
+
+            return entries
+                .GroupBy(e => e.Dojo)
+                .OrderBy(group => group.Key)
+                .Select(group => new KeyValuePair<string, int>(group.Key, group.Count()))
+                .ToList();
+        }
+
+        #endregion Reports
     }
 }

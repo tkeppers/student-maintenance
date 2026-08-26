@@ -47,6 +47,8 @@ namespace DojoStudentManagement
             this.colYearsAtRank = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colDuesPaid = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.btnVerifyRank = new System.Windows.Forms.Button();
+            this.btnCorrectRank = new System.Windows.Forms.Button();
+            this.btnToggleActive = new System.Windows.Forms.Button();
             this.btnPromoteStudent = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.lblStatus = new System.Windows.Forms.Label();
@@ -235,13 +237,39 @@ namespace DojoStudentManagement
             //
             // btnPromoteStudent
             //
+            this.btnCorrectRank.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnCorrectRank.Enabled = false;
+            this.btnCorrectRank.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCorrectRank.Location = new System.Drawing.Point(162, 588);
+            this.btnCorrectRank.Name = "btnCorrectRank";
+            this.btnCorrectRank.Size = new System.Drawing.Size(160, 38);
+            this.btnCorrectRank.TabIndex = 8;
+            this.btnCorrectRank.Text = "Correct Rank...";
+            this.btnCorrectRank.UseVisualStyleBackColor = true;
+            this.btnCorrectRank.Click += new System.EventHandler(this.btnCorrectRank_Click);
+            //
+            // btnToggleActive
+            //
+            this.btnToggleActive.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnToggleActive.Enabled = false;
+            this.btnToggleActive.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnToggleActive.Location = new System.Drawing.Point(332, 588);
+            this.btnToggleActive.Name = "btnToggleActive";
+            this.btnToggleActive.Size = new System.Drawing.Size(170, 38);
+            this.btnToggleActive.TabIndex = 9;
+            this.btnToggleActive.Text = "Mark Inactive";
+            this.btnToggleActive.UseVisualStyleBackColor = true;
+            this.btnToggleActive.Click += new System.EventHandler(this.btnToggleActive_Click);
+            //
+            // btnPromoteStudent
+            //
             this.btnPromoteStudent.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnPromoteStudent.Enabled = false;
             this.btnPromoteStudent.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnPromoteStudent.Location = new System.Drawing.Point(162, 588);
+            this.btnPromoteStudent.Location = new System.Drawing.Point(512, 588);
             this.btnPromoteStudent.Name = "btnPromoteStudent";
             this.btnPromoteStudent.Size = new System.Drawing.Size(180, 38);
-            this.btnPromoteStudent.TabIndex = 8;
+            this.btnPromoteStudent.TabIndex = 10;
             this.btnPromoteStudent.Text = "Promote Student...";
             this.btnPromoteStudent.UseVisualStyleBackColor = true;
             this.btnPromoteStudent.Click += new System.EventHandler(this.btnPromoteStudent_Click);
@@ -276,6 +304,8 @@ namespace DojoStudentManagement
             this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnPromoteStudent);
+            this.Controls.Add(this.btnToggleActive);
+            this.Controls.Add(this.btnCorrectRank);
             this.Controls.Add(this.btnVerifyRank);
             this.Controls.Add(this.dgvRoster);
             this.Controls.Add(this.cbUnpaidOnly);
@@ -314,6 +344,8 @@ namespace DojoStudentManagement
         private System.Windows.Forms.DataGridViewTextBoxColumn colYearsAtRank;
         private System.Windows.Forms.DataGridViewCheckBoxColumn colDuesPaid;
         private System.Windows.Forms.Button btnVerifyRank;
+        private System.Windows.Forms.Button btnCorrectRank;
+        private System.Windows.Forms.Button btnToggleActive;
         private System.Windows.Forms.Button btnPromoteStudent;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Label lblStatus;

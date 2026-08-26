@@ -115,6 +115,7 @@
     <Compile Include="ApplicationSettingsUI.Designer.cs">
       <DependentUpon>ApplicationSettingsUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="CsvWriter.cs" />
     <Compile Include="Dojo.cs" />
     <Compile Include="DojoManagementUI.cs">
       <SubType>Form</SubType>
@@ -130,7 +131,19 @@
     <Compile Include="KubkPromoteStudentUI.Designer.cs">
       <DependentUpon>KubkPromoteStudentUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="KubkReportsUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KubkReportsUI.Designer.cs">
+      <DependentUpon>KubkReportsUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="KubkRosterEntry.cs" />
+    <Compile Include="RankCorrectionUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RankCorrectionUI.Designer.cs">
+      <DependentUpon>RankCorrectionUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="KubkRosterUI.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -167,6 +180,7 @@
     </Compile>
     <Compile Include="StudentArtsAndRank.cs" />
     <Compile Include="StudentDuesRecord.cs" />
+    <Compile Include="UnpaidDuesEntry.cs" />
     <Compile Include="StudentMaintenanceUI.cs">
       <SubType>Form</SubType>
     </Compile>
