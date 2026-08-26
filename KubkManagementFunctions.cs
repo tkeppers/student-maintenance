@@ -495,6 +495,15 @@ namespace DojoStudentManagement
             return success;
         }
 
+        /// <summary>
+        /// Removes a student's enrollment in one art. Used to undo an enrollment created for a
+        /// promotion that then failed, so a cancelled or failed promotion leaves no trace.
+        /// </summary>
+        public bool RemoveStudentArtEnrollment(int studentID, string artName)
+        {
+            return dataRepository.DeleteStudentArt(studentID, artName);
+        }
+
         #endregion KUBK promotions
     }
 }

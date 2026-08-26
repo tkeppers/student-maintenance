@@ -300,6 +300,28 @@ namespace DojoStudentManagementTests
             Assert.IsFalse(functions.EnrollStudentInArt(42, "Judo", "WHITE", DateTime.Today));
         }
 
+        [Test]
+        public void RemoveStudentArtEnrollment_DeletesJustThatArt()
+        {
+            // Backs out an enrollment created for a promotion that then failed, so a failed
+            // promotion leaves no trace.
+            var repo = new FakeKubkDataRepository();
+            var functions = new KubkManagementFunctions(repo);
+
+            Assert.IsTrue(functions.RemoveStudentArtEnrollment(42, "Judo"));
+
+            CollectionAssert.AreEqual(new[] { Tuple.Create(42, "Judo") }, repo.DeletedArts);
+        }
+
+        [Test]
+        public void RemoveStudentArtEnrollment_PropagatesRepositoryFailure()
+        {
+            var repo = new FakeKubkDataRepository { WritesSucceed = false };
+            var functions = new KubkManagementFunctions(repo);
+
+            Assert.IsFalse(functions.RemoveStudentArtEnrollment(42, "Judo"));
+        }
+
         #endregion
     }
 }

@@ -195,17 +195,35 @@ namespace DojoStudentManagement
                 return;
             }
 
-            if (selectedEnrollment == null && !EnrollStudentInSelectedArt(newRank, promotionDate))
-                return;
-
+            // Confirm before anything is written. Enrolling first and asking afterwards would
+            // leave a brand-new enrollment behind when the user backs out here.
             DialogResult confirmation = MessageService.ShowAreYouSureMessage(
                 $"Promote {studentName} to {newRank} in {SelectedArt}?", "Promote Student?");
 
             if (confirmation != DialogResult.Yes)
                 return;
 
+            bool enrollmentWasCreated = false;
+
+            if (selectedEnrollment == null)
+            {
+                if (!EnrollStudentInSelectedArt(newRank, promotionDate))
+                    return;
+
+                enrollmentWasCreated = true;
+            }
+
             if (!kubkFunctions.RecordKubkPromotion(selectedEnrollment, newRank, promotionDate, recommendedBy, out string error))
             {
+                // Enrollment and promotion are separate transactions, so undo an enrollment we
+                // created a moment ago rather than leaving the student enrolled in an art they
+                // were never actually promoted in.
+                if (enrollmentWasCreated && !UndoEnrollmentCreatedForThisPromotion())
+                {
+                    error += $"{Environment.NewLine}{Environment.NewLine}" +
+                        $"{studentName} was also left enrolled in {SelectedArt} and may need to be removed manually.";
+                }
+
                 MessageService.ShowErrorMessage(error, "Error Recording Promotion");
                 return;
             }
@@ -257,6 +275,28 @@ namespace DojoStudentManagement
 
             Log.Information($"Enrolled student {studentID} in {SelectedArt} ahead of a KUBK promotion");
             return true;
+        }
+
+        /// <summary>
+        /// Compensating delete for an enrollment this dialog created immediately before a
+        /// promotion that then failed. Returns false if the enrollment could not be removed, in
+        /// which case the caller tells the user it was left behind.
+        /// </summary>
+        private bool UndoEnrollmentCreatedForThisPromotion()
+        {
+            bool removed = kubkFunctions.RemoveStudentArtEnrollment(studentID, SelectedArt);
+
+            if (removed)
+            {
+                selectedEnrollment = null;
+                Log.Information($"Removed the {SelectedArt} enrollment for student {studentID} after the promotion failed");
+            }
+            else
+            {
+                Log.Error($"Could not remove the {SelectedArt} enrollment for student {studentID} after the promotion failed");
+            }
+
+            return removed;
         }
 
         private string GetRankBelow(string rank)

@@ -348,7 +348,14 @@ namespace DojoStudentManagementTests
         public DataTable GetStudentPromotionHistory(int studentID) => throw new NotImplementedException();
         public DataTable GetStudentSignInHistory(int studentID) => throw new NotImplementedException();
         public bool UpdateStudentArt(StudentArtsAndRank artsAndRank) => throw new NotImplementedException();
-        public bool DeleteStudentArt(int studentArtID, string studentArtName) => throw new NotImplementedException();
+
+        public List<Tuple<int, string>> DeletedArts = new List<Tuple<int, string>>();
+
+        public bool DeleteStudentArt(int studentArtID, string studentArtName)
+        {
+            DeletedArts.Add(Tuple.Create(studentArtID, studentArtName));
+            return WritesSucceed;
+        }
         public bool UpdateStudentSignIn(int studentID, string studentArtName, double cumulativeTrainingHours, out double newCumulativeHours)
         {
             newCumulativeHours = 0;

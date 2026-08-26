@@ -104,28 +104,62 @@ namespace DojoStudentManagement
             if (suppressFieldChangeEvents)
                 return;
 
-            PromptToSaveOutstandingChanges();
+            if (!PromptToSaveOutstandingChanges())
+            {
+                // The save the user asked for failed, so their edits are still on screen and
+                // unsaved. Put the selection back rather than navigating away from them.
+                RestoreSelectionToCurrentDojo();
+                return;
+            }
+
             LoadSelectedDojoIntoDetails();
         }
 
         /// <summary>
-        /// If the user has pending edits, offer to save them before moving on. Answering No
-        /// discards the edits - the selection change itself is never blocked, which keeps the
-        /// grid's behavior predictable.
+        /// If the user has pending edits, offer to save them before moving on.
         /// </summary>
-        private void PromptToSaveOutstandingChanges()
+        /// <returns>
+        /// True when it is safe to proceed - nothing was pending, the save succeeded, or the
+        /// user chose to discard. False only when a save was attempted and failed, in which case
+        /// the caller must stay put so the edits are not silently lost.
+        /// </returns>
+        private bool PromptToSaveOutstandingChanges()
         {
             if (!isDirty)
-                return;
+                return true;
 
             string name = isAddingNew ? "the new dojo" : selectedDojo?.Name ?? "this dojo";
             DialogResult result = MessageService.ShowAreYouSureMessage(
                 $"You have unsaved changes to {name}. Save them now?", "Unsaved Changes");
 
-            if (result == DialogResult.Yes)
-                SaveCurrentDojo();
-            else
+            if (result != DialogResult.Yes)
+            {
                 ClearDirtyState();
+                return true;
+            }
+
+            return SaveCurrentDojo();
+        }
+
+        /// <summary>
+        /// Re-selects the dojo the edit panel is showing, used to undo a selection change that
+        /// must not go ahead.
+        /// </summary>
+        private void RestoreSelectionToCurrentDojo()
+        {
+            if (selectedDojo == null)
+                return;
+
+            int index = displayedDojos.FindIndex(d =>
+                string.Equals(d.ClubID, selectedDojo.ClubID, StringComparison.OrdinalIgnoreCase));
+
+            if (index < 0 || index >= dgvDojos.Rows.Count)
+                return;
+
+            suppressFieldChangeEvents = true;
+            dgvDojos.ClearSelection();
+            dgvDojos.Rows[index].Selected = true;
+            suppressFieldChangeEvents = false;
         }
 
         private void LoadSelectedDojoIntoDetails()
@@ -242,13 +276,25 @@ namespace DojoStudentManagement
 
         private void cbHideInactive_CheckedChanged(object sender, EventArgs e)
         {
-            PromptToSaveOutstandingChanges();
+            if (suppressFieldChangeEvents)
+                return;
+
+            if (!PromptToSaveOutstandingChanges())
+            {
+                // Put the checkbox back: rebuilding the grid now would drop the failed edits.
+                suppressFieldChangeEvents = true;
+                cbHideInactive.Checked = !cbHideInactive.Checked;
+                suppressFieldChangeEvents = false;
+                return;
+            }
+
             RefreshDojoGrid(selectedDojo?.ClubID);
         }
 
         private void btnAddDojo_Click(object sender, EventArgs e)
         {
-            PromptToSaveOutstandingChanges();
+            if (!PromptToSaveOutstandingChanges())
+                return;
 
             selectedDojo = null;
             ClearDojoDetails();
@@ -304,22 +350,24 @@ namespace DojoStudentManagement
             SaveCurrentDojo();
         }
 
-        private void SaveCurrentDojo()
+        /// <summary>
+        /// Persists the edit panel. Returns false when the save did not happen, leaving the
+        /// user's edits on screen so they can correct and retry.
+        /// </summary>
+        private bool SaveCurrentDojo()
         {
             if (!isAddingNew && selectedDojo == null)
-                return;
+                return true;
 
-            Dojo dojoToSave = isAddingNew ? new Dojo() : selectedDojo;
+            // Build a candidate rather than writing into the selected Dojo up front: a failed
+            // save must not leave the in-memory list holding values the database never accepted.
+            Dojo dojoToSave = new Dojo();
             ApplyDetailsToDojo(dojoToSave);
 
             if (!kubkFunctions.SaveDojo(dojoToSave, isAddingNew, out string validationError))
             {
                 MessageService.ShowErrorMessage(validationError, "Unable to Save Dojo");
-
-                // Re-load so an in-memory object mutated by a failed save cannot drift out of
-                // sync with what is actually stored.
-                LoadDojos(isAddingNew ? null : dojoToSave.ClubID);
-                return;
+                return false;
             }
 
             string savedClubId = dojoToSave.ClubID;
@@ -328,6 +376,8 @@ namespace DojoStudentManagement
             ClearDirtyState();
             isAddingNew = false;
 
+            // Re-reads from the database, so the grid and edit panel show what was actually
+            // stored rather than what was typed.
             LoadDojos(savedClubId);
 
             string message = wasAdding
@@ -336,6 +386,8 @@ namespace DojoStudentManagement
 
             MessageService.ShowInformationMessage(message, "Success");
             Log.Information(message);
+
+            return true;
         }
 
         private void ApplyDetailsToDojo(Dojo dojo)
@@ -360,7 +412,10 @@ namespace DojoStudentManagement
 
         private void DojoManagementUI_FormClosing(object sender, FormClosingEventArgs e)
         {
-            PromptToSaveOutstandingChanges();
+            // Keep the form open when the save the user asked for failed, so closing cannot
+            // discard edits the user was told were not saved.
+            if (!PromptToSaveOutstandingChanges())
+                e.Cancel = true;
         }
     }
 }
