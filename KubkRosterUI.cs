@@ -34,6 +34,12 @@ namespace DojoStudentManagement
         /// <summary>Set while controls are being populated from code so handlers do not re-enter.</summary>
         private bool suppressCriteriaEvents;
 
+        /// <summary>
+        /// Set while the grid is being rebuilt, so writing cell values back into the Dues Paid
+        /// column cannot be mistaken for the user ticking it and recurse into another save.
+        /// </summary>
+        private bool suppressDuesCellEvents;
+
         public KubkRosterUI(IDataRepository dataRepository)
         {
             InitializeComponent();
@@ -114,6 +120,7 @@ namespace DojoStudentManagement
         private void PopulateRosterGrid()
         {
             dgvRoster.SuspendLayout();
+            suppressDuesCellEvents = true;
 
             try
             {
@@ -155,6 +162,7 @@ namespace DojoStudentManagement
             }
             finally
             {
+                suppressDuesCellEvents = false;
                 dgvRoster.ResumeLayout();
             }
 
@@ -298,13 +306,27 @@ namespace DojoStudentManagement
         }
 
         /// <summary>
+        /// A checkbox cell does not normally commit until focus leaves it, so its change would
+        /// not be seen here. Committing as soon as it goes dirty makes CellValueChanged fire for
+        /// both a mouse click and a space-bar toggle.
+        /// </summary>
+        private void dgvRoster_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            if (suppressDuesCellEvents || !dgvRoster.IsCurrentCellDirty)
+                return;
+
+            if (dgvRoster.CurrentCell?.OwningColumn == colDuesPaid)
+                dgvRoster.CommitEdit(DataGridViewDataErrorContexts.Commit);
+        }
+
+        /// <summary>
         /// Ticking the Dues Paid box marks that year's dues confirmed for the student; clearing
         /// it removes the marker. The dojo tracks the money in its own accounting system, so no
         /// amount is collected here.
         /// </summary>
-        private void dgvRoster_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void dgvRoster_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0 || e.ColumnIndex != colDuesPaid.Index)
+            if (suppressDuesCellEvents || e.RowIndex < 0 || e.ColumnIndex != colDuesPaid.Index)
                 return;
 
             // Taken from the row itself, not from displayedEntries by index, because sorting
@@ -314,22 +336,27 @@ namespace DojoStudentManagement
             if (entry == null)
                 return;
 
-            bool markAsPaid = !entry.DuesArePaid;
+            // Follow the state the user actually set rather than inverting what was loaded, so a
+            // keyboard toggle and a mouse click both do what the checkbox now shows.
+            bool markAsPaid = Convert.ToBoolean(dgvRoster.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
+
+            // Leave edit mode before the refresh below clears the rows out from under it.
+            dgvRoster.EndEdit();
 
             if (kubkFunctions.SetDuesPaid(entry.StudentID, SelectedDuesYear, markAsPaid))
             {
                 Log.Information($"Marked {SelectedDuesYear} dues {(markAsPaid ? "paid" : "unpaid")} for student {entry.StudentID}");
-                RefreshRoster();
             }
             else
             {
                 MessageService.ShowErrorMessage(
                     $"Error updating the dues status for {entry.FullName}. The change may not have been saved.",
                     "Error Updating Dues");
-
-                // Re-read so the checkbox cannot be left showing a state the database rejected.
-                RefreshRoster();
             }
+
+            // Either way, re-read so the checkbox cannot be left showing a state the database
+            // does not hold.
+            RefreshRoster();
         }
 
         private void btnVerifyRank_Click(object sender, EventArgs e)

@@ -150,17 +150,37 @@ CREATE TABLE KUBK_Dues (
     }
 
     Write-Host "`n=== Step 6: Default club_active to true for existing rows ==="
-    # Jet/ACE has no concept of NULL for a YESNO column added via ALTER TABLE -
-    # new rows come back as False, not NULL. So this seed step only makes sense
-    # (and is only safe to re-run without clobbering later user edits) the one
-    # time the column is actually created.
+    # Jet/ACE has no concept of NULL for a YESNO column added via ALTER TABLE - new rows come
+    # back as False, not NULL - so the seed cannot be driven off NULLs and must not run blindly
+    # on every pass, or it would undo deactivations the user made later.
+    #
+    # Seeding therefore happens when the column was created on this run, and also when no dojo
+    # at all is active. That second case is what a run interrupted between the ALTER and this
+    # UPDATE leaves behind: every dojo false, and no way for a re-run to notice. A registry with
+    # zero active dojos is never a state anyone sets deliberately, so repairing it is safe.
+    $activeCountCmd = $connection.CreateCommand()
+    $activeCountCmd.CommandText = "SELECT COUNT(*) FROM Club_Parameters WHERE club_active = true"
+    $activeCount = [int]$activeCountCmd.ExecuteScalar()
+
+    $totalCmd = $connection.CreateCommand()
+    $totalCmd.CommandText = "SELECT COUNT(*) FROM Club_Parameters"
+    $totalCount = [int]$totalCmd.ExecuteScalar()
+
     if ($clubActiveJustCreated) {
         $updateCmd = $connection.CreateCommand()
         $updateCmd.CommandText = "UPDATE Club_Parameters SET club_active = true"
         $rowsAffected = $updateCmd.ExecuteNonQuery()
-        Write-Host "  Set club_active = true for $rowsAffected existing row(s)"
-    } else {
-        Write-Host "  SKIP: club_active column already existed (not re-seeding, to avoid overwriting later edits)"
+        Write-Host "  Set club_active = true for $rowsAffected newly added row(s)"
+    }
+    elseif ($totalCount -gt 0 -and $activeCount -eq 0) {
+        Write-Warning "  club_active exists but no dojo is active - repairing a partially applied earlier run."
+        $updateCmd = $connection.CreateCommand()
+        $updateCmd.CommandText = "UPDATE Club_Parameters SET club_active = true"
+        $rowsAffected = $updateCmd.ExecuteNonQuery()
+        Write-Host "  Set club_active = true for $rowsAffected row(s)"
+    }
+    else {
+        Write-Host "  SKIP: club_active already seeded ($activeCount of $totalCount dojos active); not re-seeding over later edits"
     }
 
     Write-Host "`n=== Step 7: Stamp Windsong StudArts rows as rank-verified ==="

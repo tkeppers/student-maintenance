@@ -524,9 +524,20 @@ namespace DojoStudentManagement
         /// <summary>
         /// Removes a student's enrollment in one art. Used to undo an enrollment created for a
         /// promotion that then failed, so a cancelled or failed promotion leaves no trace.
+        ///
+        /// The art name is required. DeleteStudentArt takes it as an optional parameter and
+        /// drops the art predicate entirely when it is null, which would delete every one of the
+        /// student's enrollments instead of the single one this is meant to undo.
         /// </summary>
         public bool RemoveStudentArtEnrollment(int studentID, string artName)
         {
+            if (string.IsNullOrWhiteSpace(artName))
+            {
+                Log.Error($"Refusing to remove an enrollment for student {studentID} without an art name, " +
+                    "because that would delete every art they are enrolled in.");
+                return false;
+            }
+
             return dataRepository.DeleteStudentArt(studentID, artName);
         }
 

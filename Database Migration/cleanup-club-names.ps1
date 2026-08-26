@@ -102,6 +102,30 @@ try {
     }
     $reader.Close()
 
+    # --- Column widths, so oversized values are caught in the report rather than blowing up
+    # --- half way through the apply pass. Read from the schema instead of hard-coding, and fall
+    # --- back to the known Access definitions if the lookup fails.
+    $maxClubIdLength = 10
+    $maxClubNameLength = 30
+
+    try {
+        $columnSchema = $connection.GetSchema('Columns')
+        foreach ($row in $columnSchema.Rows) {
+            if ([string]$row['TABLE_NAME'] -ne 'Club_Parameters') { continue }
+            if ($row['CHARACTER_MAXIMUM_LENGTH'] -eq [DBNull]::Value) { continue }
+
+            switch ([string]$row['COLUMN_NAME']) {
+                'club_id'   { $maxClubIdLength = [int]$row['CHARACTER_MAXIMUM_LENGTH'] }
+                'club_name' { $maxClubNameLength = [int]$row['CHARACTER_MAXIMUM_LENGTH'] }
+            }
+        }
+    }
+    catch {
+        Write-Warning "Could not read Club_Parameters column widths; assuming club_id($maxClubIdLength) / club_name($maxClubNameLength)."
+    }
+
+    Write-Host "Column widths in use: club_id($maxClubIdLength), club_name($maxClubNameLength)"
+
     # Map: normalized key -> canonical club_id (first match wins)
     $canonicalByNormalized = @{}
     foreach ($clubId in $clubIds) {
@@ -146,11 +170,21 @@ try {
     }
 
     Write-Host "`n=== Report: stud_club values with NO match in Club_Parameters (will create new club) ==="
+    $oversizedActions = New-Object System.Collections.Generic.List[object]
+
     if ($newClubActions.Count -eq 0) {
         Write-Host "  (none)"
     } else {
         foreach ($action in $newClubActions) {
             Write-Host "  '$($action.Current)'  ->  new Club_Parameters row: club_id = club_name = '$($action.NewName)'"
+
+            # An oversized value would be rejected by Access at INSERT time. Catch it here so it
+            # is a reported problem rather than a failure part way through the apply pass.
+            if ($action.NewName.Length -gt $maxClubIdLength -or $action.NewName.Length -gt $maxClubNameLength) {
+                $oversizedActions.Add($action)
+                Write-Warning ("      too long to store: {0} characters, but club_id holds {1} and club_name holds {2}" -f `
+                    $action.NewName.Length, $maxClubIdLength, $maxClubNameLength)
+            }
         }
     }
 
@@ -177,7 +211,18 @@ try {
 
     if (-not $Apply) {
         Write-Host "`nDry run complete. No changes were made. Re-run with -Apply to perform these changes."
+
+        if ($oversizedActions.Count -gt 0) {
+            Write-Warning "$($oversizedActions.Count) club name(s) are too long to store. Shorten them in Students.stud_club before applying."
+        }
+
         return
+    }
+
+    if ($oversizedActions.Count -gt 0) {
+        throw ("Refusing to apply: {0} club name(s) are too long for Club_Parameters " -f $oversizedActions.Count) +
+            "(club_id holds $maxClubIdLength characters, club_name holds $maxClubNameLength). " +
+            "Shorten them in Students.stud_club first, then re-run. Nothing has been changed."
     }
 
     Write-Host "`n=== Applying changes ==="
@@ -191,48 +236,64 @@ try {
         return $p
     }
 
-    foreach ($action in $renameActions) {
-        if ($action.Canonical -eq 'Windsong' -or $action.Current -eq 'Windsong') {
-            throw "Aborting: refusing to modify any row touching the literal value 'Windsong' (Current='$($action.Current)', Canonical='$($action.Canonical)')."
-        }
-        # Parameters are positional: order must match placeholder order in SQL.
-        $updateCmd = $connection.CreateCommand()
-        $updateCmd.CommandText = "UPDATE Students SET stud_club = ? WHERE stud_club = ?"
-        $updateCmd.Parameters.Add((New-TextParam -Value $action.Canonical)) | Out-Null
-        $updateCmd.Parameters.Add((New-TextParam -Value $action.Current)) | Out-Null
-        $rowsAffected = $updateCmd.ExecuteNonQuery()
-        Write-Host "  Updated $rowsAffected row(s): '$($action.Current)' -> '$($action.Canonical)'"
-    }
+    # Everything below runs inside one transaction. Without it, a statement failing part way
+    # through would leave the database half-cleaned: some students renamed, some clubs created,
+    # and no record of where it stopped.
+    $transaction = $connection.BeginTransaction()
 
-    foreach ($action in $newClubActions) {
-        $insertCmd = $connection.CreateCommand()
-        $insertCmd.CommandText = "INSERT INTO Club_Parameters (club_id, club_name, club_active, annual_dues) VALUES (?, ?, ?, ?)"
-        $insertCmd.Parameters.Add((New-TextParam -Value $action.NewName)) | Out-Null
-        $insertCmd.Parameters.Add((New-TextParam -Value $action.NewName)) | Out-Null
-        $activeParam = New-Object System.Data.OleDb.OleDbParameter
-        $activeParam.OleDbType = [System.Data.OleDb.OleDbType]::Boolean
-        $activeParam.Value = $true
-        $insertCmd.Parameters.Add($activeParam) | Out-Null
-        $duesParam = New-Object System.Data.OleDb.OleDbParameter
-        $duesParam.OleDbType = [System.Data.OleDb.OleDbType]::Currency
-        $duesParam.Value = 0
-        $insertCmd.Parameters.Add($duesParam) | Out-Null
-        $insertCmd.ExecuteNonQuery() | Out-Null
-        Write-Host "  Inserted new Club_Parameters row: club_id = club_name = '$($action.NewName)'"
-
-        # If the stud_club spelling itself needs normalizing (e.g. trimmed whitespace),
-        # update Students rows to the new canonical (trimmed) spelling too.
-        if ($action.Current -cne $action.NewName) {
+    try {
+        foreach ($action in $renameActions) {
+            if ($action.Canonical -eq 'Windsong' -or $action.Current -eq 'Windsong') {
+                throw "Aborting: refusing to modify any row touching the literal value 'Windsong' (Current='$($action.Current)', Canonical='$($action.Canonical)')."
+            }
+            # Parameters are positional: order must match placeholder order in SQL.
             $updateCmd = $connection.CreateCommand()
+            $updateCmd.Transaction = $transaction
             $updateCmd.CommandText = "UPDATE Students SET stud_club = ? WHERE stud_club = ?"
-            $updateCmd.Parameters.Add((New-TextParam -Value $action.NewName)) | Out-Null
+            $updateCmd.Parameters.Add((New-TextParam -Value $action.Canonical)) | Out-Null
             $updateCmd.Parameters.Add((New-TextParam -Value $action.Current)) | Out-Null
             $rowsAffected = $updateCmd.ExecuteNonQuery()
-            Write-Host "    Updated $rowsAffected Students row(s) to trimmed spelling '$($action.NewName)'"
+            Write-Host "  Updated $rowsAffected row(s): '$($action.Current)' -> '$($action.Canonical)'"
         }
-    }
 
-    Write-Host "`nApply complete."
+        foreach ($action in $newClubActions) {
+            $insertCmd = $connection.CreateCommand()
+            $insertCmd.Transaction = $transaction
+            $insertCmd.CommandText = "INSERT INTO Club_Parameters (club_id, club_name, club_active, annual_dues) VALUES (?, ?, ?, ?)"
+            $insertCmd.Parameters.Add((New-TextParam -Value $action.NewName)) | Out-Null
+            $insertCmd.Parameters.Add((New-TextParam -Value $action.NewName)) | Out-Null
+            $activeParam = New-Object System.Data.OleDb.OleDbParameter
+            $activeParam.OleDbType = [System.Data.OleDb.OleDbType]::Boolean
+            $activeParam.Value = $true
+            $insertCmd.Parameters.Add($activeParam) | Out-Null
+            $duesParam = New-Object System.Data.OleDb.OleDbParameter
+            $duesParam.OleDbType = [System.Data.OleDb.OleDbType]::Currency
+            $duesParam.Value = 0
+            $insertCmd.Parameters.Add($duesParam) | Out-Null
+            $insertCmd.ExecuteNonQuery() | Out-Null
+            Write-Host "  Inserted new Club_Parameters row: club_id = club_name = '$($action.NewName)'"
+
+            # If the stud_club spelling itself needs normalizing (e.g. trimmed whitespace),
+            # update Students rows to the new canonical (trimmed) spelling too.
+            if ($action.Current -cne $action.NewName) {
+                $updateCmd = $connection.CreateCommand()
+                $updateCmd.Transaction = $transaction
+                $updateCmd.CommandText = "UPDATE Students SET stud_club = ? WHERE stud_club = ?"
+                $updateCmd.Parameters.Add((New-TextParam -Value $action.NewName)) | Out-Null
+                $updateCmd.Parameters.Add((New-TextParam -Value $action.Current)) | Out-Null
+                $rowsAffected = $updateCmd.ExecuteNonQuery()
+                Write-Host "    Updated $rowsAffected Students row(s) to trimmed spelling '$($action.NewName)'"
+            }
+        }
+
+        $transaction.Commit()
+        Write-Host "`nApply complete. All changes committed."
+    }
+    catch {
+        $transaction.Rollback()
+        Write-Host "`nApply FAILED - every change above has been rolled back. The database is unchanged." -ForegroundColor Red
+        throw
+    }
 }
 finally {
     $connection.Close()

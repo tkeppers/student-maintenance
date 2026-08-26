@@ -164,7 +164,8 @@ namespace DojoStudentManagement
             this.dgvRoster.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvRoster.Size = new System.Drawing.Size(1160, 520);
             this.dgvRoster.TabIndex = 6;
-            this.dgvRoster.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvRoster_CellContentClick);
+            this.dgvRoster.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvRoster_CellValueChanged);
+            this.dgvRoster.CurrentCellDirtyStateChanged += new System.EventHandler(this.dgvRoster_CurrentCellDirtyStateChanged);
             this.dgvRoster.SelectionChanged += new System.EventHandler(this.dgvRoster_SelectionChanged);
             //
             // colStudentName

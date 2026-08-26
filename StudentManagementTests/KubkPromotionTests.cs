@@ -322,6 +322,21 @@ namespace DojoStudentManagementTests
             Assert.IsFalse(functions.RemoveStudentArtEnrollment(42, "Judo"));
         }
 
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase("   ")]
+        [Test]
+        public void RemoveStudentArtEnrollment_WithoutAnArtName_DeletesNothing(string artName)
+        {
+            // DeleteStudentArt drops its art predicate when the name is null, which would wipe
+            // every enrollment the student has instead of the one being undone.
+            var repo = new FakeKubkDataRepository();
+            var functions = new KubkManagementFunctions(repo);
+
+            Assert.IsFalse(functions.RemoveStudentArtEnrollment(42, artName));
+            CollectionAssert.IsEmpty(repo.DeletedArts, "No delete should reach the repository at all");
+        }
+
         #endregion
     }
 }
