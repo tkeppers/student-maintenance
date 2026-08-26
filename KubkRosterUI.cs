@@ -143,6 +143,11 @@ namespace DojoStudentManagement
                     if (!entry.RankIsVerified)
                         row.DefaultCellStyle = unverifiedRowStyle;
 
+                    // The entry travels with its row. These columns are sortable, so a row's
+                    // position stops matching its position in displayedEntries as soon as the
+                    // user sorts, and every action here writes against a specific student.
+                    row.Tag = entry;
+
                     rows[i] = row;
                 }
 
@@ -172,6 +177,10 @@ namespace DojoStudentManagement
                 $"Unpaid for {SelectedDuesYear}: {summary.StudentsUnpaid}";
         }
 
+        /// <summary>
+        /// Read from the row's Tag rather than by index: the grid is sortable, so a row index is
+        /// not a position in displayedEntries once the user has clicked a column header.
+        /// </summary>
         private KubkRosterEntry SelectedEntry
         {
             get
@@ -179,12 +188,7 @@ namespace DojoStudentManagement
                 if (dgvRoster.SelectedRows.Count == 0)
                     return null;
 
-                int index = dgvRoster.SelectedRows[0].Index;
-
-                if (index < 0 || index >= displayedEntries.Count)
-                    return null;
-
-                return displayedEntries[index];
+                return dgvRoster.SelectedRows[0].Tag as KubkRosterEntry;
             }
         }
 
@@ -303,10 +307,13 @@ namespace DojoStudentManagement
             if (e.RowIndex < 0 || e.ColumnIndex != colDuesPaid.Index)
                 return;
 
-            if (e.RowIndex >= displayedEntries.Count)
+            // Taken from the row itself, not from displayedEntries by index, because sorting
+            // reorders the rows and this writes dues against a specific student.
+            KubkRosterEntry entry = dgvRoster.Rows[e.RowIndex].Tag as KubkRosterEntry;
+
+            if (entry == null)
                 return;
 
-            KubkRosterEntry entry = displayedEntries[e.RowIndex];
             bool markAsPaid = !entry.DuesArePaid;
 
             if (kubkFunctions.SetDuesPaid(entry.StudentID, SelectedDuesYear, markAsPaid))

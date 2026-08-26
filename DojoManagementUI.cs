@@ -67,7 +67,12 @@ namespace DojoStudentManagement
 
             foreach (Dojo dojo in displayedDojos)
             {
-                dgvDojos.Rows.Add(dojo.ClubID, dojo.Name, dojo.Instructor, dojo.Active ? "Yes" : "No");
+                int rowIndex = dgvDojos.Rows.Add(dojo.ClubID, dojo.Name, dojo.Instructor, dojo.Active ? "Yes" : "No");
+
+                // The dojo travels with its row. These columns are sortable, so a row's position
+                // stops matching its position in displayedDojos as soon as the user sorts, and
+                // the edit panel must always show the dojo actually highlighted.
+                dgvDojos.Rows[rowIndex].Tag = dojo;
             }
 
             suppressFieldChangeEvents = false;
@@ -79,20 +84,21 @@ namespace DojoStudentManagement
                 return;
             }
 
-            int indexToSelect = 0;
+            DataGridViewRow rowToSelect = dgvDojos.Rows[0];
 
             if (!string.IsNullOrEmpty(clubIdToReselect))
             {
-                int foundIndex = displayedDojos.FindIndex(d =>
-                    string.Equals(d.ClubID, clubIdToReselect, StringComparison.OrdinalIgnoreCase));
-
-                if (foundIndex >= 0)
-                    indexToSelect = foundIndex;
+                // Matched on the row's Tag so this lands on the right row whatever order the
+                // grid is currently sorted into.
+                rowToSelect = dgvDojos.Rows
+                    .Cast<DataGridViewRow>()
+                    .FirstOrDefault(r => string.Equals((r.Tag as Dojo)?.ClubID, clubIdToReselect, StringComparison.OrdinalIgnoreCase))
+                    ?? dgvDojos.Rows[0];
             }
 
             dgvDojos.ClearSelection();
-            dgvDojos.Rows[indexToSelect].Selected = true;
-            dgvDojos.FirstDisplayedScrollingRowIndex = indexToSelect;
+            rowToSelect.Selected = true;
+            dgvDojos.FirstDisplayedScrollingRowIndex = rowToSelect.Index;
 
             // Selecting a row while the grid was being rebuilt may not have raised
             // SelectionChanged, so populate the panel explicitly.
@@ -150,15 +156,18 @@ namespace DojoStudentManagement
             if (selectedDojo == null)
                 return;
 
-            int index = displayedDojos.FindIndex(d =>
-                string.Equals(d.ClubID, selectedDojo.ClubID, StringComparison.OrdinalIgnoreCase));
+            // Found by walking the rows rather than by list position, so this still re-selects
+            // the right row after the user has sorted the grid.
+            DataGridViewRow rowToSelect = dgvDojos.Rows
+                .Cast<DataGridViewRow>()
+                .FirstOrDefault(r => string.Equals((r.Tag as Dojo)?.ClubID, selectedDojo.ClubID, StringComparison.OrdinalIgnoreCase));
 
-            if (index < 0 || index >= dgvDojos.Rows.Count)
+            if (rowToSelect == null)
                 return;
 
             suppressFieldChangeEvents = true;
             dgvDojos.ClearSelection();
-            dgvDojos.Rows[index].Selected = true;
+            rowToSelect.Selected = true;
             suppressFieldChangeEvents = false;
         }
 
@@ -174,12 +183,17 @@ namespace DojoStudentManagement
                 return;
             }
 
-            int index = dgvDojos.SelectedRows[0].Index;
+            // From the row's Tag rather than by index: the grid is sortable, so a row index is
+            // not a position in displayedDojos once the user has clicked a column header.
+            selectedDojo = dgvDojos.SelectedRows[0].Tag as Dojo;
 
-            if (index < 0 || index >= displayedDojos.Count)
+            if (selectedDojo == null)
+            {
+                ClearDojoDetails();
+                UpdateDeleteButtonState();
                 return;
+            }
 
-            selectedDojo = displayedDojos[index];
             PopulateDojoDetails(selectedDojo);
             UpdateDeleteButtonState();
         }
