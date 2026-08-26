@@ -231,13 +231,27 @@ namespace DojoStudentManagementTests
         }
 
         [Test]
-        public void BuildLatestRecommenderLookup_IgnoresRowsWithoutARecommender()
+        public void BuildLatestRecommenderLookup_LatestPromotionWinsEvenWithNoRecommender()
+        {
+            // The register shows this recommender next to the latest promotion's date, so an
+            // older instructor's name must not be carried forward onto a newer promotion.
+            DataTable table = BuildRecommenderTable();
+            AddRecommenderRow(table, 42, "Aikido", new DateTime(2024, 1, 1), "Old Sensei");
+            AddRecommenderRow(table, 42, "Aikido", new DateTime(2026, 1, 1), null);
+
+            Dictionary<string, string> lookup = KubkManagementFunctions.BuildLatestRecommenderLookup(table);
+
+            Assert.IsEmpty(lookup["42|AIKIDO"], "The 2026 promotion names nobody, so the cell must be blank");
+        }
+
+        [Test]
+        public void BuildLatestRecommenderLookup_BlankRecommenderOnLatestDoesNotFallBack()
         {
             DataTable table = BuildRecommenderTable();
-            AddRecommenderRow(table, 42, "Aikido", new DateTime(2026, 1, 1), null);
-            AddRecommenderRow(table, 42, "Aikido", new DateTime(2020, 1, 1), "   ");
+            AddRecommenderRow(table, 42, "Aikido", new DateTime(2020, 1, 1), "Old Sensei");
+            AddRecommenderRow(table, 42, "Aikido", new DateTime(2026, 1, 1), "   ");
 
-            Assert.IsEmpty(KubkManagementFunctions.BuildLatestRecommenderLookup(table));
+            Assert.IsEmpty(KubkManagementFunctions.BuildLatestRecommenderLookup(table)["42|AIKIDO"]);
         }
 
         [Test]
@@ -336,6 +350,65 @@ namespace DojoStudentManagementTests
 
             Assert.AreEqual("Denton Sensei", unpaid.First(e => e.Dojo == "DENTON").Instructor);
             Assert.IsEmpty(unpaid.First(e => e.Dojo == "UCO").Instructor, "A dojo with no instructor should give an empty cell, not null");
+        }
+
+        [Test]
+        public void MapMemberDojoStudents_IncludesStudentsWithNoArtEnrollment()
+        {
+            // The population for this report comes from Students, so a student enrolled in no
+            // art still owes dues and must be listed. Building it from the rank register, which
+            // inner-joins StudArts, silently dropped them.
+            DataTable table = BuildStudentTable();
+            AddStudentRow(table, 1, "Jane", "Smith", "A", "DENTON");
+            AddStudentRow(table, 2, "Bob", "Adams", "A", "Windsong");
+
+            List<KubkRosterEntry> students = KubkManagementFunctions.MapMemberDojoStudents(table);
+
+            Assert.AreEqual(1, students.Count, "Windsong students are not tracked by this report");
+            Assert.AreEqual(1, students[0].StudentID);
+            Assert.IsEmpty(students[0].Art ?? string.Empty, "Art is irrelevant to owing dues");
+            Assert.AreEqual("jane@example.com", students[0].EmailAddress);
+        }
+
+        [Test]
+        public void MapMemberDojoStudents_ExcludesWindsongRegardlessOfCasing()
+        {
+            DataTable table = BuildStudentTable();
+            AddStudentRow(table, 1, "A", "B", "A", "  windsong ");
+
+            Assert.IsEmpty(KubkManagementFunctions.MapMemberDojoStudents(table));
+        }
+
+        [Test]
+        public void MapMemberDojoStudents_WithNoTable_ReturnsEmpty()
+        {
+            Assert.IsEmpty(KubkManagementFunctions.MapMemberDojoStudents(null));
+            Assert.IsEmpty(KubkManagementFunctions.MapMemberDojoStudents(new DataTable()));
+        }
+
+        private static DataTable BuildStudentTable()
+        {
+            var table = new DataTable();
+            table.Columns.Add("StudentID", typeof(int));
+            foreach (string column in new[] { "StudentFirstName", "StudentLastName", "StudentStatus",
+                "StudentDojo", "StudentEmailAddress", "StudentPrimaryPhone" })
+            {
+                table.Columns.Add(column, typeof(string));
+            }
+            return table;
+        }
+
+        private static void AddStudentRow(DataTable table, int id, string first, string last, string status, string dojo)
+        {
+            DataRow row = table.NewRow();
+            row["StudentID"] = id;
+            row["StudentFirstName"] = first;
+            row["StudentLastName"] = last;
+            row["StudentStatus"] = status;
+            row["StudentDojo"] = dojo;
+            row["StudentEmailAddress"] = "jane@example.com";
+            row["StudentPrimaryPhone"] = "555-1234";
+            table.Rows.Add(row);
         }
 
         [Test]

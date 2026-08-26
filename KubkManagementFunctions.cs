@@ -643,8 +643,13 @@ namespace DojoStudentManagement
         }
 
         /// <summary>
-        /// Reduces promotion history to the most recent recommender per (student, art). Done in
-        /// memory because Jet has no clean way to express "latest row per group".
+        /// Finds each (student, art)'s most recent promotion and returns that promotion's
+        /// recommender, which may be blank. Done in memory because Jet has no clean way to
+        /// express "latest row per group".
+        ///
+        /// The latest promotion wins even when it names no recommender. Picking the latest row
+        /// that happens to have one instead would pair an old instructor's name with the newer
+        /// promotion date the register shows beside it.
         /// </summary>
         public static Dictionary<string, string> BuildLatestRecommenderLookup(DataTable promotionRows)
         {
@@ -656,17 +661,13 @@ namespace DojoStudentManagement
 
             foreach (DataRow row in promotionRows.Rows)
             {
-                if (row["promo_recommended_by"] == DBNull.Value)
-                    continue;
-
-                string recommendedBy = row["promo_recommended_by"].ToString().Trim();
-
-                if (string.IsNullOrEmpty(recommendedBy))
-                    continue;
-
                 int studentID = row["promo_student"] == DBNull.Value ? 0 : Convert.ToInt32(row["promo_student"]);
                 string art = row["promo_art"] == DBNull.Value ? string.Empty : row["promo_art"].ToString();
                 DateTime promoDate = row["promo_date"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(row["promo_date"]);
+
+                string recommendedBy = row["promo_recommended_by"] == DBNull.Value
+                    ? string.Empty
+                    : row["promo_recommended_by"].ToString().Trim();
 
                 string key = BuildRecommenderKey(studentID, art);
 
@@ -691,11 +692,49 @@ namespace DojoStudentManagement
         /// </summary>
         public List<UnpaidDuesEntry> GetUnpaidDues(int duesYear, bool activeStudentsOnly)
         {
-            List<KubkRosterEntry> register = MapRegister(dataRepository.GetRankRegister(null, includeWindsong: false));
+            // Built from Students, not from the rank register. The register inner-joins StudArts,
+            // so a student enrolled in no art at all would never appear - and owing dues has
+            // nothing to do with being enrolled in an art.
+            List<KubkRosterEntry> students = MapMemberDojoStudents(dataRepository.GetStudentTable(null));
             Dictionary<int, DateTime?> duesPaid = dataRepository.GetDuesPaidDatesForYear(duesYear);
             Dictionary<string, string> instructors = BuildInstructorLookup(dataRepository.GetDojos());
 
-            return BuildUnpaidDuesEntries(register, duesPaid, instructors, activeStudentsOnly);
+            return BuildUnpaidDuesEntries(students, duesPaid, instructors, activeStudentsOnly);
+        }
+
+        /// <summary>
+        /// Maps the full student table down to the member-dojo students, one entry each. Art,
+        /// rank and verification are left unset: this population is about who owes dues, and is
+        /// deliberately independent of any StudArts enrollment.
+        /// </summary>
+        public static List<KubkRosterEntry> MapMemberDojoStudents(DataTable studentTable)
+        {
+            var students = new List<KubkRosterEntry>();
+
+            if (studentTable == null || studentTable.Columns.Count == 0)
+                return students;
+
+            foreach (DataRow row in studentTable.Rows)
+            {
+                string dojo = row["StudentDojo"] == DBNull.Value ? string.Empty : row["StudentDojo"].ToString();
+
+                if (string.Equals(dojo.Trim(), "Windsong", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                students.Add(new KubkRosterEntry
+                {
+                    StudentID = row["StudentID"] == DBNull.Value ? 0 : Convert.ToInt32(row["StudentID"]),
+                    FirstName = row["StudentFirstName"] == DBNull.Value ? string.Empty : row["StudentFirstName"].ToString(),
+                    LastName = row["StudentLastName"] == DBNull.Value ? string.Empty : row["StudentLastName"].ToString(),
+                    IsActive = row["StudentStatus"] != DBNull.Value &&
+                        string.Equals(row["StudentStatus"].ToString(), "A", StringComparison.OrdinalIgnoreCase),
+                    Dojo = dojo,
+                    EmailAddress = row["StudentEmailAddress"] == DBNull.Value ? string.Empty : row["StudentEmailAddress"].ToString(),
+                    PhoneNumber = row["StudentPrimaryPhone"] == DBNull.Value ? string.Empty : row["StudentPrimaryPhone"].ToString()
+                });
+            }
+
+            return students;
         }
 
         public static Dictionary<string, string> BuildInstructorLookup(IEnumerable<Dojo> dojos)

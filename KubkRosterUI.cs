@@ -176,13 +176,18 @@ namespace DojoStudentManagement
 
         private void UpdateStatusLine()
         {
-            KubkRosterSummary summary = KubkManagementFunctions.SummarizeRoster(displayedEntries);
+            // Counts about what is on screen come from the filtered rows, but re-verification
+            // progress comes from everything loaded for this dojo. Otherwise ticking "Unpaid
+            // dues only" would shrink the denominator and make a dojo look better verified than
+            // it is.
+            KubkRosterSummary shown = KubkManagementFunctions.SummarizeRoster(displayedEntries);
+            KubkRosterSummary wholeRoster = KubkManagementFunctions.SummarizeRoster(loadedEntries);
 
             string dojoLabel = string.IsNullOrEmpty(SelectedClubId) ? "All member dojos" : SelectedClubId;
 
-            lblStatus.Text = $"Students shown: {summary.StudentsShown}     " +
-                $"{KubkManagementFunctions.BuildVerificationProgressText(dojoLabel, summary)}     " +
-                $"Unpaid for {SelectedDuesYear}: {summary.StudentsUnpaid}";
+            lblStatus.Text = $"Students shown: {shown.StudentsShown}     " +
+                $"{KubkManagementFunctions.BuildVerificationProgressText(dojoLabel, wholeRoster)}     " +
+                $"Unpaid for {SelectedDuesYear}: {shown.StudentsUnpaid}";
         }
 
         /// <summary>

@@ -1560,7 +1560,19 @@ namespace DojoStudentManagement
                             command.Parameters.Add("@StudentID", OleDbType.Integer).Value = studentID;
                             command.Parameters.Add("@Art", OleDbType.VarChar).Value = artName;
 
-                            command.ExecuteNonQuery();
+                            int rowsAffected = command.ExecuteNonQuery();
+
+                            // Matching no row means the enrollment is gone or the identifiers do
+                            // not match. Reporting success there would tell the user the
+                            // correction was applied and write an audit line for a change that
+                            // never happened - with an empty "from" rank, since the read above
+                            // found nothing either.
+                            if (rowsAffected != 1)
+                            {
+                                transaction.Rollback();
+                                Log.Error($"Rank correction for student {studentID} in {artName} matched {rowsAffected} rows; no change made.");
+                                return false;
+                            }
                         }
 
                         transaction.Commit();
@@ -1610,9 +1622,20 @@ namespace DojoStudentManagement
 
                     try
                     {
-                        command.ExecuteNonQuery();
+                        int rowsAffected = command.ExecuteNonQuery();
                         connection.Close();
-                        Log.Information($"Set student {studentID} to {(active ? "active" : "inactive")}");
+
+                        // No matching row means the student is gone; saying "done" would leave
+                        // the roster showing a status change that was never stored.
+                        if (rowsAffected != 1)
+                        {
+                            success = false;
+                            Log.Error($"Setting active status for student {studentID} matched {rowsAffected} rows; no change made.");
+                        }
+                        else
+                        {
+                            Log.Information($"Set student {studentID} to {(active ? "active" : "inactive")}");
+                        }
                     }
                     catch (OleDbException ex)
                     {
@@ -1699,8 +1722,13 @@ namespace DojoStudentManagement
         }
 
         /// <summary>
-        /// Promotion rows that name a recommender. Returns an empty table when the database
-        /// predates the KUBK migration and has no promo_recommended_by column.
+        /// Promotion history rows used to find each student's most recent promotion per art.
+        /// Rows with no recommender are deliberately included: the register reports the
+        /// recommender of the latest promotion, so filtering them out here would let an older
+        /// promotion's instructor be shown next to a newer promotion's date.
+        ///
+        /// Returns an empty table when the database predates the KUBK migration and has no
+        /// promo_recommended_by column.
         /// </summary>
         public DataTable GetPromotionRecommenders()
         {
@@ -1708,7 +1736,7 @@ namespace DojoStudentManagement
                 return new DataTable();
 
             const string sql = @"SELECT promo_student, promo_art, promo_date, promo_recommended_by
-                FROM Promo_History WHERE promo_recommended_by IS NOT NULL";
+                FROM Promo_History";
 
             return ExecuteQuery(sql);
         }

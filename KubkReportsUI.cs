@@ -112,6 +112,13 @@ namespace DojoStudentManagement
             BuildColumns("Dojo", "Student Name", "Active", "Art", "Current Rank",
                 "Verified", "Last Promotion", "Recommended By");
 
+            // Written before the population block below, which returns early when there is
+            // nothing to show; leaving it until afterwards would strand the previous scope's
+            // counts under an empty grid.
+            int unverified = registerRows.Count(e => !e.RankIsVerified);
+            lblSummary.Text = $"{registerRows.Count} rank rows across " +
+                $"{registerRows.Select(e => e.Dojo).Distinct().Count()} dojo(s);  {unverified} unverified";
+
             dgvReport.SuspendLayout();
             try
             {
@@ -144,10 +151,6 @@ namespace DojoStudentManagement
             {
                 dgvReport.ResumeLayout();
             }
-
-            int unverified = registerRows.Count(e => !e.RankIsVerified);
-            lblSummary.Text = $"{registerRows.Count} rank rows across " +
-                $"{registerRows.Select(e => e.Dojo).Distinct().Count()} dojo(s);  {unverified} unverified";
         }
 
         private IEnumerable<IEnumerable<string>> BuildRankRegisterCsvRows()
@@ -174,6 +177,12 @@ namespace DojoStudentManagement
             unpaidRows = kubkFunctions.GetUnpaidDues((int)numDuesYear.Value, cbActiveOnly.Checked);
 
             BuildColumns("Dojo", "Student Name", "Active", "Instructor", "Email", "Phone");
+
+            // Set before the population block, which returns early on an empty result.
+            List<KeyValuePair<string, int>> subtotals = KubkManagementFunctions.BuildUnpaidDuesSubtotals(unpaidRows);
+
+            lblSummary.Text = $"{unpaidRows.Count} student(s) unpaid for {(int)numDuesYear.Value}" +
+                (subtotals.Count == 0 ? string.Empty : "   -   " + string.Join(",  ", subtotals.Select(s => $"{s.Key}: {s.Value}")));
 
             dgvReport.SuspendLayout();
             try
@@ -205,11 +214,6 @@ namespace DojoStudentManagement
             {
                 dgvReport.ResumeLayout();
             }
-
-            List<KeyValuePair<string, int>> subtotals = KubkManagementFunctions.BuildUnpaidDuesSubtotals(unpaidRows);
-
-            lblSummary.Text = $"{unpaidRows.Count} student(s) unpaid for {(int)numDuesYear.Value}" +
-                (subtotals.Count == 0 ? string.Empty : "   -   " + string.Join(",  ", subtotals.Select(s => $"{s.Key}: {s.Value}")));
         }
 
         private IEnumerable<IEnumerable<string>> BuildUnpaidDuesCsvRows()
