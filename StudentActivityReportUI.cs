@@ -2,6 +2,7 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -16,6 +17,15 @@ namespace DojoStudentManagement
     {
         /// <summary>This report covers the home dojo; member dojos have their own roster screen.</summary>
         private const string ReportClubId = "Windsong";
+
+        private static readonly Color EligibleRowColor = Color.FromArgb(212, 237, 218);
+
+        /// <summary>
+        /// One shared style instance reused by every eligible row, rather than a fresh
+        /// DataGridViewCellStyle per row across a couple of thousand of them.
+        /// </summary>
+        private readonly DataGridViewCellStyle eligibleRowStyle =
+            new DataGridViewCellStyle { BackColor = EligibleRowColor };
 
         private readonly StudentActivityReportFunctions reportFunctions;
 
@@ -81,6 +91,11 @@ namespace DojoStudentManagement
                         entry.LastSignInDisplay,
                         entry.HoursInArt.ToString("0.#"),
                         entry.EligibilityDisplay);
+
+                    // Highlight the students who have met every promotion gate, so a long list
+                    // can be scanned for who is due rather than read row by row.
+                    if (entry.IsEligibleForPromotion)
+                        row.DefaultCellStyle = eligibleRowStyle;
 
                     row.Tag = entry;
                     rows[i] = row;
