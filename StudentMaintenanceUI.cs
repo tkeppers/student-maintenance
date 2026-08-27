@@ -603,6 +603,14 @@ namespace DojoStudentManagement
             }
         }
 
+        private void studentActivityToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (StudentActivityReportUI activityReport = new StudentActivityReportUI(dataRepository))
+            {
+                activityReport.ShowDialog();
+            }
+        }
+
         private void rankRegisterToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ShowKubkReport(KubkReportKind.RankRegister);

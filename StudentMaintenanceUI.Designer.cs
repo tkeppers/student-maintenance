@@ -97,7 +97,8 @@ namespace DojoStudentManagement
             this.rankRegisterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unpaidDuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton3 = new System.Windows.Forms.ToolStripDropDownButton();
+            this.studentActivityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gbArtsAndRank = new System.Windows.Forms.GroupBox();
             this.btnRemoveArt = new System.Windows.Forms.Button();
             this.btnModifyArt = new System.Windows.Forms.Button();
@@ -753,14 +754,22 @@ namespace DojoStudentManagement
             // 
             // toolStripButton3
             // 
-            this.toolStripButton3.Enabled = false;
+            this.toolStripButton3.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.studentActivityToolStripMenuItem});
             this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
             this.toolStripButton3.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new System.Drawing.Size(51, 52);
+            this.toolStripButton3.Size = new System.Drawing.Size(62, 52);
             this.toolStripButton3.Text = "Reports";
             this.toolStripButton3.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            //
+            // studentActivityToolStripMenuItem
+            //
+            this.studentActivityToolStripMenuItem.Name = "studentActivityToolStripMenuItem";
+            this.studentActivityToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.studentActivityToolStripMenuItem.Text = "Student Activity...";
+            this.studentActivityToolStripMenuItem.Click += new System.EventHandler(this.studentActivityToolStripMenuItem_Click);
             // 
             // gbArtsAndRank
             // 
@@ -936,7 +945,8 @@ namespace DojoStudentManagement
         private System.Windows.Forms.Button btnModifyArt;
         private System.Windows.Forms.Button btnAddArt;
         private System.Windows.Forms.ToolStripButton toolStripButton2;
-        private System.Windows.Forms.ToolStripButton toolStripButton3;
+        private System.Windows.Forms.ToolStripDropDownButton toolStripButton3;
+        private System.Windows.Forms.ToolStripMenuItem studentActivityToolStripMenuItem;
         private System.Windows.Forms.Button btnSaveChanges;
         private System.Windows.Forms.ToolStripDropDownButton tsbSettings;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;

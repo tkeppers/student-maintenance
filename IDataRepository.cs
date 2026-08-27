@@ -69,6 +69,12 @@ namespace DojoStudentManagement
         /// <summary>Every promotion history row carrying a recommender, for the rank register.</summary>
         DataTable GetPromotionRecommenders();
 
+        /// <summary>
+        /// Student/art rows for the activity report: rank, hours, last sign-in, and the dates
+        /// promotion eligibility is calculated from.
+        /// </summary>
+        DataTable GetStudentActivity(string clubId);
+
         /// <summary>Dues-paid dates for one year, keyed by student id.</summary>
         Dictionary<int, DateTime?> GetDuesPaidDatesForYear(int duesYear);
     }

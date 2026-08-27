@@ -179,6 +179,14 @@
       <DependentUpon>StudentAddUI.cs</DependentUpon>
     </Compile>
     <Compile Include="StudentArtsAndRank.cs" />
+    <Compile Include="StudentActivityEntry.cs" />
+    <Compile Include="StudentActivityReportFunctions.cs" />
+    <Compile Include="StudentActivityReportUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StudentActivityReportUI.Designer.cs">
+      <DependentUpon>StudentActivityReportUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="StudentDuesRecord.cs" />
     <Compile Include="UnpaidDuesEntry.cs" />
     <Compile Include="StudentMaintenanceUI.cs">

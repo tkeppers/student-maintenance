@@ -1,6 +1,7 @@
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -119,6 +120,14 @@ namespace DojoStudentManagement
         /// </summary>
         private void PopulateRosterGrid()
         {
+            // Remember how the user has the grid arranged. Rebuilding the rows drops the sort
+            // but leaves the sort glyph on the header, so without this a refresh reshuffles the
+            // list while still claiming to be sorted - which reads as the wrong row being acted
+            // on rather than as the list having moved.
+            DataGridViewColumn sortedColumn = dgvRoster.SortedColumn;
+            SortOrder sortOrder = dgvRoster.SortOrder;
+            int firstDisplayedRow = dgvRoster.FirstDisplayedScrollingRowIndex;
+
             dgvRoster.SuspendLayout();
             suppressDuesCellEvents = true;
 
@@ -166,7 +175,35 @@ namespace DojoStudentManagement
                 dgvRoster.ResumeLayout();
             }
 
+            ReapplySort(sortedColumn, sortOrder);
+            RestoreScrollPosition(firstDisplayedRow);
+
             dgvRoster.ClearSelection();
+        }
+
+        /// <summary>
+        /// Puts the user's sort back after the rows were rebuilt, so the order on screen matches
+        /// the sort glyph the header is still showing.
+        /// </summary>
+        private void ReapplySort(DataGridViewColumn sortedColumn, SortOrder sortOrder)
+        {
+            if (sortedColumn == null || sortOrder == SortOrder.None || dgvRoster.Rows.Count == 0)
+                return;
+
+            dgvRoster.Sort(sortedColumn,
+                sortOrder == SortOrder.Descending ? ListSortDirection.Descending : ListSortDirection.Ascending);
+        }
+
+        /// <summary>
+        /// Keeps the user roughly where they were scrolled to, rather than jumping to the top
+        /// every time a row is acted on.
+        /// </summary>
+        private void RestoreScrollPosition(int firstDisplayedRow)
+        {
+            if (firstDisplayedRow < 0 || firstDisplayedRow >= dgvRoster.Rows.Count)
+                return;
+
+            dgvRoster.FirstDisplayedScrollingRowIndex = firstDisplayedRow;
         }
 
         private string FormatDate(DateTime? date)

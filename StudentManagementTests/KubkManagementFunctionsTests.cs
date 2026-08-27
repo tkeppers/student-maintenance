@@ -346,6 +346,10 @@ namespace DojoStudentManagementTests
 
         public DataTable GetRankRegister(string clubId, bool includeWindsong) => RankRegister ?? new DataTable();
         public DataTable GetPromotionRecommenders() => PromotionRecommenders ?? new DataTable();
+
+        // The activity report is exercised directly through StudentActivityReportFunctions'
+        // static builders, so this fake only needs to satisfy the interface.
+        public DataTable GetStudentActivity(string clubId) => new DataTable();
         public Dictionary<int, DateTime?> GetDuesPaidDatesForYear(int duesYear) => DuesPaidByYear;
 
         public bool CorrectStudentRank(int studentID, string artName, string newRank, DateTime verifiedDate)

@@ -1741,6 +1741,59 @@ namespace DojoStudentManagement
             return ExecuteQuery(sql);
         }
 
+        /// <summary>
+        /// Student/art rows for the activity report, for one club. Carries the birth date, start
+        /// date and last promotion date because promotion eligibility is calculated from them.
+        /// Ordered by last sign-in descending so the most recently active students lead.
+        /// </summary>
+        public DataTable GetStudentActivity(string clubId)
+        {
+            if (DatabaseExistsAndIsValid() == false)
+                return new DataTable();
+
+            string sql = @"SELECT s.stud_id, s.stud_firstname, s.stud_lastname, s.stud_status, s.stud_birthdate,
+                sa.studArt_art, sa.studArt_rank, sa.studArt_cumm, sa.studArt_signin,
+                sa.studArt_begin, sa.studArt_prodate
+                FROM Students AS s INNER JOIN StudArts AS sa ON s.stud_id = sa.StudArt_ID"
+                + (string.IsNullOrEmpty(clubId) ? string.Empty : " WHERE s.stud_club = @ClubID") + @"
+                ORDER BY sa.studArt_signin DESC";
+
+            DataTable activityTable = new DataTable();
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                OleDbCommand command = new OleDbCommand(sql, connection);
+
+                if (!string.IsNullOrEmpty(clubId))
+                    command.Parameters.Add("@ClubID", OleDbType.VarChar).Value = clubId;
+
+                try
+                {
+                    connection.Open();
+                    new OleDbDataAdapter(command).Fill(activityTable);
+                }
+                catch (OleDbException ex)
+                {
+                    Log.Error($"Error retrieving student activity for club '{clubId}':\n{sql}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                    return new DataTable();
+                }
+            }
+
+            activityTable.Columns["stud_id"].ColumnName = "StudentID";
+            activityTable.Columns["stud_firstname"].ColumnName = "StudentFirstName";
+            activityTable.Columns["stud_lastname"].ColumnName = "StudentLastName";
+            activityTable.Columns["stud_status"].ColumnName = "StudentStatus";
+            activityTable.Columns["stud_birthdate"].ColumnName = "StudentBirthDate";
+            activityTable.Columns["studArt_art"].ColumnName = "Art";
+            activityTable.Columns["studArt_rank"].ColumnName = "Rank";
+            activityTable.Columns["studArt_cumm"].ColumnName = "HoursInArt";
+            activityTable.Columns["studArt_signin"].ColumnName = "LastSignInDate";
+            activityTable.Columns["studArt_begin"].ColumnName = "DateStarted";
+            activityTable.Columns["studArt_prodate"].ColumnName = "LastPromotionDate";
+
+            return activityTable;
+        }
+
         #endregion KUBK
 
     }
