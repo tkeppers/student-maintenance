@@ -192,6 +192,7 @@ namespace DojoStudentManagementTests
         public DataTable GetRankRegister(string clubId, bool includeWindsong) => throw new NotImplementedException();
         public DataTable GetPromotionRecommenders() => throw new NotImplementedException();
         public DataTable GetStudentActivity(string clubId) => throw new NotImplementedException();
+        public DataTable GetSignInHistory(string clubId, DateTime fromDate, DateTime toDate) => throw new NotImplementedException();
         public Dictionary<int, DateTime?> GetDuesPaidDatesForYear(int duesYear) => throw new NotImplementedException();
         public DataTable GetKubkRoster(string clubId, int duesYear) => throw new NotImplementedException();
         public bool RecordDuesPayment(StudentDuesRecord dues) => throw new NotImplementedException();

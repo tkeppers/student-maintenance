@@ -611,6 +611,14 @@ namespace DojoStudentManagement
             }
         }
 
+        private void signInHistoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (SignInHistoryReportUI signInHistory = new SignInHistoryReportUI(dataRepository))
+            {
+                signInHistory.ShowDialog();
+            }
+        }
+
         private void rankRegisterToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ShowKubkReport(KubkReportKind.RankRegister);

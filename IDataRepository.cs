@@ -75,6 +75,12 @@ namespace DojoStudentManagement
         /// </summary>
         DataTable GetStudentActivity(string clubId);
 
+        /// <summary>
+        /// Every sign-in event in a date range, one row per attendance. Both bounds are
+        /// inclusive of the whole day.
+        /// </summary>
+        DataTable GetSignInHistory(string clubId, DateTime fromDate, DateTime toDate);
+
         /// <summary>Dues-paid dates for one year, keyed by student id.</summary>
         Dictionary<int, DateTime?> GetDuesPaidDatesForYear(int duesYear);
     }

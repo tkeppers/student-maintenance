@@ -1794,6 +1794,62 @@ namespace DojoStudentManagement
             return activityTable;
         }
 
+        /// <summary>
+        /// Every sign-in in a date range for one club. Signin_History holds roughly 40,000 rows
+        /// spanning a decade, so the range is applied in SQL rather than in memory.
+        ///
+        /// The upper bound is pushed to the start of the following day because sign_date carries
+        /// a time: comparing against the date alone would drop everything logged after midnight
+        /// on the last day of the range.
+        /// </summary>
+        public DataTable GetSignInHistory(string clubId, DateTime fromDate, DateTime toDate)
+        {
+            if (DatabaseExistsAndIsValid() == false)
+                return new DataTable();
+
+            string sql = @"SELECT s.stud_id, s.stud_firstname, s.stud_lastname, s.stud_status,
+                sh.sign_art, sh.sign_date, sh.sign_reg_hours
+                FROM Students AS s INNER JOIN Signin_History AS sh ON s.stud_id = sh.sign_student
+                WHERE " + (string.IsNullOrEmpty(clubId) ? string.Empty : "s.stud_club = @ClubID AND ") +
+                @"sh.sign_date >= @FromDate AND sh.sign_date < @ToDate
+                ORDER BY sh.sign_date DESC";
+
+            DataTable signInTable = new DataTable();
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                OleDbCommand command = new OleDbCommand(sql, connection);
+
+                // Positional parameters: this order must match the placeholders above.
+                if (!string.IsNullOrEmpty(clubId))
+                    command.Parameters.Add("@ClubID", OleDbType.VarChar).Value = clubId;
+
+                command.Parameters.Add("@FromDate", OleDbType.Date).Value = fromDate.Date;
+                command.Parameters.Add("@ToDate", OleDbType.Date).Value = toDate.Date.AddDays(1);
+
+                try
+                {
+                    connection.Open();
+                    new OleDbDataAdapter(command).Fill(signInTable);
+                }
+                catch (OleDbException ex)
+                {
+                    Log.Error($"Error retrieving sign-in history for club '{clubId}':\n{sql}\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                    return new DataTable();
+                }
+            }
+
+            signInTable.Columns["stud_id"].ColumnName = "StudentID";
+            signInTable.Columns["stud_firstname"].ColumnName = "StudentFirstName";
+            signInTable.Columns["stud_lastname"].ColumnName = "StudentLastName";
+            signInTable.Columns["stud_status"].ColumnName = "StudentStatus";
+            signInTable.Columns["sign_art"].ColumnName = "Art";
+            signInTable.Columns["sign_date"].ColumnName = "SignInDate";
+            signInTable.Columns["sign_reg_hours"].ColumnName = "Hours";
+
+            return signInTable;
+        }
+
         #endregion KUBK
 
     }

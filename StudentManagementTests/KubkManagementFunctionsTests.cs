@@ -350,6 +350,7 @@ namespace DojoStudentManagementTests
         // The activity report is exercised directly through StudentActivityReportFunctions'
         // static builders, so this fake only needs to satisfy the interface.
         public DataTable GetStudentActivity(string clubId) => new DataTable();
+        public DataTable GetSignInHistory(string clubId, DateTime fromDate, DateTime toDate) => new DataTable();
         public Dictionary<int, DateTime?> GetDuesPaidDatesForYear(int duesYear) => DuesPaidByYear;
 
         public bool CorrectStudentRank(int studentID, string artName, string newRank, DateTime verifiedDate)
