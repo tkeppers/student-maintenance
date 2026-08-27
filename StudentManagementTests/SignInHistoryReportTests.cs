@@ -50,12 +50,12 @@ namespace DojoStudentManagementTests
             {
                 new StudentActivityEntry
                 {
-                    StudentID = 1, Art = "Aikido", Rank = "SANKYU",
+                    StudentID = 1, Art = "Aikido", Rank = "SANKYU", HoursInArt = 250,
                     NextRank = "NIKYU", IsEligibleForPromotion = true
                 },
                 new StudentActivityEntry
                 {
-                    StudentID = 1, Art = "Judo", Rank = "WHITE",
+                    StudentID = 1, Art = "Judo", Rank = "WHITE", HoursInArt = 12,
                     NextRank = "YONKYU", IsEligibleForPromotion = false
                 }
             });
@@ -78,7 +78,88 @@ namespace DojoStudentManagementTests
 
             Assert.AreEqual(2, entries.Count);
             Assert.AreEqual("Jane Smith", entries[0].FullName);
-            Assert.AreEqual(1.5, entries[0].Hours);
+            Assert.AreEqual(1.5, entries[0].SessionHours);
+        }
+
+        #endregion
+
+        #region Running totals
+
+        [Test]
+        public void ApplyRunningTotals_CountsBackFromTheRecordedTotal()
+        {
+            // Anchored to the student's recorded 250 hours: the newest session shows 250, and
+            // each earlier one shows the total as it stood then.
+            DataTable table = BuildSignInTable();
+            AddSignIn(table, 1, "Jane", "Smith", "A", "Aikido", new DateTime(2026, 6, 1), 1.5);
+            AddSignIn(table, 1, "Jane", "Smith", "A", "Aikido", new DateTime(2026, 6, 3), 1.5);
+            AddSignIn(table, 1, "Jane", "Smith", "A", "Aikido", new DateTime(2026, 6, 5), 1.5);
+
+            List<SignInHistoryEntry> entries = SignInHistoryReportFunctions.BuildEntries(table, BuildStanding());
+            SignInHistoryReportFunctions.ApplyRunningTotals(entries, BuildStanding());
+
+            Assert.AreEqual(250, entries.First(e => e.SignInDate == new DateTime(2026, 6, 5)).CumulativeHours);
+            Assert.AreEqual(248.5, entries.First(e => e.SignInDate == new DateTime(2026, 6, 3)).CumulativeHours);
+            Assert.AreEqual(247, entries.First(e => e.SignInDate == new DateTime(2026, 6, 1)).CumulativeHours);
+        }
+
+        [Test]
+        public void ApplyRunningTotals_TracksEachArtSeparately()
+        {
+            // Promotion hours are per art, so the totals must not be pooled across arts.
+            DataTable table = BuildSignInTable();
+            AddSignIn(table, 1, "Jane", "Smith", "A", "Aikido", new DateTime(2026, 6, 5), 1.5);
+            AddSignIn(table, 1, "Jane", "Smith", "A", "Judo", new DateTime(2026, 6, 5), 1.5);
+
+            List<SignInHistoryEntry> entries = SignInHistoryReportFunctions.BuildEntries(table, BuildStanding());
+            SignInHistoryReportFunctions.ApplyRunningTotals(entries, BuildStanding());
+
+            Assert.AreEqual(250, entries.First(e => e.Art == "Aikido").CumulativeHours);
+            Assert.AreEqual(12, entries.First(e => e.Art == "Judo").CumulativeHours);
+        }
+
+        [Test]
+        public void ApplyRunningTotals_WithNoRecordedTotal_LeavesTheHoursBlank()
+        {
+            // No current enrollment means nothing to count back from; better an empty cell than
+            // a number invented from a partial log.
+            DataTable table = BuildSignInTable();
+            AddSignIn(table, 1, "Jane", "Smith", "A", "Jyodo", new DateTime(2026, 6, 5), 1.5);
+
+            List<SignInHistoryEntry> entries = SignInHistoryReportFunctions.BuildEntries(table, BuildStanding());
+            SignInHistoryReportFunctions.ApplyRunningTotals(entries, BuildStanding());
+
+            Assert.IsNull(entries[0].CumulativeHours);
+            Assert.IsEmpty(entries[0].CumulativeHoursDisplay);
+        }
+
+        [Test]
+        public void ApplyRunningTotals_ShowsWhenTheStudentCrossedAPromotionThreshold()
+        {
+            // The point of the running total: seeing which session took them past the required
+            // hours. With 250 recorded and a 248 requirement, that is the 6/3 session.
+            DataTable table = BuildSignInTable();
+            AddSignIn(table, 1, "Jane", "Smith", "A", "Aikido", new DateTime(2026, 6, 1), 1.5);
+            AddSignIn(table, 1, "Jane", "Smith", "A", "Aikido", new DateTime(2026, 6, 3), 1.5);
+            AddSignIn(table, 1, "Jane", "Smith", "A", "Aikido", new DateTime(2026, 6, 5), 1.5);
+
+            List<SignInHistoryEntry> entries = SignInHistoryReportFunctions.BuildEntries(table, BuildStanding());
+            SignInHistoryReportFunctions.ApplyRunningTotals(entries, BuildStanding());
+
+            SignInHistoryEntry crossing = entries
+                .Where(e => e.CumulativeHours >= 248)
+                .OrderBy(e => e.SignInDate)
+                .First();
+
+            Assert.AreEqual(new DateTime(2026, 6, 3), crossing.SignInDate);
+        }
+
+        [Test]
+        public void ApplyRunningTotals_WithNoEntries_DoesNotThrow()
+        {
+            Assert.DoesNotThrow(() => SignInHistoryReportFunctions.ApplyRunningTotals(null, BuildStanding()));
+            Assert.DoesNotThrow(() => SignInHistoryReportFunctions.ApplyRunningTotals(
+                new List<SignInHistoryEntry>(), null));
         }
 
         [Test]

@@ -23,14 +23,60 @@ namespace DojoStudentManagement
 
         public List<SignInHistoryEntry> GetSignInHistory(string clubId, DateTime fromDate, DateTime toDate, bool activeStudentsOnly)
         {
-            DataTable signIns = dataRepository.GetSignInHistory(clubId, fromDate, toDate);
+            // The running total is worked backwards from each student's recorded total today, so
+            // every sign-in between the end of the requested period and now has to be loaded
+            // too - otherwise the totals would be overstated by whatever came after.
+            DateTime queryEnd = toDate.Date > DateTime.Today ? toDate.Date : DateTime.Today;
+
+            DataTable signIns = dataRepository.GetSignInHistory(clubId, fromDate, queryEnd);
 
             // Unfiltered: the lookup must cover every student who appears in the sign-in range,
             // including ones now marked inactive.
             Dictionary<string, StudentActivityEntry> currentStanding =
                 BuildCurrentStandingLookup(activityFunctions.GetStudentActivity(clubId, activeStudentsOnly: false));
 
-            return SortByMostRecent(ApplyActiveFilter(BuildEntries(signIns, currentStanding), activeStudentsOnly));
+            List<SignInHistoryEntry> entries = BuildEntries(signIns, currentStanding);
+            ApplyRunningTotals(entries, currentStanding);
+
+            // Only now drop the trailing rows that were loaded purely to make the totals right.
+            entries = entries.Where(e => e.SignInDate.Date <= toDate.Date).ToList();
+
+            return SortByMostRecent(ApplyActiveFilter(entries, activeStudentsOnly));
+        }
+
+        /// <summary>
+        /// Fills in each row's cumulative hours by starting from the student's recorded total for
+        /// the art and subtracting back through the later sessions. Anchoring to the stored total
+        /// rather than adding sign-ins up from zero means the newest row agrees with the figure
+        /// the rest of the app shows, and nothing depends on the sign-in log reaching all the way
+        /// back to when the student started.
+        ///
+        /// Callers must pass every sign-in from the period through to the present, or the totals
+        /// will be too high by whatever was left out.
+        /// </summary>
+        public static void ApplyRunningTotals(List<SignInHistoryEntry> entries,
+            Dictionary<string, StudentActivityEntry> currentStanding)
+        {
+            if (entries == null)
+                return;
+
+            foreach (IGrouping<string, SignInHistoryEntry> group in entries.GroupBy(e => BuildKey(e.StudentID, e.Art)))
+            {
+                if (currentStanding == null ||
+                    !currentStanding.TryGetValue(group.Key, out StudentActivityEntry standing))
+                {
+                    continue;   // no recorded total to anchor to; these rows stay blank
+                }
+
+                double runningTotal = standing.HoursInArt;
+
+                foreach (SignInHistoryEntry entry in group.OrderByDescending(e => e.SignInDate))
+                {
+                    // The total as of this session includes it, so record before subtracting.
+                    entry.CumulativeHours = runningTotal;
+                    runningTotal -= entry.SessionHours;
+                }
+            }
         }
 
         public static Dictionary<string, StudentActivityEntry> BuildCurrentStandingLookup(IEnumerable<StudentActivityEntry> activity)
@@ -74,7 +120,7 @@ namespace DojoStudentManagement
                         string.Equals(row["StudentStatus"].ToString(), "A", StringComparison.OrdinalIgnoreCase),
                     Art = row["Art"] == DBNull.Value ? string.Empty : row["Art"].ToString(),
                     SignInDate = Convert.ToDateTime(row["SignInDate"]),
-                    Hours = row["Hours"] == DBNull.Value ? 0 : Convert.ToDouble(row["Hours"])
+                    SessionHours = row["Hours"] == DBNull.Value ? 0 : Convert.ToDouble(row["Hours"])
                 };
 
                 // Rank and eligibility come from the student's enrollment as it stands now. A

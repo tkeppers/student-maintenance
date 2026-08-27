@@ -75,7 +75,10 @@ namespace DojoStudentManagement
             PopulateGrid();
 
             int students = reportRows.Select(r => r.StudentID).Distinct().Count();
-            double hours = reportRows.Sum(r => r.Hours);
+
+            // Hours actually trained during the period - the sum of the sessions, not of the
+            // running totals, which would be meaningless added together.
+            double hours = reportRows.Sum(r => r.SessionHours);
 
             lblSummary.Text = $"{reportRows.Count} sign-ins by {students} student(s);  {hours:0.#} hours " +
                 $"({dtFrom.Value:MM/dd/yyyy} - {dtTo.Value:MM/dd/yyyy})";
@@ -107,7 +110,7 @@ namespace DojoStudentManagement
                         entry.Art,
                         entry.Rank ?? string.Empty,
                         entry.SignInDisplay,
-                        entry.Hours.ToString("0.#"),
+                        entry.CumulativeHoursDisplay,
                         entry.EligibilityDisplay);
 
                     if (entry.IsEligibleForPromotion)
@@ -149,7 +152,7 @@ namespace DojoStudentManagement
                 entry.Art,
                 entry.Rank ?? string.Empty,
                 entry.SignInDate.ToString("yyyy-MM-dd HH:mm"),
-                entry.Hours.ToString("0.#"),
+                entry.CumulativeHoursDisplay,
                 entry.EligibilityDisplay
             });
 

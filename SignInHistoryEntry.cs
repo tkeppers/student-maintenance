@@ -16,8 +16,18 @@ namespace DojoStudentManagement
         public string Art { get; set; }
         public DateTime SignInDate { get; set; }
 
-        /// <summary>Hours credited for this session, not the student's cumulative total.</summary>
-        public double Hours { get; set; }
+        /// <summary>Hours credited for this one session.</summary>
+        public double SessionHours { get; set; }
+
+        /// <summary>
+        /// The student's total hours in this art as of this sign-in, session included. Null when
+        /// it cannot be established - the student is no longer enrolled in the art, so there is
+        /// no recorded total to work back from.
+        /// </summary>
+        public double? CumulativeHours { get; set; }
+
+        public string CumulativeHoursDisplay =>
+            CumulativeHours.HasValue ? CumulativeHours.Value.ToString("0.#") : string.Empty;
 
         /// <summary>
         /// The student's rank in this art now, carried over from their current enrollment. Blank
