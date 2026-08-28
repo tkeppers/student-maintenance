@@ -25,7 +25,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>2.7.0.0</ApplicationVersion>
+    <ApplicationVersion>3.0.0.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -244,6 +244,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DojoManagementUI.resx">
       <DependentUpon>DojoManagementUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="KubkReportsUI.resx">
+      <DependentUpon>KubkReportsUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="KubkRosterUI.resx">
+      <DependentUpon>KubkRosterUI.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PromoteStudentUI.resx">
       <DependentUpon>PromoteStudentUI.cs</DependentUpon>

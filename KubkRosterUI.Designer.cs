@@ -31,6 +31,7 @@ namespace DojoStudentManagement
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(KubkRosterUI));
             this.lblDojoPrompt = new System.Windows.Forms.Label();
             this.cmbDojo = new System.Windows.Forms.ComboBox();
             this.lblYearPrompt = new System.Windows.Forms.Label();
@@ -56,19 +57,19 @@ namespace DojoStudentManagement
             ((System.ComponentModel.ISupportInitialize)(this.numDuesYear)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRoster)).BeginInit();
             this.SuspendLayout();
-            //
+            // 
             // lblDojoPrompt
-            //
+            // 
             this.lblDojoPrompt.AutoSize = true;
             this.lblDojoPrompt.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblDojoPrompt.Location = new System.Drawing.Point(12, 18);
             this.lblDojoPrompt.Name = "lblDojoPrompt";
-            this.lblDojoPrompt.Size = new System.Drawing.Size(48, 18);
+            this.lblDojoPrompt.Size = new System.Drawing.Size(44, 18);
             this.lblDojoPrompt.TabIndex = 0;
             this.lblDojoPrompt.Text = "Dojo:";
-            //
+            // 
             // cmbDojo
-            //
+            // 
             this.cmbDojo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbDojo.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbDojo.Location = new System.Drawing.Point(66, 15);
@@ -76,61 +77,73 @@ namespace DojoStudentManagement
             this.cmbDojo.Size = new System.Drawing.Size(280, 26);
             this.cmbDojo.TabIndex = 1;
             this.cmbDojo.SelectedIndexChanged += new System.EventHandler(this.RosterCriteria_Changed);
-            //
+            // 
             // lblYearPrompt
-            //
+            // 
             this.lblYearPrompt.AutoSize = true;
             this.lblYearPrompt.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblYearPrompt.Location = new System.Drawing.Point(370, 18);
             this.lblYearPrompt.Name = "lblYearPrompt";
-            this.lblYearPrompt.Size = new System.Drawing.Size(89, 18);
+            this.lblYearPrompt.Size = new System.Drawing.Size(81, 18);
             this.lblYearPrompt.TabIndex = 2;
             this.lblYearPrompt.Text = "Dues Year:";
-            //
+            // 
             // numDuesYear
-            //
+            // 
             this.numDuesYear.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.numDuesYear.Location = new System.Drawing.Point(465, 16);
-            this.numDuesYear.Maximum = new decimal(new int[] { 2100, 0, 0, 0});
-            this.numDuesYear.Minimum = new decimal(new int[] { 1900, 0, 0, 0});
+            this.numDuesYear.Maximum = new decimal(new int[] {
+            2100,
+            0,
+            0,
+            0});
+            this.numDuesYear.Minimum = new decimal(new int[] {
+            1900,
+            0,
+            0,
+            0});
             this.numDuesYear.Name = "numDuesYear";
-            this.numDuesYear.Size = new System.Drawing.Size(100, 25);
+            this.numDuesYear.Size = new System.Drawing.Size(100, 24);
             this.numDuesYear.TabIndex = 3;
-            this.numDuesYear.Value = new decimal(new int[] { 2000, 0, 0, 0});
+            this.numDuesYear.Value = new decimal(new int[] {
+            2000,
+            0,
+            0,
+            0});
             this.numDuesYear.ValueChanged += new System.EventHandler(this.RosterCriteria_Changed);
-            //
+            // 
             // cbActiveOnly
-            //
+            // 
             this.cbActiveOnly.AutoSize = true;
             this.cbActiveOnly.Checked = true;
             this.cbActiveOnly.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbActiveOnly.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbActiveOnly.Location = new System.Drawing.Point(600, 17);
             this.cbActiveOnly.Name = "cbActiveOnly";
-            this.cbActiveOnly.Size = new System.Drawing.Size(174, 22);
+            this.cbActiveOnly.Size = new System.Drawing.Size(157, 22);
             this.cbActiveOnly.TabIndex = 4;
             this.cbActiveOnly.Text = "Active students only";
             this.cbActiveOnly.UseVisualStyleBackColor = true;
             this.cbActiveOnly.CheckedChanged += new System.EventHandler(this.RosterFilter_Changed);
-            //
+            // 
             // cbUnpaidOnly
-            //
+            // 
             this.cbUnpaidOnly.AutoSize = true;
             this.cbUnpaidOnly.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbUnpaidOnly.Location = new System.Drawing.Point(790, 17);
             this.cbUnpaidOnly.Name = "cbUnpaidOnly";
-            this.cbUnpaidOnly.Size = new System.Drawing.Size(151, 22);
+            this.cbUnpaidOnly.Size = new System.Drawing.Size(140, 22);
             this.cbUnpaidOnly.TabIndex = 5;
             this.cbUnpaidOnly.Text = "Unpaid dues only";
             this.cbUnpaidOnly.UseVisualStyleBackColor = true;
             this.cbUnpaidOnly.CheckedChanged += new System.EventHandler(this.RosterFilter_Changed);
-            //
+            // 
             // dgvRoster
-            //
+            // 
             this.dgvRoster.AllowUserToAddRows = false;
             this.dgvRoster.AllowUserToDeleteRows = false;
-            this.dgvRoster.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.dgvRoster.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
@@ -168,64 +181,64 @@ namespace DojoStudentManagement
             this.dgvRoster.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvRoster_CellValueChanged);
             this.dgvRoster.CurrentCellDirtyStateChanged += new System.EventHandler(this.dgvRoster_CurrentCellDirtyStateChanged);
             this.dgvRoster.SelectionChanged += new System.EventHandler(this.dgvRoster_SelectionChanged);
-            //
+            // 
             // colStudentName
-            //
+            // 
             this.colStudentName.HeaderText = "Student Name";
             this.colStudentName.Name = "colStudentName";
             this.colStudentName.ReadOnly = true;
             this.colStudentName.Width = 230;
-            //
+            // 
             // colDojo
-            //
+            // 
             this.colDojo.HeaderText = "Dojo";
             this.colDojo.Name = "colDojo";
             this.colDojo.ReadOnly = true;
             this.colDojo.Width = 120;
-            //
+            // 
             // colArt
-            //
+            // 
             this.colArt.HeaderText = "Art";
             this.colArt.Name = "colArt";
             this.colArt.ReadOnly = true;
             this.colArt.Width = 110;
-            //
+            // 
             // colRank
-            //
+            // 
             this.colRank.HeaderText = "Current Rank";
             this.colRank.Name = "colRank";
             this.colRank.ReadOnly = true;
             this.colRank.Width = 130;
-            //
+            // 
             // colRankVerified
-            //
+            // 
             this.colRankVerified.HeaderText = "Rank Verified";
             this.colRankVerified.Name = "colRankVerified";
             this.colRankVerified.ReadOnly = true;
             this.colRankVerified.Width = 140;
-            //
+            // 
             // colLastPromotion
-            //
+            // 
             this.colLastPromotion.HeaderText = "Last Promotion";
             this.colLastPromotion.Name = "colLastPromotion";
             this.colLastPromotion.ReadOnly = true;
             this.colLastPromotion.Width = 140;
-            //
+            // 
             // colYearsAtRank
-            //
+            // 
             this.colYearsAtRank.HeaderText = "Years at Rank";
             this.colYearsAtRank.Name = "colYearsAtRank";
             this.colYearsAtRank.ReadOnly = true;
             this.colYearsAtRank.Width = 130;
-            //
+            // 
             // colDuesPaid
-            //
+            // 
             this.colDuesPaid.HeaderText = "Dues Paid";
             this.colDuesPaid.Name = "colDuesPaid";
             this.colDuesPaid.Width = 110;
-            //
+            // 
             // btnVerifyRank
-            //
+            // 
             this.btnVerifyRank.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnVerifyRank.Enabled = false;
             this.btnVerifyRank.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -236,9 +249,9 @@ namespace DojoStudentManagement
             this.btnVerifyRank.Text = "Verify Rank";
             this.btnVerifyRank.UseVisualStyleBackColor = true;
             this.btnVerifyRank.Click += new System.EventHandler(this.btnVerifyRank_Click);
-            //
-            // btnPromoteStudent
-            //
+            // 
+            // btnCorrectRank
+            // 
             this.btnCorrectRank.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnCorrectRank.Enabled = false;
             this.btnCorrectRank.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -249,9 +262,9 @@ namespace DojoStudentManagement
             this.btnCorrectRank.Text = "Correct Rank...";
             this.btnCorrectRank.UseVisualStyleBackColor = true;
             this.btnCorrectRank.Click += new System.EventHandler(this.btnCorrectRank_Click);
-            //
+            // 
             // btnToggleActive
-            //
+            // 
             this.btnToggleActive.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnToggleActive.Enabled = false;
             this.btnToggleActive.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -262,9 +275,9 @@ namespace DojoStudentManagement
             this.btnToggleActive.Text = "Mark Inactive";
             this.btnToggleActive.UseVisualStyleBackColor = true;
             this.btnToggleActive.Click += new System.EventHandler(this.btnToggleActive_Click);
-            //
+            // 
             // btnPromoteStudent
-            //
+            // 
             this.btnPromoteStudent.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnPromoteStudent.Enabled = false;
             this.btnPromoteStudent.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -275,9 +288,9 @@ namespace DojoStudentManagement
             this.btnPromoteStudent.Text = "Promote Student...";
             this.btnPromoteStudent.UseVisualStyleBackColor = true;
             this.btnPromoteStudent.Click += new System.EventHandler(this.btnPromoteStudent_Click);
-            //
+            // 
             // btnAddStudent
-            //
+            // 
             this.btnAddStudent.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnAddStudent.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAddStudent.Location = new System.Drawing.Point(722, 588);
@@ -287,9 +300,9 @@ namespace DojoStudentManagement
             this.btnAddStudent.Text = "Add Student...";
             this.btnAddStudent.UseVisualStyleBackColor = true;
             this.btnAddStudent.Click += new System.EventHandler(this.btnAddStudent_Click);
-            //
+            // 
             // btnClose
-            //
+            // 
             this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnClose.Location = new System.Drawing.Point(1077, 588);
@@ -299,9 +312,9 @@ namespace DojoStudentManagement
             this.btnClose.Text = "Close";
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
-            //
+            // 
             // lblStatus
-            //
+            // 
             this.lblStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblStatus.AutoSize = true;
             this.lblStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -309,9 +322,9 @@ namespace DojoStudentManagement
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(0, 18);
             this.lblStatus.TabIndex = 10;
-            //
+            // 
             // KubkRosterUI
-            //
+            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1184, 668);
@@ -329,6 +342,7 @@ namespace DojoStudentManagement
             this.Controls.Add(this.lblYearPrompt);
             this.Controls.Add(this.cmbDojo);
             this.Controls.Add(this.lblDojoPrompt);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimizeBox = false;
             this.Name = "KubkRosterUI";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
