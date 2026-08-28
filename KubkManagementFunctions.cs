@@ -543,6 +543,237 @@ namespace DojoStudentManagement
 
         #endregion KUBK promotions
 
+        #region Member dojo student registration
+
+        /// <summary>
+        /// Validates a registration before anything is written. The dojo comes from a list rather
+        /// than a text box, so this checks that one was chosen rather than that it exists.
+        ///
+        /// An art and rank are required because a student with no StudArts row never appears on
+        /// the roster: GetKubkRoster inner-joins StudArts, so registering a student without one
+        /// would look like the add had silently failed.
+        /// </summary>
+        public bool ValidateMemberDojoStudent(MemberDojoStudentRegistration registration, out string error)
+        {
+            error = string.Empty;
+
+            if (registration == null)
+            {
+                error = "Student information is required.";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(registration.FirstName))
+            {
+                error = "First name is required.";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(registration.LastName))
+            {
+                error = "Last name is required.";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(registration.ClubID))
+            {
+                error = "Please select the student's dojo.";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(registration.Art))
+            {
+                error = "Please select the martial art the student trains in.";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(registration.Rank))
+            {
+                error = "Please select the rank the student currently holds.";
+                return false;
+            }
+
+            // A day of slack keeps time-zone and clock skew from rejecting a same-day entry.
+            if (registration.RankHeldSince.Date > DateTime.Today.AddDays(1))
+            {
+                error = "The date the rank was awarded cannot be in the future.";
+                return false;
+            }
+
+            if (!string.IsNullOrWhiteSpace(registration.EmailAddress) && !IsValidEmail(registration.EmailAddress))
+            {
+                error = "The email address entered is not valid.";
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Students already on file under the same name, across every dojo including Windsong.
+        /// Used to warn before adding, because a duplicate record splits one person's rank history
+        /// across two student ids and there is no tool to merge them back together.
+        /// </summary>
+        public List<KubkRosterEntry> GetStudentsWithSameName(string firstName, string lastName)
+        {
+            return FindStudentsByName(dataRepository.GetStudentTable(null), firstName, lastName);
+        }
+
+        /// <summary>
+        /// Pure name matching behind GetStudentsWithSameName, split out so it is testable without
+        /// a database. Trimmed and case-insensitive, because the stored names are inconsistently
+        /// cased and padded.
+        /// </summary>
+        public static List<KubkRosterEntry> FindStudentsByName(DataTable studentTable, string firstName, string lastName)
+        {
+            var matches = new List<KubkRosterEntry>();
+
+            if (studentTable == null || studentTable.Columns.Count == 0)
+                return matches;
+
+            if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName))
+                return matches;
+
+            foreach (DataRow row in studentTable.Rows)
+            {
+                string rowFirstName = row["StudentFirstName"] == DBNull.Value ? string.Empty : row["StudentFirstName"].ToString();
+                string rowLastName = row["StudentLastName"] == DBNull.Value ? string.Empty : row["StudentLastName"].ToString();
+
+                if (!NamesMatch(rowFirstName, firstName) || !NamesMatch(rowLastName, lastName))
+                    continue;
+
+                matches.Add(new KubkRosterEntry
+                {
+                    StudentID = row["StudentID"] == DBNull.Value ? 0 : Convert.ToInt32(row["StudentID"]),
+                    FirstName = rowFirstName,
+                    LastName = rowLastName,
+                    IsActive = row["StudentStatus"] != DBNull.Value &&
+                        string.Equals(row["StudentStatus"].ToString(), "A", StringComparison.OrdinalIgnoreCase),
+                    Dojo = row["StudentDojo"] == DBNull.Value ? string.Empty : row["StudentDojo"].ToString()
+                });
+            }
+
+            return matches;
+        }
+
+        private static bool NamesMatch(string storedName, string enteredName)
+        {
+            return string.Equals(storedName?.Trim(), enteredName?.Trim(), StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Registers a student at a member dojo: the Students row, then the StudArts row for the
+        /// art and rank they arrive holding.
+        ///
+        /// The rank is left unverified on purpose. It is what the home dojo has reported, and the
+        /// roster's existing Verify Rank step is where hombu confirms it - so a newly registered
+        /// student turns up highlighted alongside everyone else still awaiting verification.
+        ///
+        /// The two inserts cannot be one Jet transaction from here, so a failed enrollment is
+        /// compensated by deleting the student created a moment earlier: a failed add leaves no
+        /// half-created student behind.
+        /// </summary>
+        public bool AddMemberDojoStudent(MemberDojoStudentRegistration registration, out int newStudentID, out string error)
+        {
+            newStudentID = 0;
+
+            if (!ValidateMemberDojoStudent(registration, out error))
+                return false;
+
+            Student student = BuildStudentFromRegistration(registration);
+
+            if (!dataRepository.AddNewStudent(student, out int studentID))
+            {
+                error = $"Error adding {student.FullName}. The student was not saved.";
+                return false;
+            }
+
+            if (studentID <= 0)
+            {
+                // The student row is committed but there is no id to hang the enrollment on, and
+                // none to delete either. Report the half-finished state rather than a clean
+                // success or a clean failure, both of which would be untrue.
+                Log.Error($"Added student {student.FullName} but could not read back their student id");
+
+                error = $"{student.FullName} was added, but the new student record could not be identified " +
+                    $"afterwards, so the {registration.Art.Trim()} enrollment was not created. They will not " +
+                    "appear on the roster until an art is recorded for them.";
+
+                return false;
+            }
+
+            var enrollment = new StudentArtsAndRank
+            {
+                StudentArtID = studentID,
+                StudentArt = registration.Art.Trim(),
+                Rank = registration.Rank.Trim(),
+                HoursInArt = 0,
+                DateStarted = registration.RankHeldSince.Date
+            };
+
+            if (!dataRepository.AddNewStudentArt(enrollment))
+            {
+                error = UndoStudentAddedForFailedEnrollment(studentID, student.FullName, enrollment.StudentArt);
+                return false;
+            }
+
+            newStudentID = studentID;
+
+            Log.Information($"Registered student {studentID} ({student.FullName}) at {registration.ClubID.Trim()} " +
+                $"in {enrollment.StudentArt} at {enrollment.Rank}");
+
+            return true;
+        }
+
+        /// <summary>
+        /// Compensating delete for a student created moments before an enrollment that then
+        /// failed. Returns the message to show the user, which has to differ depending on whether
+        /// the half-created record could actually be removed.
+        /// </summary>
+        private string UndoStudentAddedForFailedEnrollment(int studentID, string studentName, string artName)
+        {
+            if (dataRepository.DeleteStudent(studentID))
+            {
+                Log.Information($"Removed student {studentID} after their {artName} enrollment failed");
+                return $"Error enrolling {studentName} in {artName}. The student was not added.";
+            }
+
+            Log.Error($"Could not remove student {studentID} after their {artName} enrollment failed");
+
+            return $"Error enrolling {studentName} in {artName}, and the partly-created student record could " +
+                $"not be removed. Student id {studentID} may need to be deleted manually.";
+        }
+
+        /// <summary>
+        /// Maps a registration onto the Student the repository writes. Fields the Windsong form
+        /// collects and this one does not are left empty rather than invented; the birthdate is
+        /// left unset, which the repository stores as null.
+        /// </summary>
+        private static Student BuildStudentFromRegistration(MemberDojoStudentRegistration registration)
+        {
+            return new Student
+            {
+                FirstName = registration.FirstName.Trim(),
+                LastName = registration.LastName.Trim(),
+                HomeDojo = registration.ClubID.Trim(),
+                ActiveMember = registration.IsActive,
+                EmailAddress = (registration.EmailAddress ?? string.Empty).Trim(),
+                PrimaryPhoneNumber = (registration.PhoneNumber ?? string.Empty).Trim(),
+                SecondaryPhoneNumber = string.Empty,
+                Address1 = string.Empty,
+                Address2 = string.Empty,
+                AddressCity = string.Empty,
+                AddressState = string.Empty,
+                AddressZip = string.Empty,
+
+                // stud_gender is NOT NULL in Access; the repository writes "X" for UNKNOWN.
+                StudentGender = Gender.UNKNOWN,
+                StartMonth = DateTime.Today.Month
+            };
+        }
+
+        #endregion Member dojo student registration
+
         #region Rank verification
 
         /// <summary>

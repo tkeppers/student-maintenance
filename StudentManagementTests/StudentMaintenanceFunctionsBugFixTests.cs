@@ -166,6 +166,8 @@ namespace DojoStudentManagementTests
         public DataTable GetStudentTable(string dojoFilter) => throw new NotImplementedException();
         public DataTable GetListOfArts() => throw new NotImplementedException();
         public bool AddNewStudent(Student student) => throw new NotImplementedException();
+
+        public bool AddNewStudent(Student student, out int newStudentID) => throw new NotImplementedException();
         public bool UpdateStudent(Student student) => throw new NotImplementedException();
         public bool DeleteStudent(int studentID) => throw new NotImplementedException();
         public DataTable GetStudentPromotionHistory(int studentID) => throw new NotImplementedException();

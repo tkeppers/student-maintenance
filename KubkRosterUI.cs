@@ -428,19 +428,56 @@ namespace DojoStudentManagement
             }
         }
 
-        private void btnClose_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Registers a new student at a member dojo. Unlike the other actions here this one does
+        /// not act on the selected row, so it stays enabled whether or not anything is selected.
+        /// </summary>
+        private void btnAddStudent_Click(object sender, EventArgs e)
         {
-            Close();
+            using (var addDialog = new KubkAddStudentUI(dataRepository, SelectedClubId))
+            {
+                if (addDialog.ShowDialog(this) != DialogResult.OK)
+                    return;
+
+                // Show the student who was just added. Moving the selector refreshes the roster
+                // through its own change handler, so only refresh here when it did not move -
+                // otherwise the grid is rebuilt twice.
+                if (!SelectDojo(addDialog.NewStudentClubID))
+                    RefreshRoster();
+            }
         }
 
         /// <summary>
-        /// Backing item for the dojo selector, so the combo can show a friendly name while
-        /// carrying the club id the repository actually filters on.
+        /// Moves the dojo selector to a specific dojo, and reports whether it actually moved.
+        /// Returns false when the roster is already showing that dojo or is showing all of them,
+        /// because in both cases the student is already in scope and a plain refresh is enough.
         /// </summary>
-        private class DojoOption
+        private bool SelectDojo(string clubId)
         {
-            public string ClubID { get; set; }
-            public string Display { get; set; }
+            if (string.IsNullOrWhiteSpace(clubId) || string.IsNullOrEmpty(SelectedClubId))
+                return false;
+
+            if (string.Equals(SelectedClubId.Trim(), clubId.Trim(), StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            for (int i = 0; i < cmbDojo.Items.Count; i++)
+            {
+                if (!(cmbDojo.Items[i] is DojoOption option))
+                    continue;
+
+                if (!string.Equals(option.ClubID?.Trim(), clubId.Trim(), StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                cmbDojo.SelectedIndex = i;
+                return true;
+            }
+
+            return false;
+        }
+
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }

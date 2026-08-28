@@ -101,19 +101,7 @@ namespace DojoStudentManagement
             return ExecuteQuery($"select * from Signin_History where sign_student={studentID}");
         }
 
-        /// <summary>
-        /// Adds a new student to the database.
-        /// </summary>
-        /// <param name="student">The student object to be added.</param>
-        /// <returns>True if the student was added successfully, otherwise false.</returns>
-        public bool AddNewStudent(Student student)
-        {
-            bool success = true;
-
-            using (OleDbConnection connection = new OleDbConnection(connectionString))
-            {
-                connection.Open();
-                OleDbCommand command = new OleDbCommand(@"INSERT INTO Students (stud_status, 
+        private const string insertStudentSql = @"INSERT INTO Students (stud_status,
                         stud_lastName,
                         stud_firstname,
                         stud_club,
@@ -127,22 +115,51 @@ namespace DojoStudentManagement
                         stud_workphone,
                         stud_gender,
                         stud_email,
-                        stud_start_month) 
-                       VALUES (@Status, 
-                        @LastName, 
-                        @FirstName, 
-                        @HomeDojo, 
-                        @Birthdate, 
-                        @Address1, 
-                        @Address2, 
-                        @City, 
-                        @State, 
-                        @Zip, 
-                        @PrimaryPhone, 
-                        @SecondaryPhone, 
-                        @Gender, 
-                        @Email, 
-                        @StartMonth)", connection);
+                        stud_start_month)
+                       VALUES (@Status,
+                        @LastName,
+                        @FirstName,
+                        @HomeDojo,
+                        @Birthdate,
+                        @Address1,
+                        @Address2,
+                        @City,
+                        @State,
+                        @Zip,
+                        @PrimaryPhone,
+                        @SecondaryPhone,
+                        @Gender,
+                        @Email,
+                        @StartMonth)";
+
+        /// <summary>
+        /// Adds a new student to the database.
+        /// </summary>
+        /// <param name="student">The student object to be added.</param>
+        /// <returns>True if the student was added successfully, otherwise false.</returns>
+        public bool AddNewStudent(Student student)
+        {
+            return AddNewStudent(student, out _);
+        }
+
+        /// <summary>
+        /// Adds a new student and reports the stud_id Access generated for them, so a caller that
+        /// must write rows keyed to the new student has something to key them to.
+        /// </summary>
+        /// <param name="student">The student object to be added.</param>
+        /// <param name="newStudentID">
+        /// The new student's id, or 0 when the insert failed or the id could not be read back.
+        /// </param>
+        /// <returns>True if the student was added successfully, otherwise false.</returns>
+        public bool AddNewStudent(Student student, out int newStudentID)
+        {
+            bool success = true;
+            newStudentID = 0;
+
+            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            {
+                connection.Open();
+                OleDbCommand command = new OleDbCommand(insertStudentSql, connection);
 
                 if (connection.State == ConnectionState.Open)
                 {
@@ -151,6 +168,7 @@ namespace DojoStudentManagement
                     try
                     {
                         command.ExecuteNonQuery();
+                        newStudentID = ReadIdentityOfLastInsert(connection);
                         connection.Close();
                         Log.Information($"Added new student {student.FullName}");
                     }
@@ -169,6 +187,37 @@ namespace DojoStudentManagement
             }
 
             return success;
+        }
+
+        /// <summary>
+        /// Reads back the autonumber the database assigned to the row just inserted. @@IDENTITY is
+        /// scoped to the connection, so this has to run on the same open connection as the insert.
+        ///
+        /// Returns 0 rather than throwing when the id cannot be read: the row is already committed
+        /// at that point, so the insert has not failed and must not be reported as if it had.
+        /// </summary>
+        private int ReadIdentityOfLastInsert(OleDbConnection connection)
+        {
+            try
+            {
+                using (OleDbCommand identityCommand = new OleDbCommand("SELECT @@IDENTITY", connection))
+                {
+                    object identity = identityCommand.ExecuteScalar();
+
+                    if (identity == null || identity == DBNull.Value)
+                    {
+                        Log.Error("Could not read back the id of the record just inserted.");
+                        return 0;
+                    }
+
+                    return Convert.ToInt32(identity);
+                }
+            }
+            catch (OleDbException ex)
+            {
+                Log.Error($"Error reading back the id of the record just inserted.\n{ex.Message}\n{ex.Source}\n{ex.StackTrace}");
+                return 0;
+            }
         }
 
         public bool UpdateStudent(Student student)
@@ -269,7 +318,12 @@ namespace DojoStudentManagement
             command.Parameters.Add("@LastName", OleDbType.VarChar).Value = student.LastName;
             command.Parameters.Add("@FirstName", OleDbType.VarChar).Value = student.FirstName;
             command.Parameters.Add("@HomeDojo", OleDbType.VarChar).Value = student.HomeDojo;
-            command.Parameters.Add("@Birthdate", OleDbType.DBDate).Value = student.DateOfBirth;
+            // A student created by a flow that does not collect a birthdate leaves DateOfBirth at
+            // DateTime.MinValue, whose year 1 is outside the range Access accepts and would fail
+            // the insert. The column is nullable, and null is what an unknown birthdate means, so
+            // store it as such - StudentActivityReportFunctions already reads the column that way.
+            command.Parameters.Add("@Birthdate", OleDbType.DBDate).Value =
+                student.DateOfBirth == DateTime.MinValue ? (object)DBNull.Value : student.DateOfBirth;
             command.Parameters.Add("@Address1", OleDbType.VarChar).Value = student.Address1;
             command.Parameters.Add("@Address2", OleDbType.VarChar).Value = student.Address2;
             command.Parameters.Add("@City", OleDbType.VarChar).Value = student.AddressCity;

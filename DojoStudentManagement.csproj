@@ -138,6 +138,14 @@
       <DependentUpon>KubkReportsUI.cs</DependentUpon>
     </Compile>
     <Compile Include="KubkRosterEntry.cs" />
+    <Compile Include="DojoOption.cs" />
+    <Compile Include="MemberDojoStudentRegistration.cs" />
+    <Compile Include="KubkAddStudentUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KubkAddStudentUI.Designer.cs">
+      <DependentUpon>KubkAddStudentUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="RankCorrectionUI.cs">
       <SubType>Form</SubType>
     </Compile>

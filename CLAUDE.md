@@ -19,7 +19,7 @@ Phases 1–5 plus two extra reports). 18 commits ahead of `bug-fixes` at `c4e212
 **Phases 1–5 of the KUBK plan are complete.** Plans live in `..\KUBK-Implementation-Plans\`.
 Phase 6 (SQLite migration) has not been started.
 
-**194 NUnit tests pass.** Solution builds clean with no warnings.
+**220 NUnit tests pass.** Solution builds clean with no warnings.
 
 The only uncommitted file is `DojoStudentManagement.csproj.user` — a local VS debug setting
 (`StartArguments = maintenance`). It is tracked despite `*.user` being in `.gitignore`, so it
@@ -47,6 +47,7 @@ shows as permanently dirty. Deliberately left uncommitted.
 | `439e802` | Highlight promotion-eligible students |
 | `c40ac55` | Sign-in history report |
 | `77a5c24` | Sign-in history shows a running hours total |
+| (uncommitted) | Add Student workflow for member dojos |
 
 ---
 
@@ -153,8 +154,10 @@ Forms (UI)  →  *Functions classes (business logic)  →  IDataRepository / Dat
 ```
 
 Forms render and collect input only. All SQL lives in `DataRepository`. `IDataRepository` exists
-so tests can inject a fake — there are three fakes across the test project, and **every new
-interface member must be added to all of them** or the test project stops compiling.
+so tests can inject a fake — there are two fake implementations across the test project
+(`FakeKubkDataRepository` in `KubkManagementFunctionsTests.cs`, shared by the other KUBK test
+files, and `FakeDataRepository` in `StudentMaintenanceFunctionsBugFixTests.cs`) — and **every new
+interface member must be added to both** or the test project stops compiling.
 
 ### Business-logic classes
 
@@ -162,7 +165,7 @@ interface member must be added to all of them** or the test project stops compil
 |---|---|
 | `StudentMaintenanceFunctions` | Windsong student load/validate |
 | `StudentSignInFunctions` | Kiosk sign-in validation and eligibility |
-| `KubkManagementFunctions` | Dojos, KUBK roster, dues, promotions, verification, KUBK reports |
+| `KubkManagementFunctions` | Dojos, KUBK roster, dues, promotions, verification, member-dojo registration, KUBK reports |
 | `StudentActivityReportFunctions` | Windsong activity report + promotion eligibility |
 | `SignInHistoryReportFunctions` | Sign-in history report + running hours totals |
 | `CsvWriter` | RFC 4180 CSV escaping, UTF-8 **with BOM** so Excel reads names correctly |
@@ -199,8 +202,20 @@ database. Forms only render what these return.
 `club_id` **TEXT(10)** · `club_name` TEXT(30) · `club_addr1/2` TEXT(30) · `club_addr3` TEXT(25) ·
 `club_phone` TEXT(50) · `club_instructor`/`_email` TEXT(100)
 
+**`Students` columns are much narrower than they look.** `stud_firstname` **TEXT(15)** ·
+`stud_lastname` **TEXT(20)** · `stud_email` TEXT(70) · `stud_homephone` TEXT(17) ·
+`stud_workphone` TEXT(13) · `stud_club` TEXT(50) · `stud_city` TEXT(25) · `stud_addr1/2` TEXT(30) ·
+`stud_state` TEXT(2) · `stud_zip` TEXT(10) · `stud_status`/`stud_gender` TEXT(1).
+
+Anything longer fails the insert. `KubkAddStudentUI` sets `MaxLength` on its text boxes to match;
+**`StudentAddUI` does not**, so a long name typed on the Windsong screen still fails at save time.
+
 `Students` NOT NULL: `stud_id`, `stud_status`, `stud_gender`, `stud_lastname`, `stud_club`.
-Inserting without those fails.
+Inserting without those fails. `stud_birthdate` **is** nullable.
+
+`stud_id` is a real AutoNumber, and `SELECT @@IDENTITY` on the same open connection returns it —
+verified against the dev database with both Jet (x86) and ACE 16.0. That is what
+`AddNewStudent(student, out int)` uses.
 
 ---
 
@@ -216,6 +231,7 @@ Inserting without those fails.
 | **`DojoManagementUI`** | KUBK ▸ Member Dojos… |
 | **`KubkRosterUI`** | KUBK ▸ Student Roster… |
 | **`KubkPromoteStudentUI`** | KubkRosterUI ▸ Promote Student… |
+| **`KubkAddStudentUI`** | KubkRosterUI ▸ Add Student… |
 | **`RankCorrectionUI`** | KubkRosterUI ▸ Correct Rank… |
 | **`KubkReportsUI`** | KUBK ▸ Reports ▸ Rank Register… / Unpaid Dues… |
 | **`StudentActivityReportUI`** | Reports ▸ Student Activity… |
@@ -250,6 +266,11 @@ The **KUBK** and **Reports** toolbar buttons are `ToolStripDropDownButton`s. `Ar
   "unseeded" by looking for NULLs.
 - **Jet cannot `LEFT JOIN` on a compound condition with a parameter.** Fetch separately and merge
   in memory (see the dues merge in `GetKubkRoster`).
+- **A `Student` with no birthdate set holds `DateTime.MinValue`, whose year 1 is outside the range
+  Access accepts** and fails the insert. `SetStudentCommandParameters` writes `DBNull` for it, so
+  an unknown birthdate is stored as null — which is how `StudentActivityReportFunctions` already
+  reads that column. Only the KUBK registration flow leaves it unset; the Windsong form always
+  supplies a date from its picker.
 
 ### Schema capability checks
 
@@ -269,6 +290,31 @@ fails silently. Do not remove until production is migrated.
 - **`CellContentClick` only fires for mouse clicks on a checkbox glyph.** For a checkbox column
   that must react to the keyboard too, commit on `CurrentCellDirtyStateChanged` and act on
   `CellValueChanged`, guarded by a suppression flag so rebuilding rows doesn't re-enter.
+
+### Adding a student to a member dojo
+
+`KubkRosterUI ▸ Add Student…` opens `KubkAddStudentUI`, which is deliberately **not** `StudentAddUI`:
+
+- **The dojo is a dropdown of active member dojos, never text.** `Students.stud_club` has to match
+  `Club_Parameters.club_id` exactly or the student falls off every per-dojo view — the reason
+  `cleanup-club-names.ps1` exists. `StudentAddUI` still has a free-text "Home Dojo" box defaulting
+  to "Windsong"; it can technically create a member-dojo student, and that path is the one that
+  produces orphans.
+- **An art and rank are required.** `GetKubkRoster` inner-joins `StudArts`, so a student with no
+  enrollment never appears on the roster and the add looks like it silently failed.
+- **The new rank is stored unverified**, so the student lands in the existing re-verification
+  queue (amber row, one click on Verify Rank) rather than arriving pre-blessed.
+- **"Held since" feeds `studArt_begin` *and* `studArt_prodate`.** Defaulting it to today would show
+  a transferring yondan as newly promoted in the roster's Years at Rank column and the rank
+  register.
+- **Same-name students trigger a warning, not a block.** There are already 8 duplicate Windsong
+  names (see Outstanding work), genuine namesakes exist, and there is no merge tool.
+- **The two inserts are not one transaction** (Jet cannot span them from here). A failed `StudArts`
+  insert deletes the student just created, so a failed add leaves nothing behind; if that
+  compensating delete also fails, the message names the student id for manual cleanup.
+
+After a successful add the roster switches to that student's dojo if it was filtered to a
+different one — otherwise the student is invisible and the add reads as a failure.
 
 ### Domain
 
@@ -317,7 +363,8 @@ See `..\KUBK-Implementation-Plans\phase-6-sqlite-migration.md`. Two things agree
    were never loaded. Fixing it is two one-liners (`GetStudentTable(null)` in
    `RefreshStudentList` *and* in `PopulateStudentData`, or the detail panel blanks) — but it
    would let the Windsong screen edit all 1,761 students, overlapping `KubkRosterUI`. Options:
-   wire it up, or remove the checkbox.
+   wire it up, or remove the checkbox. **Now that member-dojo students are added and managed
+   entirely from `KubkRosterUI`, removing the checkbox is the cleaner of the two.**
 2. **Duplicate student records.** 8 Windsong names appear on two records; 5 follow an
    active-shadows-inactive re-enrolment pattern (e.g. GREG ABLES: inactive id 7650 holds
    Judo HACHIDAN since 1983; active id 9626 was created 3/21/2026 at WHITE). Merging means moving

@@ -15,6 +15,15 @@ namespace DojoStudentManagement
         DataTable GetStudentTable(string dojoFilter);
 
         bool AddNewStudent(Student student);
+
+        /// <summary>
+        /// Adds a new student and reports the stud_id the database generated for them, which a
+        /// caller needs before it can write rows keyed to the new student. newStudentID is 0 when
+        /// the insert failed, and also in the unlikely case that the insert succeeded but the id
+        /// could not be read back - the return value is what says whether the student was added.
+        /// </summary>
+        bool AddNewStudent(Student student, out int newStudentID);
+
         bool UpdateStudent(Student student);
         bool DeleteStudent(int studentID);
 

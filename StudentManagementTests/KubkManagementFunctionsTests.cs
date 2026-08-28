@@ -376,16 +376,51 @@ namespace DojoStudentManagementTests
         public bool AddNewStudentArt(StudentArtsAndRank artsAndRank)
         {
             AddedArts.Add(artsAndRank);
+            return WritesSucceed && AddArtSucceeds;
+        }
+
+        public List<Student> AddedStudents = new List<Student>();
+        public List<int> DeletedStudents = new List<int>();
+        public DataTable StudentTable;
+
+        /// <summary>The id handed back for the next student added.</summary>
+        public int NextStudentID = 5150;
+
+        /// <summary>
+        /// Set false to simulate an insert that succeeded but whose identity could not be read
+        /// back, which the repository reports as a zero id rather than as a failure.
+        /// </summary>
+        public bool StudentIdIsReadable = true;
+
+        /// <summary>
+        /// Failure switches for the individual writes a registration makes, so a test can fail the
+        /// second one while the first still succeeds - which is the case compensation exists for.
+        /// </summary>
+        public bool AddArtSucceeds = true;
+
+        public bool DeleteStudentSucceeds = true;
+
+        public bool AddNewStudent(Student student, out int newStudentID)
+        {
+            AddedStudents.Add(student);
+            newStudentID = WritesSucceed && StudentIdIsReadable ? NextStudentID : 0;
+
             return WritesSucceed;
         }
 
+        public bool DeleteStudent(int studentID)
+        {
+            DeletedStudents.Add(studentID);
+            return WritesSucceed && DeleteStudentSucceeds;
+        }
+
+        public DataTable GetStudentTable(string dojoFilter) => StudentTable ?? new DataTable();
+
         // Unused by the tests in this file — throw to catch accidental calls
         public DataTable GetStudentTable() => throw new NotImplementedException();
-        public DataTable GetStudentTable(string dojoFilter) => throw new NotImplementedException();
         public DataTable GetListOfArts() => throw new NotImplementedException();
         public bool AddNewStudent(Student student) => throw new NotImplementedException();
         public bool UpdateStudent(Student student) => throw new NotImplementedException();
-        public bool DeleteStudent(int studentID) => throw new NotImplementedException();
         public DataTable GetStudentPromotionHistory(int studentID) => throw new NotImplementedException();
         public DataTable GetStudentSignInHistory(int studentID) => throw new NotImplementedException();
         public bool UpdateStudentArt(StudentArtsAndRank artsAndRank) => throw new NotImplementedException();

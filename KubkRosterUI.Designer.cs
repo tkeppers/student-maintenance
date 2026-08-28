@@ -50,6 +50,7 @@ namespace DojoStudentManagement
             this.btnCorrectRank = new System.Windows.Forms.Button();
             this.btnToggleActive = new System.Windows.Forms.Button();
             this.btnPromoteStudent = new System.Windows.Forms.Button();
+            this.btnAddStudent = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.lblStatus = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numDuesYear)).BeginInit();
@@ -275,6 +276,18 @@ namespace DojoStudentManagement
             this.btnPromoteStudent.UseVisualStyleBackColor = true;
             this.btnPromoteStudent.Click += new System.EventHandler(this.btnPromoteStudent_Click);
             //
+            // btnAddStudent
+            //
+            this.btnAddStudent.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnAddStudent.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAddStudent.Location = new System.Drawing.Point(722, 588);
+            this.btnAddStudent.Name = "btnAddStudent";
+            this.btnAddStudent.Size = new System.Drawing.Size(170, 38);
+            this.btnAddStudent.TabIndex = 11;
+            this.btnAddStudent.Text = "Add Student...";
+            this.btnAddStudent.UseVisualStyleBackColor = true;
+            this.btnAddStudent.Click += new System.EventHandler(this.btnAddStudent_Click);
+            //
             // btnClose
             //
             this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -304,6 +317,7 @@ namespace DojoStudentManagement
             this.ClientSize = new System.Drawing.Size(1184, 668);
             this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.btnClose);
+            this.Controls.Add(this.btnAddStudent);
             this.Controls.Add(this.btnPromoteStudent);
             this.Controls.Add(this.btnToggleActive);
             this.Controls.Add(this.btnCorrectRank);
@@ -348,6 +362,7 @@ namespace DojoStudentManagement
         private System.Windows.Forms.Button btnCorrectRank;
         private System.Windows.Forms.Button btnToggleActive;
         private System.Windows.Forms.Button btnPromoteStudent;
+        private System.Windows.Forms.Button btnAddStudent;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Label lblStatus;
     }
