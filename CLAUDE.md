@@ -13,8 +13,9 @@ dojos, their rosters, ranks, promotions, and annual dues.
 
 ## Current state — read this first
 
-Work lives on branch **`phase-2-kubk-repository-domain`** (the name is stale — it now carries
-Phases 1–5 plus two extra reports). 18 commits ahead of `bug-fixes` at `c4e212d`.
+Work lives on branch **`kubk-member-dojo-updates`** (renamed from
+`phase-2-kubk-repository-domain`, which had long since stopped describing it). 20 commits ahead of
+`bug-fixes` at `c4e212d`. **Not pushed** — `origin` still only has `master`.
 
 **Phases 1–5 of the KUBK plan are complete.** Plans live in `..\KUBK-Implementation-Plans\`.
 Phase 6 (SQLite migration) has not been started.
@@ -371,13 +372,12 @@ See `..\KUBK-Implementation-Plans\phase-6-sqlite-migration.md`. Two things agree
    `StudArts` rows to the surviving id. Needs the user to choose the survivor in each case.
 3. **The dues feature may not be wanted.** Deliberately minimal (one checkbox column,
    `SetDuesPaid`) so it is cheap to remove.
-4. **Branch rename** — `phase-2-kubk-repository-domain` covers far more than Phase 2.
-5. **Migrate production** when ready, on a copy first.
+4. **Migrate production** when ready, on a copy first.
 
 ### Known weakness in the testing
 
 Every real defect this session lived in **form event handling or repository SQL**, which the
-194 tests do not touch — they use fakes. Two independent review passes found 12 genuine bugs
+220 tests do not touch — they use fakes. Two independent review passes found 12 genuine bugs
 between them. Treat "tests pass" as weak evidence for those layers; verify against a scratch
 database with a harness, and consider a third review before production use.
 
