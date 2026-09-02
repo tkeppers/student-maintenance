@@ -90,8 +90,16 @@ namespace DojoStudentManagement
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tsbAddNewStudent = new System.Windows.Forms.ToolStripButton();
             this.tsbPromotionSettings = new System.Windows.Forms.ToolStripButton();
+            this.tsbKubkOrganization = new System.Windows.Forms.ToolStripDropDownButton();
+            this.memberDojosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.studentRosterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reportsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rankRegisterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.unpaidDuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton3 = new System.Windows.Forms.ToolStripDropDownButton();
+            this.studentActivityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.signInHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gbArtsAndRank = new System.Windows.Forms.GroupBox();
             this.btnRemoveArt = new System.Windows.Forms.Button();
             this.btnModifyArt = new System.Windows.Forms.Button();
@@ -624,6 +632,7 @@ namespace DojoStudentManagement
             this.tsbSettings,
             this.tsbAddNewStudent,
             this.tsbPromotionSettings,
+            this.tsbKubkOrganization,
             this.toolStripButton2,
             this.toolStripButton3});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
@@ -682,6 +691,57 @@ namespace DojoStudentManagement
             this.tsbPromotionSettings.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.tsbPromotionSettings.Click += new System.EventHandler(this.tsbPromotionSettings_Click);
             // 
+            // tsbKubkOrganization
+            // 
+            this.tsbKubkOrganization.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.memberDojosToolStripMenuItem,
+            this.studentRosterToolStripMenuItem,
+            this.reportsToolStripMenuItem});
+            this.tsbKubkOrganization.Image = ((System.Drawing.Image)(resources.GetObject("tsbKubkOrganization.Image")));
+            this.tsbKubkOrganization.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.tsbKubkOrganization.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbKubkOrganization.Name = "tsbKubkOrganization";
+            this.tsbKubkOrganization.Size = new System.Drawing.Size(49, 52);
+            this.tsbKubkOrganization.Text = "KUBK";
+            this.tsbKubkOrganization.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            // 
+            // memberDojosToolStripMenuItem
+            // 
+            this.memberDojosToolStripMenuItem.Name = "memberDojosToolStripMenuItem";
+            this.memberDojosToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.memberDojosToolStripMenuItem.Text = "Member Dojos...";
+            this.memberDojosToolStripMenuItem.Click += new System.EventHandler(this.memberDojosToolStripMenuItem_Click);
+            // 
+            // studentRosterToolStripMenuItem
+            // 
+            this.studentRosterToolStripMenuItem.Name = "studentRosterToolStripMenuItem";
+            this.studentRosterToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.studentRosterToolStripMenuItem.Text = "Student Roster...";
+            this.studentRosterToolStripMenuItem.Click += new System.EventHandler(this.studentRosterToolStripMenuItem_Click);
+            //
+            // reportsToolStripMenuItem
+            //
+            this.reportsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.rankRegisterToolStripMenuItem,
+            this.unpaidDuesToolStripMenuItem});
+            this.reportsToolStripMenuItem.Name = "reportsToolStripMenuItem";
+            this.reportsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.reportsToolStripMenuItem.Text = "Reports";
+            //
+            // rankRegisterToolStripMenuItem
+            //
+            this.rankRegisterToolStripMenuItem.Name = "rankRegisterToolStripMenuItem";
+            this.rankRegisterToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            this.rankRegisterToolStripMenuItem.Text = "Rank Register...";
+            this.rankRegisterToolStripMenuItem.Click += new System.EventHandler(this.rankRegisterToolStripMenuItem_Click);
+            //
+            // unpaidDuesToolStripMenuItem
+            //
+            this.unpaidDuesToolStripMenuItem.Name = "unpaidDuesToolStripMenuItem";
+            this.unpaidDuesToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            this.unpaidDuesToolStripMenuItem.Text = "Unpaid Dues...";
+            this.unpaidDuesToolStripMenuItem.Click += new System.EventHandler(this.unpaidDuesToolStripMenuItem_Click);
+            // 
             // toolStripButton2
             // 
             this.toolStripButton2.Enabled = false;
@@ -695,14 +755,30 @@ namespace DojoStudentManagement
             // 
             // toolStripButton3
             // 
-            this.toolStripButton3.Enabled = false;
+            this.toolStripButton3.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.studentActivityToolStripMenuItem,
+            this.signInHistoryToolStripMenuItem});
             this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
             this.toolStripButton3.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new System.Drawing.Size(51, 52);
+            this.toolStripButton3.Size = new System.Drawing.Size(62, 52);
             this.toolStripButton3.Text = "Reports";
             this.toolStripButton3.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            //
+            // studentActivityToolStripMenuItem
+            //
+            this.studentActivityToolStripMenuItem.Name = "studentActivityToolStripMenuItem";
+            this.studentActivityToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.studentActivityToolStripMenuItem.Text = "Student Activity...";
+            this.studentActivityToolStripMenuItem.Click += new System.EventHandler(this.studentActivityToolStripMenuItem_Click);
+            //
+            // signInHistoryToolStripMenuItem
+            //
+            this.signInHistoryToolStripMenuItem.Name = "signInHistoryToolStripMenuItem";
+            this.signInHistoryToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.signInHistoryToolStripMenuItem.Text = "Sign-In History...";
+            this.signInHistoryToolStripMenuItem.Click += new System.EventHandler(this.signInHistoryToolStripMenuItem_Click);
             // 
             // gbArtsAndRank
             // 
@@ -878,11 +954,19 @@ namespace DojoStudentManagement
         private System.Windows.Forms.Button btnModifyArt;
         private System.Windows.Forms.Button btnAddArt;
         private System.Windows.Forms.ToolStripButton toolStripButton2;
-        private System.Windows.Forms.ToolStripButton toolStripButton3;
+        private System.Windows.Forms.ToolStripDropDownButton toolStripButton3;
+        private System.Windows.Forms.ToolStripMenuItem studentActivityToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem signInHistoryToolStripMenuItem;
         private System.Windows.Forms.Button btnSaveChanges;
         private System.Windows.Forms.ToolStripDropDownButton tsbSettings;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem databasePathToolStripMenuItem;
+        private System.Windows.Forms.ToolStripDropDownButton tsbKubkOrganization;
+        private System.Windows.Forms.ToolStripMenuItem memberDojosToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem studentRosterToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem reportsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem rankRegisterToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem unpaidDuesToolStripMenuItem;
         private System.Windows.Forms.ColumnHeader columnStudentArtID;
         private System.Windows.Forms.ColumnHeader columnLastSignInDate;
         private System.Windows.Forms.Label lblPromotionEligibility;

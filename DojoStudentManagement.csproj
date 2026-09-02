@@ -25,7 +25,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>2.7.0.0</ApplicationVersion>
+    <ApplicationVersion>3.0.0.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -115,7 +115,49 @@
     <Compile Include="ApplicationSettingsUI.Designer.cs">
       <DependentUpon>ApplicationSettingsUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="CsvWriter.cs" />
+    <Compile Include="Dojo.cs" />
+    <Compile Include="DojoManagementUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DojoManagementUI.Designer.cs">
+      <DependentUpon>DojoManagementUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="IDataRepository.cs" />
+    <Compile Include="KubkManagementFunctions.cs" />
+    <Compile Include="KubkPromoteStudentUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KubkPromoteStudentUI.Designer.cs">
+      <DependentUpon>KubkPromoteStudentUI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="KubkReportsUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KubkReportsUI.Designer.cs">
+      <DependentUpon>KubkReportsUI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="KubkRosterEntry.cs" />
+    <Compile Include="DojoOption.cs" />
+    <Compile Include="MemberDojoStudentRegistration.cs" />
+    <Compile Include="KubkAddStudentUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KubkAddStudentUI.Designer.cs">
+      <DependentUpon>KubkAddStudentUI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RankCorrectionUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RankCorrectionUI.Designer.cs">
+      <DependentUpon>RankCorrectionUI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="KubkRosterUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KubkRosterUI.Designer.cs">
+      <DependentUpon>KubkRosterUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="MessageService.cs" />
     <Compile Include="PromoteStudentUI.cs">
       <SubType>Form</SubType>
@@ -124,6 +166,7 @@
       <DependentUpon>PromoteStudentUI.cs</DependentUpon>
     </Compile>
     <Compile Include="PromotionCriteria.cs" />
+    <Compile Include="Rank.cs" />
     <Compile Include="PromotionCriteriaUI.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -144,6 +187,24 @@
       <DependentUpon>StudentAddUI.cs</DependentUpon>
     </Compile>
     <Compile Include="StudentArtsAndRank.cs" />
+    <Compile Include="SignInHistoryEntry.cs" />
+    <Compile Include="SignInHistoryReportFunctions.cs" />
+    <Compile Include="SignInHistoryReportUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SignInHistoryReportUI.Designer.cs">
+      <DependentUpon>SignInHistoryReportUI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StudentActivityEntry.cs" />
+    <Compile Include="StudentActivityReportFunctions.cs" />
+    <Compile Include="StudentActivityReportUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StudentActivityReportUI.Designer.cs">
+      <DependentUpon>StudentActivityReportUI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StudentDuesRecord.cs" />
+    <Compile Include="UnpaidDuesEntry.cs" />
     <Compile Include="StudentMaintenanceUI.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -180,6 +241,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ApplicationSettingsUI.resx">
       <DependentUpon>ApplicationSettingsUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DojoManagementUI.resx">
+      <DependentUpon>DojoManagementUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="KubkReportsUI.resx">
+      <DependentUpon>KubkReportsUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="KubkRosterUI.resx">
+      <DependentUpon>KubkRosterUI.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PromoteStudentUI.resx">
       <DependentUpon>PromoteStudentUI.cs</DependentUpon>

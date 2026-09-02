@@ -19,6 +19,8 @@ namespace DojoStudentManagement
         public double PromotionHours { get; set; }
         public string NextRank { get; set; }
         public bool EligibleForPromotion { get; internal set; }
+        public DateTime? RankVerifiedDate { get; set; }
+        public bool RankIsVerified => RankVerifiedDate.HasValue;
 
         /// <summary>
         /// Returns the amount of time in years since the student first began taking the martial art.
@@ -43,7 +45,7 @@ namespace DojoStudentManagement
         public double YearsAtCurrentLevel()
         {
             if (DatePromoted == null)
-                return 0;
+                return TotalYearsInArt();
 
             TimeSpan span = DateTime.Now - (DateTime)DatePromoted;
             double yearsAtCurrentLevel = Math.Round(span.TotalDays / 365.25, 2); // Using 365.25 to account for leap years

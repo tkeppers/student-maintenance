@@ -17,6 +17,12 @@ namespace DojoStudentManagement
             DataTable studentDataTable = dataRepository.GetStudentTable();
             DataRow[] selectedStudent = studentDataTable.Select("StudentID = " + studentID);
 
+            if (selectedStudent.Length == 0)
+            {
+                Log.Error($"PopulateStudentData: No student found with ID {studentID}");
+                return currentStudent;
+            }
+
             var row = selectedStudent[0];
 
             currentStudent.StudentID = studentID;
@@ -58,18 +64,18 @@ namespace DojoStudentManagement
                 return Gender.UNKNOWN;
         }
 
+        /// <summary>
+        /// Pure check with no UI of its own - callers decide whether and how to tell the user.
+        /// This deliberately does not show a message box: it is business logic reached from the
+        /// unit tests, and a modal dialog here blocks the whole test run until a human dismisses
+        /// it. The caller that needs a prompt is StudentMaintenanceUI.IsSelectedStudentValid().
+        /// </summary>
         public bool IsValidStudent(int studentID)
-        {   
-            if (studentID <= 0)
-            {
-                MessageService.ShowErrorMessage("Please select a valid student", "Student Not Selected");
-                return false;
-            }
-
-            return true;
+        {
+            return studentID > 0;
         }
 
-        internal bool IsValidEmail(string email)
+        public bool IsValidEmail(string email)
         {
             var trimmedEmail = email.Trim();
 
@@ -110,7 +116,10 @@ namespace DojoStudentManagement
                     DateTime.TryParse(row["studArt_prodate"].ToString(), out DateTime promotionDate)
                         ? promotionDate : (DateTime?)null,
                     PromotionHours = double.TryParse(row["studArt_prohrs"].ToString(), out double promotionHours)
-                        ? promotionHours : 0.0
+                        ? promotionHours : 0.0,
+                    RankVerifiedDate = artsAndRanks.Columns.Contains("studArt_rank_verified") &&
+                        DateTime.TryParse(row["studArt_rank_verified"].ToString(), out DateTime rankVerifiedDate)
+                        ? rankVerifiedDate : (DateTime?)null
                 };
 
                 student.StudentArtsAndRanks.Add(artsAndRank);

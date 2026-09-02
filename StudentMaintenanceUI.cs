@@ -322,7 +322,7 @@ namespace DojoStudentManagement
         private void UpdateStudentInformation()
         {
             //TODO: Refactor this method and give it a better name
-            if (!studentMaintenanceFunctions.IsValidStudent(currentStudentID))
+            if (!IsSelectedStudentValid())
                 return;
 
             DialogResult result = MessageService.ShowAreYouSureMessage($"Update database for student {currentStudent.FullName}", "Save Student?");
@@ -368,7 +368,7 @@ namespace DojoStudentManagement
 
         private void DeleteSelectedStudent()
         {
-            if (!studentMaintenanceFunctions.IsValidStudent(currentStudentID))
+            if (!IsSelectedStudentValid())
                 return;
 
             DialogResult result = MessageService.ShowAreYouSureMessage($"Are you sure you want to delete student {currentStudent.FullName}", "Delete Student?");
@@ -585,6 +585,56 @@ namespace DojoStudentManagement
         private void btnDeleteStudent_Click(object sender, EventArgs e)
         {
             DeleteSelectedStudent();
+        }
+
+        private void memberDojosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (DojoManagementUI dojoManagement = new DojoManagementUI(dataRepository))
+            {
+                dojoManagement.ShowDialog();
+            }
+        }
+
+        private void studentRosterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (KubkRosterUI kubkRoster = new KubkRosterUI(dataRepository))
+            {
+                kubkRoster.ShowDialog();
+            }
+        }
+
+        private void studentActivityToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (StudentActivityReportUI activityReport = new StudentActivityReportUI(dataRepository))
+            {
+                activityReport.ShowDialog();
+            }
+        }
+
+        private void signInHistoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (SignInHistoryReportUI signInHistory = new SignInHistoryReportUI(dataRepository))
+            {
+                signInHistory.ShowDialog();
+            }
+        }
+
+        private void rankRegisterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowKubkReport(KubkReportKind.RankRegister);
+        }
+
+        private void unpaidDuesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowKubkReport(KubkReportKind.UnpaidDues);
+        }
+
+        private void ShowKubkReport(KubkReportKind reportKind)
+        {
+            using (KubkReportsUI report = new KubkReportsUI(dataRepository, reportKind))
+            {
+                report.ShowDialog();
+            }
         }
     }
 }

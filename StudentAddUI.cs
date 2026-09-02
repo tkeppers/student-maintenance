@@ -23,11 +23,29 @@ namespace DojoStudentManagement
 
         private bool ValidateStudentData()
         {
-            bool isDataValid = false;
-            StudentMaintenanceFunctions s = new StudentMaintenanceFunctions();
-            s.IsValidEmail(txtEmailAddress.Text);
+            if (string.IsNullOrWhiteSpace(txtFirstName.Text))
+            {
+                MessageService.ShowErrorMessage("First name is required.", "Validation Error");
+                return false;
+            }
 
-            return isDataValid;
+            if (string.IsNullOrWhiteSpace(txtLastName.Text))
+            {
+                MessageService.ShowErrorMessage("Last name is required.", "Validation Error");
+                return false;
+            }
+
+            if (!string.IsNullOrWhiteSpace(txtEmailAddress.Text))
+            {
+                StudentMaintenanceFunctions s = new StudentMaintenanceFunctions();
+                if (!s.IsValidEmail(txtEmailAddress.Text))
+                {
+                    MessageService.ShowErrorMessage("The email address entered is not valid.", "Validation Error");
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private void CreateNewStudent()
@@ -71,7 +89,9 @@ namespace DojoStudentManagement
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            ValidateStudentData();
+            if (!ValidateStudentData())
+                return;
+
             CreateNewStudent();
             OnStudentAdded();
 

@@ -35,6 +35,7 @@ namespace DojoStudentManagement
             dgvPromotionHistory.Columns["Rank"].DataPropertyName = "promo_rank";
             dgvPromotionHistory.Columns["PromoDate"].DataPropertyName = "promo_date";
             dgvPromotionHistory.Columns["PromoHours"].DataPropertyName = "promo_hours";
+            dgvPromotionHistory.Columns["RecommendedBy"].DataPropertyName = "promo_recommended_by";
 
             dgvPromotionHistory.DataSource = studentPromotionHistory;
 
